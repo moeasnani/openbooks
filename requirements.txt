@@ -1,0 +1,11 @@
+# Runtime (DuckDB / local)
+duckdb>=1.0
+PyYAML>=6.0
+
+# Postgres deployment (server) — uncomment one driver:
+# psycopg[binary]>=3.1
+# psycopg2-binary>=2.9
+
+# Development
+# pytest>=8.0
+# ruff>=0.4
