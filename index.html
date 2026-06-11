@@ -1,0 +1,136 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenBooks — Talking to the Money</title>
+<style>
+:root{--bg:#0a0e14;--card:#131820;--line:#1e2836;--ink:#dde2ea;--mut:#6b7d95;--acc:#4ea1ff;--t1:#e05555;--t2:#e0a030;--grn:#3ecf8e;--yel:#e0c040}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{position:sticky;top:0;z-index:10;background:#0a0e14f2;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px 16px}
+h1{margin:0;font-size:15px;font-weight:650;display:flex;gap:10px;align-items:center}
+.tabs{display:flex;gap:3px;margin-top:9px;flex-wrap:wrap}
+.tab{background:var(--card);border:1px solid var(--line);color:var(--mut);padding:6px 13px;font-size:12px;border-radius:7px;cursor:pointer;transition:.12s}
+.tab.on,.tab:hover{background:var(--acc);color:#060f1f;border-color:var(--acc);font-weight:650}
+main{max-width:1100px;margin:0 auto;padding:10px 14px 60px}
+.bar{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+input,select,button{background:var(--card);border:1px solid var(--line);color:var(--ink);padding:8px 11px;border-radius:8px;font-size:13px}
+input{flex:1 1 200px;min-width:160px}
+button{background:var(--acc);color:#060f1f;border-color:var(--acc);font-weight:650;cursor:pointer;padding:8px 16px}
+select{color:var(--ink)}
+.card{border:1px solid var(--line);border-radius:10px;background:var(--card);margin:6px 0;overflow:hidden}
+.chd{display:grid;grid-template-columns:18px 1fr auto;gap:9px;align-items:center;padding:10px 13px;cursor:pointer;user-select:none}
+.chd:hover{background:#1a2330}
+.cname{font-weight:650;font-size:13.5px}.cmeta{color:var(--mut);font-size:11px;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chev{color:var(--mut);font-size:11px;transition:.14s}.open .chev{transform:rotate(90deg)}
+.cbody{display:none;padding:2px 10px 10px 28px}.open .cbody{display:block}
+.badge{display:inline-block;padding:0 6px;border-radius:20px;font-size:10px;font-weight:800;color:#0a0e14}
+.t1b{background:var(--t1)}.t2b{background:var(--t2)}.chip{display:inline-block;padding:1px 6px;border-radius:5px;font-size:10px;border:1px solid var(--line);color:var(--mut)}
+.vchip{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px}
+.v-genuine_review{background:#2a1010;color:#f08080}.v-mixed{background:#2a2010;color:#e0c060}
+.v-explained_benign{background:#0a2018;color:var(--grn)}.v-false_positive_marker{background:#181820;color:#9098a8}
+.v-screened_unreviewed{background:#181820;color:var(--mut)}
+.right{text-align:right}.usd{font-variant-numeric:tabular-nums;font-weight:650;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:5px}
+th,td{text-align:left;padding:4px 7px;border-bottom:1px solid #1a2230}
+th{color:var(--mut)}td.n{text-align:right;font-variant-numeric:tabular-nums}
+.ctx{color:var(--mut);font-size:11.5px;font-style:italic;margin:4px 0 8px}
+.meta{color:var(--mut);font-size:12px;margin:6px 0}.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .6s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.empty{color:var(--mut);padding:20px;text-align:center;font-size:13px}
+.big{font-size:28px;font-weight:700;color:var(--acc)}.panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:10px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.sval{font-size:24px;font-weight:700}.slbl{color:var(--mut);font-size:11px}
+</style></head><body>
+<header>
+<h1>&#9878; OpenBooks <span style="color:var(--mut);font-weight:400;font-size:12px">Talking to the Money</span></h1>
+<div class="tabs" id="tabs">
+<button class="tab on" data-p="vendor">Vendor Lookup</button>
+<button class="tab" data-p="leads">Leads</button>
+<button class="tab" data-p="agency">Agency Card</button>
+<button class="tab" data-p="pending">Pending Review</button>
+<button class="tab" data-p="waterfall">Waterfall</button>
+</div></header>
+<main id="main"></main>
+
+<script>
+const fmt=n=>n>=1e9?'$'+(n/1e9).toFixed(2)+'B':n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1e3?'$'+(n/1e3).toFixed(0)+'K':'$'+n;
+const el=id=>document.getElementById(id);
+let panel='vendor';
+
+async function api(url){const r=await fetch(url);return r.json()}
+async function post(url,body){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.json()}
+
+function renderVendor(data){
+ if(!data||data.error) return '<div class="empty">Vendor not found</div>';
+ const v=data.verify_verdict?'<span class="vchip v-'+data.verify_verdict+'">'+data.verify_verdict.replace(/_/g,' ')+(data.overtaker_interest?' '+data.overtaker_interest+'/5':'')+'</span>':'';
+ const ctx=data.public_context?'<div class="ctx">'+esc(data.public_context)+'</div>':'';
+ const mk=(data.top_markers||[]).slice(0,5).map(m=>'<span class="chip">'+m+'</span>').join('');
+ const tx=(data.transactions||[]).map(t=>'<tr><td>'+t.fy+'</td><td>'+esc(t.agency||'')+'</td><td>'+esc(t.cat||'')+'</td><td class=n>'+fmt(t.amount)+'</td><td class=n>'+t.score+'</td><td>T'+t.tier+'</td><td class="mut" style="font-size:10.5px">'+esc(t.markers||'')+'</td></tr>').join('');
+ return '<div class="card"><div class="chd"><span class="chev">&#9656;</span>'+
+  '<div><div class="cname">'+esc(data.entity_name)+' <span class="badge t1b">T'+data.top_tier+'</span> '+v+'</div>'+
+  '<div class="cmeta">'+mk+'<span>'+data.n_tier1+' T1 &middot; '+data.n_tier2+' T2 / '+data.hv_txn+' txns</span><span>FY'+data.first_year+'&ndash;'+data.last_year+'</span><span>'+data.n_agencies+' agencies</span>'+(data.n_names_merged>0?'<span>&#9878; '+data.n_names_merged+' names merged</span>':'')+'</div></div>'+
+  '<div class="right"><div class="usd">'+fmt(data.usd_tier1||data.hv_exposure)+'</div></div></div>'+
+  '<div class="cbody">'+ctx+'<table><thead><tr><th>FY</th><th>Agency</th><th>Category</th><th class=n>Amount</th><th class=n>Score</th><th>Tier</th><th>Markers</th></tr></thead><tbody>'+tx+'</tbody></table>'+(data.n_txn_displayed>=30?'<div class="meta">Showing top 30 of '+data.hv_txn+' transactions</div>':'')+'</div></div>';
+}
+
+function renderLeads(data){
+ if(!Array.isArray(data)||!data.length) return '<div class="empty">No leads found</div>';
+ return data.map(l=>'<div class="card"><div class="chd"><span></span>'+
+  '<div><div class="cname">'+esc(l.payee)+' <span class="badge t1b">T'+l.tier+'</span><span class="vchip v-'+l.verify_status+'">'+l.verify_status.replace(/_/g,' ')+'</span></div>'+
+  '<div class="cmeta">FY'+l.fiscal_year+' &middot; '+esc(l.agency)+' &middot; '+esc(l.category1||'')+' &middot; '+esc(l.markers||'')+'</div></div>'+
+  '<div class="right"><div class="usd">'+fmt(l.amount)+'</div><div class="meta">score '+l.risk_score+'</div></div></div></div>').join('');
+}
+
+function renderAgency(data){
+ if(!data||data.error) return '<div class="empty">Agency not found</div>';
+ const tr=(data.trend||[]).map(t=>'<tr><td>'+t.fiscal_year+'</td><td class=n>'+fmt(t.hv_exposure)+'</td><td class=n>'+t.n_tier1+'</td><td class=n>'+fmt(t.usd_tier1)+'</td><td class=n>'+t.tier12_pct_of_hv+'%</td><td class=n>'+t.avg_risk_score+'</td></tr>').join('');
+ const vn=(data.top_flagged_vendors||[]).map(v=>'<tr><td>'+esc(v.entity_name||'')+'</td><td class=n>'+v.n_tier1+'</td><td class=n>'+fmt(v.usd_tier1)+'</td><td class=n>'+v.max_score+'</td></tr>').join('');
+ return '<div class="card" style="padding:14px"><h2 style="margin:0 0 8px">'+esc(data.agency)+'</h2>'+
+  '<div class="panel"><div class="stat"><div class="slbl">Total Exposure</div><div class="sval">'+fmt(data.hv_exposure)+'</div></div>'+
+  '<div class="stat"><div class="slbl">Tier-1 Exposure</div><div class="sval">'+fmt(data.usd_tier1)+'</div></div>'+
+  '<div class="stat"><div class="slbl">Tier-1+2 % of HV</div><div class="sval">'+data.tier12_pct_of_hv+'%</div></div>'+
+  '<div class="stat"><div class="slbl">Flagged Vendors</div><div class="sval">'+data.distinct_flagged_vendors+'</div></div></div>'+
+  '<h3 style="margin:14px 0 6px;font-size:13px">FY Trend</h3><table><thead><tr><th>FY</th><th class=n>HV Exposure</th><th class=n>Tier-1 Txns</th><th class=n>Tier-1 $</th><th class=n>T1+2%</th><th class=n>Avg Score</th></tr></thead><tbody>'+tr+'</tbody></table>'+
+  '<h3 style="margin:14px 0 6px;font-size:13px">Top Flagged Vendors</h3><table><thead><tr><th>Vendor</th><th class=n>T1 Txns</th><th class=n>Tier-1 $</th><th class=n>Max Score</th></tr></thead><tbody>'+vn+'</tbody></table></div>';
+}
+
+function renderPending(data){
+ if(!Array.isArray(data)||!data.length) return '<div class="empty">No pending reviews</div>';
+ return data.map(p=>'<div class="card"><div class="chd"><span></span>'+
+  '<div><div class="cname">'+esc(p.entity_name)+'</div><div class="cmeta">'+p.n_tier1+' T1 &middot; '+esc((p.top_markers||[]).slice(0,3).join(', '))+' &middot; FY'+p.first_year+'&ndash;'+p.last_year+'</div></div>'+
+  '<div class="right"><div class="usd">'+fmt(p.usd_tier1)+'</div><div class="meta">score '+p.max_risk_score+'</div></div></div></div>').join('');
+}
+
+function renderWaterfall(data){
+ if(!data||!data.tiers) return '<div class="empty">No data</div>';
+ const rows=data.tiers.map(t=>'<tr><td>T'+t.tier+'</td><td class=n>'+t.n_txn.toLocaleString()+'</td><td class=n>'+fmt(t.exposure)+'</td><td class=n>'+t.pct_txn+'%</td><td class=n>'+t.pct_exposure+'%</td><td class=n>'+t.avg_score+'</td></tr>').join('');
+ return '<div class="card" style="padding:14px"><div class="slbl" style="margin-bottom:6px">'+fmt(data.total_exposure)+' across '+data.total_txns.toLocaleString()+' transactions</div>'+
+  '<table><thead><tr><th>Tier</th><th class=n>Txns</th><th class=n>Exposure</th><th class=n>% Txn</th><th class=n>% $</th><th class=n>Avg Score</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+  '<div class="meta" style="margin-top:10px">'+esc(data.summary||'')+'</div></div>';
+}
+
+function esc(s){return(''+s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+async function render(){
+ const m=el('main'); m.innerHTML='<div class="empty"><span class="spinner"></span></div>';
+ let html='';
+ switch(panel){
+  case 'vendor': html='<div class="bar"><input id="q" type="search" placeholder="Type a vendor name and press Enter..." autofocus></div><div id="out"></div>'; break;
+  case 'leads': html='<div class="bar"><select id="st"><option value="">All statuses</option><option value="genuine_review">Genuine Review</option><option value="screened_unreviewed">Screened (Unreviewed)</option><option value="explained_benign">Explained Benign</option><option value="mixed">Mixed</option><option value="false_positive_marker">False Positive</option></select><button onclick="loadLeads()">Load</button></div><div id="out"></div>'; break;
+  case 'agency': html='<div class="bar"><input id="q" type="search" placeholder="Enter agency name..." autofocus></div><div id="out"></div>'; break;
+  case 'pending': html='<div id="out"><div class="empty"><span class="spinner"></span></div></div>'; break;
+  case 'waterfall': html='<div id="out"><div class="empty"><span class="spinner"></span></div></div>'; break;
+ }
+ m.innerHTML=html;
+
+ if(panel==='vendor'||panel==='agency'){
+  el('q').addEventListener('keydown',async e=>{if(e.key==='Enter'){const q=el('q').value;el('out').innerHTML='<div class="empty"><span class="spinner"></span></div>';const d=await api('/api/'+panel+'?q='+encodeURIComponent(q));el('out').innerHTML=panel==='vendor'?renderVendor(d):renderAgency(d)}});
+ }
+ if(panel==='pending'){const d=await api('/api/pending?limit=30');el('out').innerHTML=renderPending(d)}
+ if(panel==='waterfall'){const d=await api('/api/waterfall');el('out').innerHTML=renderWaterfall(d)}
+}
+
+async function loadLeads(){el('out').innerHTML='<div class="empty"><span class="spinner"></span></div>';const st=el('st').value;const d=await api('/api/leads?tier=1&status='+encodeURIComponent(st)+'&limit=30');el('out').innerHTML=renderLeads(d)}
+
+el('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;[...b.parentElement.children].forEach(x=>x.classList.toggle('on',x===b));panel=b.dataset.p;render()});
+el('main').addEventListener('click',e=>{const c=e.target.closest('.chd');if(c)c.parentElement.classList.toggle('open')});
+
+render();
+</script></body></html>

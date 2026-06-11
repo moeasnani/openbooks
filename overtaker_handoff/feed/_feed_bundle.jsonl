@@ -1,0 +1,225 @@
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2016,"total_revenue":35507926507.4,"federal_revenue":15494186829.08,"federal_dependency_pct":43.635853605394125}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2017,"total_revenue":33973396446.82,"federal_revenue":14257713915.1,"federal_dependency_pct":41.96729031028206}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2018,"total_revenue":36051434188.44,"federal_revenue":14882676757.13,"federal_dependency_pct":41.28178834533627}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2019,"total_revenue":38026026892.19,"federal_revenue":15643720959.52,"federal_dependency_pct":41.13950953611984}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2020,"total_revenue":42901759741.31,"federal_revenue":19514350879.23,"federal_dependency_pct":45.486131564061886}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2021,"total_revenue":50126603516.29,"federal_revenue":23297023163.58,"federal_dependency_pct":46.47636490273872}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2023,"total_revenue":58968244613.17,"federal_revenue":28298357001.33,"federal_dependency_pct":47.98914600047265}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2024,"total_revenue":57782564448.71,"federal_revenue":25909397520.43,"federal_dependency_pct":44.83947323492048}}
+{"feed":"ff_federal_dependency_by_year","row":{"fiscal_year":2025,"total_revenue":59477927179.44,"federal_revenue":27051766722.38,"federal_dependency_pct":45.482026703397125}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2019,"indicator":"Net cash margin","value":3.2,"unit":"%","band":"favorable","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2016,"indicator":"Net cash margin","value":-0.4,"unit":"%","band":"balanced","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2018,"indicator":"Net cash margin","value":1.5,"unit":"%","band":"balanced","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2017,"indicator":"Net cash margin","value":-0.8,"unit":"%","band":"balanced","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2020,"indicator":"Net cash margin","value":3.5,"unit":"%","band":"favorable","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2021,"indicator":"Net cash margin","value":6.7,"unit":"%","band":"favorable","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2024,"indicator":"Net cash margin","value":-3.2,"unit":"%","band":"watch","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2023,"indicator":"Net cash margin","value":1.2,"unit":"%","band":"balanced","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2025,"indicator":"Net cash margin","value":0.6,"unit":"%","band":"balanced","basis":"Receipts minus disbursements / receipts (cash-basis proxy; not GAAP fund balance)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2019,"indicator":"Federal revenue dependency","value":41.1,"unit":"%","band":"moderate","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2016,"indicator":"Federal revenue dependency","value":43.6,"unit":"%","band":"moderate","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2018,"indicator":"Federal revenue dependency","value":41.3,"unit":"%","band":"moderate","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2017,"indicator":"Federal revenue dependency","value":42.0,"unit":"%","band":"moderate","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2020,"indicator":"Federal revenue dependency","value":45.5,"unit":"%","band":"elevated","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2021,"indicator":"Federal revenue dependency","value":46.5,"unit":"%","band":"elevated","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2024,"indicator":"Federal revenue dependency","value":44.8,"unit":"%","band":"moderate","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2023,"indicator":"Federal revenue dependency","value":48.0,"unit":"%","band":"elevated","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2025,"indicator":"Federal revenue dependency","value":45.5,"unit":"%","band":"elevated","basis":"Federal transfers / total revenue (revenue-volatility exposure)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2019,"indicator":"Data-quality (sentinel lines)","value":39.0,"unit":"lines","band":"moderate","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2016,"indicator":"Data-quality (sentinel lines)","value":17.0,"unit":"lines","band":"low","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2018,"indicator":"Data-quality (sentinel lines)","value":49.0,"unit":"lines","band":"moderate","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2017,"indicator":"Data-quality (sentinel lines)","value":38.0,"unit":"lines","band":"moderate","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2020,"indicator":"Data-quality (sentinel lines)","value":41.0,"unit":"lines","band":"moderate","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2021,"indicator":"Data-quality (sentinel lines)","value":41.0,"unit":"lines","band":"moderate","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2024,"indicator":"Data-quality (sentinel lines)","value":100.0,"unit":"lines","band":"elevated","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2023,"indicator":"Data-quality (sentinel lines)","value":74.0,"unit":"lines","band":"moderate","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"gov_scorecard","row":{"fiscal_year":2025,"indicator":"Data-quality (sentinel lines)","value":92.0,"unit":"lines","band":"elevated","basis":"Count of 99999999.xx placeholder amounts; data hygiene (excluded from totals)"}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF ADMINISTRATION","under_5k":2779,"over_5k":2671,"ratio_5k":1.04,"under_10k":2092,"over_10k":1959,"ratio_10k":1.07}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"INDUSTRIAL COMMISSION","under_5k":617,"over_5k":595,"ratio_5k":1.04,"under_10k":407,"over_10k":290,"ratio_10k":1.4}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"ATTORNEY GENERAL (DEPT OF LAW)","under_5k":1724,"over_5k":1633,"ratio_5k":1.06,"under_10k":1121,"over_10k":1115,"ratio_10k":1.01}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","under_5k":762,"over_5k":717,"ratio_5k":1.06,"under_10k":632,"over_10k":735,"ratio_10k":0.86}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF CHILD SAFETY","under_5k":13464,"over_5k":12830,"ratio_5k":1.05,"under_10k":7818,"over_10k":7267,"ratio_10k":1.08}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"CORPORATION COMMISSION","under_5k":507,"over_5k":446,"ratio_5k":1.14,"under_10k":389,"over_10k":343,"ratio_10k":1.13}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF EDUCATION","under_5k":5649,"over_5k":5850,"ratio_5k":0.97,"under_10k":5160,"over_10k":5699,"ratio_10k":0.91}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF ENVIRONMENTAL QUALITY","under_5k":1955,"over_5k":1802,"ratio_5k":1.08,"under_10k":1093,"over_10k":1022,"ratio_10k":1.07}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"AHCCCS","under_5k":24778,"over_5k":22633,"ratio_5k":1.09,"under_10k":17760,"over_10k":16579,"ratio_10k":1.07}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"GAME AND FISH DEPARTMENT","under_5k":2148,"over_5k":2120,"ratio_5k":1.01,"under_10k":936,"over_10k":955,"ratio_10k":0.98}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF REVENUE","under_5k":1092,"over_5k":1082,"ratio_5k":1.01,"under_10k":984,"over_10k":801,"ratio_10k":1.23}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"GOVERNOR'S OFFICE","under_5k":702,"over_5k":639,"ratio_5k":1.1,"under_10k":728,"over_10k":1022,"ratio_10k":0.71}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF VETERANS SERVICES","under_5k":1301,"over_5k":736,"ratio_5k":1.77,"under_10k":395,"over_10k":442,"ratio_10k":0.89}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"ARIZONA STATE RETIREMENT SYSTEM (ASRS)","under_5k":644,"over_5k":683,"ratio_5k":0.94,"under_10k":515,"over_10k":523,"ratio_10k":0.98}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF HEALTH SERVICES","under_5k":4786,"over_5k":4758,"ratio_5k":1.01,"under_10k":3213,"over_10k":3162,"ratio_10k":1.02}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"SCHOOLS FOR THE DEAF AND THE BLIND","under_5k":1014,"over_5k":1045,"ratio_5k":0.97,"under_10k":750,"over_10k":697,"ratio_10k":1.08}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF JUVENILE CORRECTIONS","under_5k":587,"over_5k":598,"ratio_5k":0.98,"under_10k":429,"over_10k":403,"ratio_10k":1.06}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"HOUSE OF REPRESENTATIVES","under_5k":457,"over_5k":347,"ratio_5k":1.32,"under_10k":85,"over_10k":113,"ratio_10k":0.75}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF WATER RESOURCES","under_5k":429,"over_5k":411,"ratio_5k":1.04,"under_10k":235,"over_10k":243,"ratio_10k":0.97}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF ECONOMIC SECURITY","under_5k":28726,"over_5k":27415,"ratio_5k":1.05,"under_10k":18389,"over_10k":17007,"ratio_10k":1.08}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF EMERGENCY AND MILITARY AFFAIRS","under_5k":1091,"over_5k":960,"ratio_5k":1.14,"under_10k":774,"over_10k":619,"ratio_10k":1.25}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF PUBLIC SAFETY","under_5k":3671,"over_5k":3537,"ratio_5k":1.04,"under_10k":2848,"over_10k":2469,"ratio_10k":1.15}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"SUPREME COURT","under_5k":1342,"over_5k":1144,"ratio_5k":1.17,"under_10k":1021,"over_10k":1178,"ratio_10k":0.87}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"PARKS BOARD","under_5k":641,"over_5k":536,"ratio_5k":1.2,"under_10k":495,"over_10k":433,"ratio_10k":1.14}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF HOUSING","under_5k":617,"over_5k":986,"ratio_5k":0.63,"under_10k":575,"over_10k":627,"ratio_10k":0.92}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF AGRICULTURE","under_5k":555,"over_5k":553,"ratio_5k":1.0,"under_10k":301,"over_10k":296,"ratio_10k":1.02}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF TRANSPORTATION","under_5k":9978,"over_5k":9520,"ratio_5k":1.05,"under_10k":7238,"over_10k":6677,"ratio_10k":1.08}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"SECRETARY OF STATE (DEPT OF STATE)","under_5k":375,"over_5k":376,"ratio_5k":1.0,"under_10k":166,"over_10k":227,"ratio_10k":0.73}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"SENATE","under_5k":341,"over_5k":217,"ratio_5k":1.57,"under_10k":139,"over_10k":177,"ratio_10k":0.79}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF CORRECTIONS","under_5k":9390,"over_5k":8954,"ratio_5k":1.05,"under_10k":6280,"over_10k":5925,"ratio_10k":1.06}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"DEPT OF FORESTRY AND FIRE MANAGEMENT","under_5k":689,"over_5k":652,"ratio_5k":1.06,"under_10k":529,"over_10k":461,"ratio_10k":1.15}}
+{"feed":"pf_structuring_by_agency","row":{"agency":"LAND DEPARTMENT","under_5k":343,"over_5k":351,"ratio_5k":0.98,"under_10k":356,"over_10k":303,"ratio_10k":1.17}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"NAME REDACTED","top_vendor_pct":32.9,"agency_total":331297531.38}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF ADMINISTRATION","top_vendor":"UNITED HEALTHCARE","top_vendor_pct":32.1,"agency_total":1198185687.6}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF CORRECTIONS","top_vendor":"CENTURION OF ARIZONA LLC","top_vendor_pct":30.9,"agency_total":643986112.53}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"GOVERNOR'S OFFICE","top_vendor":"CHANDLER UNIFIED SCHOOL DISTRICT 80","top_vendor_pct":4.2,"agency_total":325643398.79}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"NAME REDACTED","top_vendor_pct":8.3,"agency_total":1931155930.46}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"CDW GOVERNMENT INC","top_vendor_pct":5.8,"agency_total":107797677.97}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":15.3,"agency_total":104791315.25}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF CHILD SAFETY","top_vendor":"NAME REDACTED","top_vendor_pct":47.8,"agency_total":751436405.55}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":35.2,"agency_total":1260252760.47}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF HOUSING","top_vendor":"NAME REDACTED","top_vendor_pct":2.2,"agency_total":87998371.12}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":24.9,"agency_total":101352695.98}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"GOVERNOR'S OFFICE","top_vendor":"UNIVERSITY OF ARIZONA","top_vendor_pct":10.1,"agency_total":293641163.68}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN-UNITED WAY","top_vendor_pct":46.4,"agency_total":127466096.28}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"BOARD OF REGENTS","top_vendor":"ARIZONA STATE UNIVERSITY","top_vendor_pct":30.4,"agency_total":344190565.19}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"BOARD OF REGENTS","top_vendor":"ARIZONA STATE UNIVERSITY","top_vendor_pct":15.9,"agency_total":176572702.04}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"UNIVERSITY OF ARIZONA","top_vendor":"UNIVERSITY OF ARIZONA (FINANCIAL SERVICES OFFICE)","top_vendor_pct":100.0,"agency_total":708475110.26}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF CORRECTIONS","top_vendor":"CORIZON INC","top_vendor_pct":32.1,"agency_total":472995892.95}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"NAME REDACTED","top_vendor_pct":5.9,"agency_total":1782188138.67}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":14.6,"agency_total":104550046.39}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"MOTOROLA SOLUTIONS INC","top_vendor_pct":6.9,"agency_total":107243097.18}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF HOUSING","top_vendor":"ZIONS FIRST NATIONAL BANK","top_vendor_pct":2.2,"agency_total":92022711.92}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF CORRECTIONS","top_vendor":"NAPHCARE INC","top_vendor_pct":41.3,"agency_total":1000338101.77}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF FORESTRY AND FIRE MANAGEMENT","top_vendor":"CITY OF FLAGSTAFF","top_vendor_pct":10.0,"agency_total":104194558.98}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"UNIVERSITY OF ARIZONA","top_vendor":"UNIVERSITY OF ARIZONA (FINANCIAL SERVICES OFFICE)","top_vendor_pct":100.0,"agency_total":715811357.95}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"MERCY MARICOPA INTEGRATED CARE","top_vendor_pct":48.2,"agency_total":2503577591.34}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":39.0,"agency_total":58715354.84}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":37.5,"agency_total":900040482.36}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"FIDELITY NATIONAL INFORMATION SERVICES","top_vendor_pct":9.7,"agency_total":2985308601.62}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF HOUSING","top_vendor":"SPRINGBOARD SOLUTIONS LLC","top_vendor_pct":6.3,"agency_total":120483063.09}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF EMERGENCY AND MILITARY AFFAIRS","top_vendor":"DIGNITY HEALTH","top_vendor_pct":3.8,"agency_total":56236452.82}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":15.4,"agency_total":109256582.75}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF CHILD SAFETY","top_vendor":"NAME REDACTED","top_vendor_pct":87.9,"agency_total":660431274.96}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN - UNITED WAY","top_vendor_pct":44.2,"agency_total":128353508.67}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"MOTOROLA SOLUTIONS INC","top_vendor_pct":9.1,"agency_total":136788035.68}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"AHCCCS","top_vendor":"MERCY CARE","top_vendor_pct":17.1,"agency_total":24568709422.6}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"GAME AND FISH DEPARTMENT","top_vendor":"SAN TAN AUTO PARTNERS LLC","top_vendor_pct":5.2,"agency_total":59222981.68}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":76.7,"agency_total":308039547.77}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"NAME REDACTED","top_vendor_pct":28.3,"agency_total":538483960.88}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"AHCCCS","top_vendor":"MERCY CARE","top_vendor_pct":17.9,"agency_total":18780851874.53}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":69.7,"agency_total":229129630.67}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF ADMINISTRATION","top_vendor":"BLUE CROSS BLUE SHIELD OF AZ INC","top_vendor_pct":21.2,"agency_total":1622520421.07}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"NAME REDACTED","top_vendor_pct":12.3,"agency_total":4413108678.75}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF HOUSING","top_vendor":"NAME REDACTED","top_vendor_pct":4.8,"agency_total":289589886.6}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"MOTOROLA SOLUTIONS INC","top_vendor_pct":6.5,"agency_total":206467558.27}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":15.7,"agency_total":128866742.25}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF EMERGENCY AND MILITARY AFFAIRS","top_vendor":"ASPEN MEDICAL INTERNATIONAL LLC","top_vendor_pct":8.2,"agency_total":92006319.21}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"WATER INFRASTRUCTURE FINANCE AUTHORITY OF ARIZONA","top_vendor":"TOWN OF GILBERT","top_vendor_pct":15.3,"agency_total":182546611.04}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"SCHOOL FACILITIES BOARD","top_vendor":"MARICOPA COUNTY","top_vendor_pct":31.8,"agency_total":228291980.51}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF TRANSPORTATION","top_vendor":"US BANK","top_vendor_pct":20.9,"agency_total":1503660393.66}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"NAME REDACTED","top_vendor_pct":20.5,"agency_total":582667199.2}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"WATER INFRASTRUCTURE FINANCE AUTHORITY","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":64.0,"agency_total":223830569.25}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"STATE TREASURER","top_vendor":"COUNTY OF MOHAVE","top_vendor_pct":12.5,"agency_total":83499753.83}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"ARIZONA FINANCE AUTHORITY","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":43.0,"agency_total":216297933.19}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"NAME REDACTED","top_vendor_pct":9.9,"agency_total":1668380642.68}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":14.6,"agency_total":101083679.15}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF HOUSING","top_vendor":"ZIONS FIRST NATIONAL BANK","top_vendor_pct":5.6,"agency_total":82786391.15}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"FEDERAL BUREAU OF INVESTIGATION","top_vendor_pct":4.7,"agency_total":80667019.72}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF CORRECTIONS","top_vendor":"CORIZON INC","top_vendor_pct":31.5,"agency_total":493648460.14}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"NAME REDACTED","top_vendor_pct":13.2,"agency_total":681042525.66}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF TRANSPORTATION","top_vendor":"U S BANK NATIONAL ASSN","top_vendor_pct":15.3,"agency_total":2024376473.61}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"NAME REDACTED","top_vendor_pct":9.4,"agency_total":4858556791.53}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF EMERGENCY AND MILITARY AFFAIRS","top_vendor":"BANNER HEALTH","top_vendor_pct":71.1,"agency_total":710552770.59}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"MOTOROLA SOLUTIONS INC","top_vendor_pct":6.1,"agency_total":216849290.77}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":15.9,"agency_total":138421518.42}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"WATER INFRASTRUCTURE FINANCE AUTHORITY OF ARIZONA","top_vendor":"CITY OF SURPRISE","top_vendor_pct":11.6,"agency_total":129675402.86}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF HOUSING","top_vendor":"NAME REDACTED","top_vendor_pct":5.2,"agency_total":246768044.21}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"ARIZONA FINANCE AUTHORITY","top_vendor":"US BANK","top_vendor_pct":41.0,"agency_total":120335109.62}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"BOARD OF REGENTS","top_vendor":"UNIVERSITY OF ARIZONA","top_vendor_pct":19.4,"agency_total":232351195.02}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF ADMINISTRATION","top_vendor":"UNITED HEALTHCARE","top_vendor_pct":31.6,"agency_total":1109559505.44}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":37.9,"agency_total":892844727.87}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":29.7,"agency_total":73507322.32}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN UNITED WAY","top_vendor_pct":43.1,"agency_total":125606067.9}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF TRANSPORTATION","top_vendor":"U S BANK NATIONAL ASSN","top_vendor_pct":21.4,"agency_total":2854018202.4}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF ADMINISTRATION","top_vendor":"BLUE CROSS BLUE SHIELD OF AZ INC","top_vendor_pct":23.0,"agency_total":1984164730.3}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF CHILD SAFETY","top_vendor":"NAME REDACTED","top_vendor_pct":89.6,"agency_total":668208479.66}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"UNIVERSITY OF ARIZONA","top_vendor":"UNIVERSITY OF ARIZONA (FINANCIAL SERVICES OFFICE)","top_vendor_pct":100.0,"agency_total":332119354.03}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF VETERANS SERVICES","top_vendor":"THE WEITZ CO","top_vendor_pct":59.2,"agency_total":55844137.0}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"GOVERNOR'S OFFICE","top_vendor":"ARIZONA COMMERCE AUTHORITY","top_vendor_pct":27.9,"agency_total":253032996.15}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"BOARD OF REGENTS","top_vendor":"ARIZONA STATE UNIVERSITY","top_vendor_pct":33.3,"agency_total":391420011.44}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"AHCCCS","top_vendor":"ARIZONA PHYSICIANS IPA, INC.","top_vendor_pct":12.4,"agency_total":12177059851.95}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"NAME REDACTED","top_vendor_pct":22.8,"agency_total":584228443.49}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"AHCCCS","top_vendor":"MERCY CARE","top_vendor_pct":17.3,"agency_total":25719171023.9}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":77.0,"agency_total":294539702.81}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"GAME AND FISH DEPARTMENT","top_vendor":"OFF MADISON AVE","top_vendor_pct":5.1,"agency_total":54899588.95}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"SCHOOL FACILITIES BOARD","top_vendor":"BANK OF NEW YORK MELLON TRUST COMPANY NA","top_vendor_pct":59.2,"agency_total":290085138.82}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":78.1,"agency_total":164143086.97}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"STATEWIDE SYSTEMS PROCESSING","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":99.8,"agency_total":167518511.8}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF TRANSPORTATION","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":16.7,"agency_total":1571535411.35}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"ARIZONA FINANCE AUTHORITY","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":80.0,"agency_total":96262591.18}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"AHCCCS","top_vendor":"ARIZONA PHYSICIANS IPA\\, INC.","top_vendor_pct":14.1,"agency_total":14019212403.39}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":74.4,"agency_total":176929269.79}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"GOVERNOR'S OFFICE","top_vendor":"CITY OF CHANDLER","top_vendor_pct":4.5,"agency_total":670619494.18}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF CORRECTIONS","top_vendor":"NAPHCARE INC","top_vendor_pct":24.5,"agency_total":892788441.95}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF FORESTRY AND FIRE MANAGEMENT","top_vendor":"COCONINO COUNTY","top_vendor_pct":11.0,"agency_total":71302604.9}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF CHILD SAFETY","top_vendor":"MERCY CARE","top_vendor_pct":13.3,"agency_total":913034664.2}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":24.3,"agency_total":98850727.03}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":31.1,"agency_total":2890136123.97}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN-UNITED WAY","top_vendor_pct":43.4,"agency_total":218863814.24}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"SCHOOL FACILITIES BOARD","top_vendor":"BANK OF NEW YORK MELLON TRUST COMPANY NA","top_vendor_pct":47.1,"agency_total":359163717.26}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"AHCCCS","top_vendor":"ARIZONA PHYSICIANS IPA, INC.","top_vendor_pct":13.6,"agency_total":13091420741.61}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"SCHOOL FACILITIES BOARD","top_vendor":"BANK OF NEW YORK MELLON TRUST COMPANY NA","top_vendor_pct":56.6,"agency_total":300483526.48}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF TRANSPORTATION","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":16.6,"agency_total":1608477394.3}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":77.7,"agency_total":181954844.2}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"ARIZONA FINANCE AUTHORITY","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":85.9,"agency_total":234998055.94}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"BOARD OF REGENTS","top_vendor":"UNIVERSITY OF ARIZONA","top_vendor_pct":38.0,"agency_total":289202394.51}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"STATEWIDE SYSTEMS PROCESSING","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":99.9,"agency_total":155219449.73}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF CORRECTIONS","top_vendor":"CORIZON INC","top_vendor_pct":32.3,"agency_total":491773199.84}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"DEPT OF ADMINISTRATION","top_vendor":"RBC CAPITAL MARKETS CORP","top_vendor_pct":44.7,"agency_total":2172020820.11}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"GAME AND FISH DEPARTMENT","top_vendor":"OFF MADISON AVE","top_vendor_pct":5.9,"agency_total":52228878.95}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"AHCCCS","top_vendor":"MERCY CARE","top_vendor_pct":15.9,"agency_total":25521514530.31}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"LOTTERY COMMISSION","top_vendor":"BANK OF AMERICA - AZ","top_vendor_pct":77.2,"agency_total":295823015.42}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"BOARD OF REGENTS","top_vendor":"ARIZONA STATE UNIVERSITY","top_vendor_pct":19.7,"agency_total":224612059.58}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"UNIVERSITY OF ARIZONA","top_vendor":"THE UNIVERSITY OF ARIZONA","top_vendor_pct":39.6,"agency_total":841035419.86}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF TRANSPORTATION","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":18.6,"agency_total":1584948191.19}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"SUPREME COURT","top_vendor":"PIMA COUNTY","top_vendor_pct":15.6,"agency_total":128163955.06}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF HOUSING","top_vendor":"FLAGSTAFF SHELTER SERVICES INC","top_vendor_pct":3.2,"agency_total":284951984.15}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF ECONOMIC SECURITY","top_vendor":"NAME REDACTED","top_vendor_pct":15.3,"agency_total":4274221135.89}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF EMERGENCY AND MILITARY AFFAIRS","top_vendor":"ASHBRITT INC","top_vendor_pct":70.9,"agency_total":274834309.1}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF PUBLIC SAFETY","top_vendor":"FIDELITY NATIONAL TITLE","top_vendor_pct":4.0,"agency_total":205136499.46}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF ADMINISTRATION","top_vendor":"BLUE CROSS BLUE SHIELD OF AZ INC","top_vendor_pct":21.1,"agency_total":1916165423.9}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF TRANSPORTATION","top_vendor":"U S BANK NATIONAL ASSN","top_vendor_pct":13.2,"agency_total":2261843904.65}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"STATEWIDE SYSTEMS PROCESSING","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":99.8,"agency_total":176051245.76}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF CHILD SAFETY","top_vendor":"MERCY CARE","top_vendor_pct":18.5,"agency_total":949688227.04}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":33.0,"agency_total":2616218909.13}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":30.1,"agency_total":89185672.29}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF CORRECTIONS","top_vendor":"NAPHCARE INC","top_vendor_pct":39.8,"agency_total":964566054.92}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2024,"agency":"DEPT OF FORESTRY AND FIRE MANAGEMENT","top_vendor":"CITY OF FLAGSTAFF","top_vendor_pct":8.2,"agency_total":74194605.48}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2023,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN-UNITED WAY","top_vendor_pct":47.0,"agency_total":189229162.64}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"STATEWIDE SYSTEMS PROCESSING","top_vendor":"U S BANK NATIONAL ASSOCIATION","top_vendor_pct":99.3,"agency_total":137674491.58}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":38.7,"agency_total":866200404.36}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN UNITED WAY","top_vendor_pct":43.2,"agency_total":119476384.13}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF CHILD SAFETY","top_vendor":"NAME REDACTED","top_vendor_pct":89.1,"agency_total":669686955.35}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2017,"agency":"DEPT OF ADMINISTRATION","top_vendor":"UNITED HEALTHCARE","top_vendor_pct":32.6,"agency_total":1149398851.75}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2018,"agency":"DEPT OF HEALTH SERVICES","top_vendor":"CUSTOM DATA PROCESSING\\,. INC","top_vendor_pct":18.5,"agency_total":327786596.78}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF CHILD SAFETY","top_vendor":"MERCY CARE","top_vendor_pct":17.0,"agency_total":888553380.99}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF EDUCATION","top_vendor":"MARICOPA COUNTY","top_vendor_pct":31.9,"agency_total":3100447413.33}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2016,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":35.1,"agency_total":62682879.11}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"EARLY CHILDHOOD DEVELOP AND HEALTH BOARD","top_vendor":"VALLEY OF THE SUN-UNITED WAY","top_vendor_pct":42.3,"agency_total":134845794.8}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2025,"agency":"DEPT OF ENVIRONMENTAL QUALITY","top_vendor":"GORDON-DARBY ARIZONA TESTING INC","top_vendor_pct":29.9,"agency_total":87222109.5}}
+{"feed":"pf_vendor_concentration","row":{"fiscal_year":2021,"agency":"BOARD OF REGENTS","top_vendor":"ARIZONA STATE UNIVERSITY","top_vendor_pct":32.3,"agency_total":236146596.87}}
+{"feed":"pf_vendor_compliance","row":{"vendor_id_code":"PZ000019526","payee":"INDUSTRIAL SOLUTIONS","total_paid":18389.89,"last_fy":2016,"matched_list_entry":"INDUSTRIAL SOLUTIONS","basis":"NPWMD","list":"OFAC SDN","severity":"high","status":"unreviewed"}}
+{"feed":"ag_findings_xref","row":{"our_signal":"Federal dependency ~45-49% of revenue (Fund Flow)","relationship":"CORROBORATES","ag_finding":"FY24 Highlights","ag_dollar":"$28.6B fed exp / $30.8B fed rev","ag_detail":"AG: federal grants = 49.0% of FY24 revenue, single largest source; our checkbook-cash measure (~45%) lands within methodology gap (ACFR accrual vs cash)."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"AHCCCS = #1 federal exposure (81% of $20.4B)","relationship":"CORROBORATES","ag_finding":"2024-21, 2024-22, 2024-120","ag_dollar":"$384.8M+$30.5M restatements; sober-living fraud undetermined","ag_detail":"AG: AHCCCS = 57.3% ($16.4B) of all federal spend; financials restated for errors; 300+ sober-living providers suspended for fraudulent behavioral-health billing since May 2023."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"DES = #2 federal exposure (97%)","relationship":"CORROBORATES","ag_finding":"2024-05,06,07,104,107","ag_dollar":"$257.4M unsupported; $19.9M unreconciled; $51.3M; $2.88M; $64k","ag_detail":"AG: DES UI bank recs incomplete (fraud risk), $257.4M COVID UI unsupported, childcare/rental payments lacked eligibility docs. DES = 13% ($3.7B) of federal spend, 6 findings (most of any agency)."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"Procurement Flags — competition/process irregularities exist","relationship":"CORROBORATES","ag_finding":"2024-111","ag_dollar":"$37.3M to 57 vendors","ag_detail":"AG: ADE used improper procurement (no fair/open competition) on Education Stabilization Fund; unauthorized employees signed a noncompetitive waiver."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"Vendor concentration: Corrections->NaphCare 41% ($1B agency)","relationship":"EXTENDS","ag_finding":"2024-10","ag_dollar":"$50.9M","ag_detail":"AG: Corrections (DCRR) spent $50.9M opioid-settlement monies without documentation of allowable use."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"Payroll analysis impossible (hourly_rate 100% empty)","relationship":"CORROBORATES (our limitation)","ag_finding":"2024-116","ag_dollar":"$1.7M","ag_detail":"AG independently found DEMA lacked pay-rate documentation on $1.7M federal payroll — the exact category our data cannot see; confirms a real gap our feed cannot cover."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"Data-quality/control trend degrading (rising sentinels, FY24-25)","relationship":"CORROBORATES","ag_finding":"2024-101; Figure 3","ag_dollar":"—","ag_detail":"AG: ACFR filed ~13 months late; uncorrected federal findings rose 8 (FY19) -> 42 (FY24). Independent confirmation that control quality is deteriorating, not improving."}}
+{"feed":"ag_findings_xref","row":{"our_signal":"FY2024 cash-margin = -3.2% / -$1.9B (Governance scorecard, \"watch\")","relationship":"CORRECTS","ag_finding":"FY24 Highlights p.2","ag_dollar":"+$259M net position","ag_detail":"AG accrual ACFR: State net position INCREASED $259M in FY24 (rev > exp). Our cash-basis proxy diverges ~$2.2B; the FY24 \"watch\" must NOT be read as accrual deterioration. Exactly the cash-vs-GAAP caveat in our methodology."}}
+{"feed":"feed_annotations","row":{"metric":"ff_federal_dependency_by_year","neutral_annotation":"Federal transfers (INTERGOVERNMENTAL REVENUE/FEDERAL) as share of total revenue. ~41% pre-2020, peaked 48.0% in FY2023, 45.5% in FY2025 — above the pre-pandemic baseline. FY2022 absent from source data."}}
+{"feed":"feed_annotations","row":{"metric":"ff_federal_dependency_by_agency_year","neutral_annotation":"Per-agency federal revenue share. Concentrated in AHCCCS (Medicaid, ~81% of $20.4B), Economic Security (~97%), Emergency & Military Affairs (~95%)."}}
+{"feed":"feed_annotations","row":{"metric":"pf_duplicate_payment_groups","neutral_annotation":"Same vendor_id+reference_id+amount across distinct transaction_ids on different days. Different-day exposure $706.9M, of which 99.1% is Medicaid managed-care capitation (multi-cycle payment mechanics); non-Medicaid reviewable residual is $6.3M (largest single item $9,981). Confirmation requires warrant-number reconciliation not present in source data."}}
+{"feed":"feed_annotations","row":{"metric":"pf_structuring_by_agency","neutral_annotation":"Ratio of expenditures just under $5,000 (4,750-4,999.99) to just over. Elevated for Dept of Veterans Services (1.77), Senate (1.57), House (1.32); their $10k ratios are <1. Consistent with a $5k small-purchase threshold; not evidence of intent."}}
+{"feed":"feed_annotations","row":{"metric":"pf_vendor_concentration","neutral_annotation":"Largest single external vendor as share of an agency's expenditures (self/internal payments excluded). Indicates sole-source/dependency exposure, not irregularity."}}
+{"feed":"feed_annotations","row":{"metric":"pf_vendor_compliance","neutral_annotation":"Vendors screened against live OFAC SDN (19,050 entries, normalized exact-name) and Section 889 / FAR-4.20 prohibited sources (word-boundary token match). 127,858 vendors / $277B screened. List-based and reproducible; a hit is a name match warranting confirmation, not proof of a prohibited transaction. Substring matching was rejected after it produced 25 false positives ($47M, all \"Aztec\"-named AZ firms vs token ZTE)."}}
+{"feed":"feed_annotations","row":{"metric":"gov_scorecard","neutral_annotation":"Net-cash-margin is a checkbook cash-basis proxy, NOT GAAP. AG-audited ACFR shows State net position INCREASED $259M in FY2024 despite our -3.2% cash reading (~$2.2B cash-vs-accrual divergence); FY2024 \"watch\" is a timing/liquidity signal, not accrual deterioration. ACFR governs."}}
+{"feed":"feed_annotations","row":{"metric":"ag_findings_xref","neutral_annotation":"Cross-reference of our data-derived signals to AZ Auditor General FY2024 Single Audit findings. Independent corroboration: our transaction analysis surfaced the same AHCCCS/DES risk concentration the AG flagged by audit. One CORRECTS row where audited accrual data overrides our cash proxy."}}

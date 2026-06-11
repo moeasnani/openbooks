@@ -1,0 +1,55 @@
+-- helper: turn 'NULL'/'' sentinels into real NULL
+CREATE OR REPLACE MACRO nz(x) AS NULLIF(NULLIF(trim(x), 'NULL'), '');
+SET threads TO 16;
+SET memory_limit = '96GB';
+COPY (
+-- canonical 57-col projection for BASE-38 source files (19 extras NULL-filled)
+SELECT
+  nz(record_number)                              AS record_number,
+  TRY_CAST(nz(fiscal_year) AS INTEGER)           AS fiscal_year,
+  nz(entity_name)                                AS entity_name,
+  nz(fund_1_name) AS fund_1_name, nz(fund_2_name) AS fund_2_name,
+  nz(fund_3_name) AS fund_3_name, nz(fund_4_name) AS fund_4_name,
+  nz(organization_level_1_name) AS organization_level_1_name,
+  nz(organization_level_2_name) AS organization_level_2_name,
+  nz(organization_level_3_name) AS organization_level_3_name,
+  nz(organization_level_4_name) AS organization_level_4_name,
+  nz(organization_level_5_name) AS organization_level_5_name,
+  nz(organization_level_6_name) AS organization_level_6_name,
+  nz(organization_level_7_name) AS organization_level_7_name,
+  nz(organization_level_8_name) AS organization_level_8_name,
+  nz(organization_level_9_name) AS organization_level_9_name,
+  nz(organization_level_10_name) AS organization_level_10_name,
+  nz(transaction_type)                           AS transaction_type,
+  nz(category_level_1_name) AS category_level_1_name,
+  nz(category_level_2_name) AS category_level_2_name,
+  nz(category_level_3_name) AS category_level_3_name,
+  nz(category_level_4_name) AS category_level_4_name,
+  nz(category_level_5_name) AS category_level_5_name,
+  nz(category_level_6_name) AS category_level_6_name,
+  nz(category_level_7_name) AS category_level_7_name,
+  nz(payee_customer_vendor_name)                 AS payee_customer_vendor_name,
+  nz(payee_dba_name)                             AS payee_dba_name,
+  CAST(NULL AS VARCHAR)                          AS vendor_id_code,
+  TRY_CAST(nz(posting_date) AS DATE)             AS posting_date,
+  nz(transaction_description)                    AS transaction_description,
+  nz(transaction_id)                             AS transaction_id,
+  nz(transaction_reference_id)                   AS transaction_reference_id,
+  nz(contract_name)                              AS contract_name,
+  nz(contract_number)                            AS contract_number,
+  nz(position_title)                             AS position_title,
+  TRY_CAST(nz(hourly_rate) AS DECIMAL(18,4))     AS hourly_rate,
+  nz(gender)                                     AS gender,
+  TRY_CAST(nz(amount) AS DECIMAL(18,4))          AS amount,
+  nz(payment_method)                             AS payment_method,
+  CAST(NULL AS VARCHAR) AS protection_indicator,
+  CAST(NULL AS VARCHAR) AS fund_1_code, CAST(NULL AS VARCHAR) AS fund_2_code, CAST(NULL AS VARCHAR) AS fund_3_code,
+  CAST(NULL AS VARCHAR) AS appropriation_1_name, CAST(NULL AS VARCHAR) AS appropriation_1_code,
+  CAST(NULL AS VARCHAR) AS appropriation_type,
+  CAST(NULL AS VARCHAR) AS appropriation_category_1_name, CAST(NULL AS VARCHAR) AS appropriation_category_1_code,
+  CAST(NULL AS VARCHAR) AS category_level_1_code, CAST(NULL AS VARCHAR) AS category_level_2_code, CAST(NULL AS VARCHAR) AS category_level_3_code,
+  CAST(NULL AS VARCHAR) AS payment__, CAST(NULL AS VARCHAR) AS fiscal_period,
+  CAST(NULL AS VARCHAR) AS cabinet, CAST(NULL AS VARCHAR) AS cabinet_name,
+  CAST(NULL AS VARCHAR) AS department_code, CAST(NULL AS VARCHAR) AS bfy
+FROM read_csv('State of Arizona FY2020.csv', all_varchar=true, header=true)
+) TO 'parquet/transactions_FY2020.parquet' (FORMAT parquet, COMPRESSION zstd);

@@ -1,0 +1,1460 @@
+{
+ "specs": [
+  {
+   "family": "Materiality & category risk-weighting",
+   "markers": [
+    {
+     "marker_id": "mag_band_base_weight",
+     "name": "Magnitude-band base scrutiny weight (M1-M6)",
+     "sql_predicate": "mag_band IN ('M1_100M+','M2_10M-100M','M3_1M-10M','M4_250K-1M','M5_100K-250K','M6_25K-100K')",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2025 (FY2022 excluded; valid in all years incl. thin FY2019-2020 because mag_band derives only from amount, which is always populated).",
+     "rationale": "Validates and adopts the existing log-scale M1-M6 banding as the materiality backbone. The cutoffs (25K,100K,250K,1M,10M,100M) align cleanly with the >=100K population distribution: p50=228K lands in M5, p75=521K in M4, p90=1.71M in M3, p99=24.0M in M2 \u2014 i.e. each successive band captures a roughly order-of-magnitude rarer, higher-impact stratum. Within the >=100K headline pop (306,604 rows, $393.0B): M5 53.5%, M4 31.5%, M3 12.5%, M2 2.4%, M1 0.03%. This is a continuous base weight (NOT a binary alarm): it converts dollars into a bounded scrutiny multiplier so that every downstream marker is dollar-aware without a single $4.66B transfer drowning out 100 mid-size procurements. Recommended base weights per band (feeds the model as a lookup, not a filter): M6=0.5, M5=1.0, M4=1.4, M3=2.0, M2=3.0, M1=4.0. The bands are kept rather than re-cut because they are stable, interpretable, and already match the empirical percentile breaks.",
+     "guardrails": "(1) This is a BASE weight, never a standalone finding \u2014 a large amount alone is a lead only after the category_risk_multiplier and behavioral markers are applied; entitlement/scheduled flows must be down-weighted (see mag_x_category_severe). (2) Uses mag_band/amount only, so it degrades gracefully in thin years FY2019-2020 (no dependence on vid/appr_type/fp). (3) Do not treat M1/M2 as suspicious per se: 59-72% of dollars in AID/TRANSFERS/DEBT are legitimately >$10M scheduled disbursements. (4) The model should cap the materiality contribution so a single mega-transfer cannot dominate an agency's risk roll-up.",
+     "calibrated_count": 306604,
+     "calibrated_exposure_usd": 393000000000,
+     "examples": [
+      {
+       "amount": 4660212077,
+       "agency": "DEPT OF HEALTH SERVICES",
+       "payee": "N/A",
+       "why": "M1 band; demonstrates why band alone is not a flag \u2014 this is a scheduled federal-grant TRANSFERS OUT, benign-by-construction, and the category multiplier must suppress it."
+      },
+      {
+       "amount": 33851184,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "N/A",
+       "why": "M2 band, PROFESSIONAL SERVICES (Hepatitis C Rx) \u2014 same dollar tier as a benign transfer but discretionary procurement, so higher net scrutiny once category multiplier applies."
+      },
+      {
+       "amount": 228379,
+       "agency": "(population median)",
+       "payee": "(various)",
+       "why": "M5 band is the modal stratum (53.5% of pop, base weight 1.0) \u2014 the calibration anchor against which higher bands are scaled."
+      }
+     ]
+    },
+    {
+     "marker_id": "category_risk_multiplier",
+     "name": "Category1 risk-weight map (expected-large vs discretionary)",
+     "sql_predicate": "category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES','FOOD','TRAVEL - IN-STATE','TRAVEL - OUT-OF-STATE') OR category1 IS NULL OR category1 IN ('N/A','CONVERSION')",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2025 (FY2022 excluded). category1 is populated in all years including FY2019-2020, so the multiplier runs everywhere.",
+     "rationale": "Defines a per-category1 multiplier (range 0.3-1.5) applied on top of the magnitude base weight so the SAME dollar carries more scrutiny in discretionary procurement than in scheduled entitlement. Calibrated from observed risk profiles in the >=100K pop: AID and TRANSFERS show ~0% new-vendor and 59-61% of dollars >$10M (pure scheduled flow); DEBT SERVICE 71.5% >$10M and 0.7% manual rail (contractual). By contrast PROFESSIONAL SERVICES (17.9% new vendor), CAPITAL OUTLAY (22.4% new vendor), OTHER OPERATING (19.8% manual rail) are discretionary. PROPOSED MULTIPLIER MAP (assign in model as CASE over category1): AID TO ORGANIZATIONS AND INDIVIDUALS=0.4; TRANSFERS OUT=0.4; DEBT SERVICE=0.3; COST ALLOCATION AND INDIRECT COSTS=0.5; PERSONAL SERVICES=0.7; EMPLOYEE RELATED EXPENDITURES=0.9; FOOD=0.9; TRAVEL - IN-STATE=1.0; TRAVEL - OUT-OF-STATE=1.0; NON-CAPITAL EQUIPMENT=1.2; CAPITAL EQUIPMENT=1.2; CAPITAL OUTLAY=1.3; OTHER OPERATING EXPENDITURES=1.4; PROFESSIONAL AND OUTSIDE SERVICES=1.5; NULL=1.0; N/A=1.0; CONVERSION=0.5 (ledger artifact). The predicate above returns TRUE for the categories that receive a multiplier >=0.9 (the scrutiny-elevated set) so it is a runnable boolean; the full numeric map lives in notes.",
+     "guardrails": "(1) Down-weight (not exclude) entitlement categories: AID/TRANSFERS/DEBT keep a small non-zero multiplier (0.3-0.4) so a genuinely anomalous Medicaid payment can still surface via behavioral markers, but routine large disbursements are suppressed \u2014 this is what stops the $4.66B transfer and $318M Prop204 aid payment from topping the leaderboard. (2) NEVER do substring name matching anywhere in the category logic \u2014 category1 is a controlled vocabulary (17 distinct values verified), matched by exact equality only, eliminating the 'Aztec'->'ZTE' class of false positive. (3) NULL/N/A categories get a neutral 1.0 (not 0) so missing metadata does not hide an item nor manufacture a flag. (4) The multiplier is a weight, never a lead by itself; it only re-ranks the materiality contribution.",
+     "calibrated_count": 306604,
+     "calibrated_exposure_usd": 393000000000,
+     "examples": [
+      {
+       "amount": 318795922,
+       "agency": "AHCCCS",
+       "payee": "N/A",
+       "why": "AID / Prop204 direct payments \u2014 multiplier 0.4 correctly suppresses a benign scheduled Medicaid disbursement despite its M1 size."
+      },
+      {
+       "amount": 30012537,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "NAPHCARE INC",
+       "why": "PROFESSIONAL SERVICES inmate healthcare \u2014 multiplier 1.5 keeps a discretionary contracted-services payment in scope for review at the same dollar tier."
+      },
+      {
+       "amount": 350031900,
+       "agency": "DEPT OF ECONOMIC SECURITY",
+       "payee": "N/A",
+       "why": "TRANSFERS OUT \u2014 0% new vendor, scheduled; multiplier 0.4 demotes it relative to procurement of equal size."
+      }
+     ]
+    },
+    {
+     "marker_id": "mag_x_category_severe",
+     "name": "Severe materiality in discretionary procurement (>=$10M, discretionary category)",
+     "sql_predicate": "amount >= 10000000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT')",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2025 (FY2022 excluded). Runs in thin years FY2019-2020 (uses only amount + category1).",
+     "rationale": "The composite headline marker of this family: it is the intersection of severe materiality (M1/M2, >=$10M) with discretionary procurement, where a single high-dollar item most warrants confirmation. Calibrated to fire on just 0.23% of the >=$100K pop (vs 2.42% for any >=$10M item) \u2014 explicitly carving out the 90% of >=$10M dollars that are benign scheduled AID/TRANSFERS/DEBT flows. This is the marker that surfaced the PSPRS round $99,000,000 unfunded-liability payments repeating across appropriations (round-dollar + apparent duplication) as a genuine lead, while leaving the $4.66B federal-grant transfer correctly unflagged. Severity 4 (not 5) because a large discretionary payment is review-worthy but not by itself anomalous \u2014 many are valid major contracts.",
+     "guardrails": "(1) Entitlement categories (AID/TRANSFERS/DEBT/COST ALLOCATION) are excluded by construction, so routine mega-disbursements never fire. (2) amount + category1 only -> safe in thin years, no false suppression from NULL vid/appr_type. (3) Exact category equality, no substring matching. (4) Produces a LEAD warranting review (confirm contract authority, deliverables, competitive procurement), never a finding; does not name a wrongdoer. (5) Pair with behavioral markers (round-dollar, dup_diffday, new-vendor, vendor_share) before escalating \u2014 many will be legitimate large contracts (e.g. NaphCare inmate healthcare).",
+     "calibrated_count": 696,
+     "calibrated_exposure_usd": 28200000000,
+     "examples": [
+      {
+       "amount": 99000000,
+       "agency": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM",
+       "payee": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM",
+       "why": "Round $99M OTHER OPERATING, repeated across appropriations same payee=agency \u2014 round-dollar + apparent duplication, confirm it is intended UAAL paydown not double-booking."
+      },
+      {
+       "amount": 33851184,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "N/A",
+       "why": "PROFESSIONAL SERVICES Hepatitis C Rx with payee masked as 'N/A' on a $33.9M discretionary item \u2014 confirm vendor identity and contract."
+      },
+      {
+       "amount": 28709669,
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "why": "$28.7M border-security fence professional services \u2014 discretionary, high-dollar, single vendor; warrants procurement/competition review."
+      }
+     ]
+    },
+    {
+     "marker_id": "mag_x_category_moderate",
+     "name": "Material discretionary spend (>=$1M, discretionary category)",
+     "sql_predicate": "amount >= 1000000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES')",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2025 (FY2022 excluded). Runs in thin years FY2019-2020 (amount + category1 only).",
+     "rationale": "The moderate-tier screening band: million-dollar-plus discretionary procurement, the natural population for routine spend review. Fires on 9,053 rows = 2.95% of the >=$100K pop, $38.0B exposure \u2014 a tight, well-bounded moderate marker (well under the 15% moderate ceiling) that scopes the discretionary-procurement universe for second-pass behavioral testing without dragging in the ~15% of all spend that is >=$1M (much of which is entitlement). Severity 3: a $1M discretionary item is material and review-eligible but common enough that it is a sorting band, not an alarm.",
+     "guardrails": "(1) Entitlement categories excluded so scheduled $1M+ Medicaid/transfer/debt rows do not flood the band. (2) amount + category1 only -> thin-year safe. (3) Exact category equality, no substring matching. (4) Intended as a SCOPE/sort band feeding behavioral markers, not a standalone lead \u2014 escalate only when combined with round-dollar, duplication, new-vendor, high vendor_share, manual rail, or robust_z signals. (5) Leads warranting review only; no accusations, no named wrongdoers.",
+     "calibrated_count": 9053,
+     "calibrated_exposure_usd": 38000000000,
+     "examples": [
+      {
+       "amount": 30012537,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "NAPHCARE INC",
+       "why": "$30M contracted inmate healthcare \u2014 in-scope discretionary spend; legitimate but should pass behavioral screens."
+      },
+      {
+       "amount": 28709669,
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "why": "$28.7M border fence professional services \u2014 material discretionary procurement for second-pass review."
+      },
+      {
+       "amount": 99000000,
+       "agency": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM",
+       "payee": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM",
+       "why": "Round $99M OTHER OPERATING \u2014 in band and elevated by round-dollar/duplication co-markers."
+      }
+     ]
+    }
+   ],
+   "notes": "VALIDATION OF M1-M6 BANDS: Kept as-is. The log-scale cutoffs (25K/100K/250K/1M/10M/100M) match the empirical percentile structure of the >=100K population (p50=228K=M5, p75=521K=M4, p90=1.71M=M3, p99=24.0M=M2, p999=69.9M=M2/M1 boundary). Each band up is ~order-of-magnitude rarer and higher-impact, giving an interpretable, stable materiality ladder. No re-cut needed; I recommend treating mag_band as a continuous base weight (M6=0.5, M5=1.0, M4=1.4, M3=2.0, M2=3.0, M1=4.0) rather than a binary flag.\n\nFULL category_risk_multiplier MAP (model implements as CASE over category1; range 0.3-1.5, all 17 distinct values + NULL covered):\n  DEBT SERVICE 0.3 | AID TO ORGANIZATIONS AND INDIVIDUALS 0.4 | TRANSFERS OUT 0.4 | COST ALLOCATION AND INDIRECT COSTS 0.5 | CONVERSION 0.5 | PERSONAL SERVICES 0.7 | EMPLOYEE RELATED EXPENDITURES 0.9 | FOOD 0.9 | TRAVEL - IN-STATE 1.0 | TRAVEL - OUT-OF-STATE 1.0 | N/A 1.0 | NULL 1.0 | NON-CAPITAL EQUIPMENT 1.2 | CAPITAL EQUIPMENT 1.2 | CAPITAL OUTLAY 1.3 | OTHER OPERATING EXPENDITURES 1.4 | PROFESSIONAL AND OUTSIDE SERVICES 1.5.\nJustification anchored in observed risk profile (>=100K pop): entitlement cats have ~0% new-vendor and 59-72% of dollars >$10M (scheduled), discretionary cats have 14-22% new-vendor and 14-25% manual rail. The sql_predicate fields for category_risk_multiplier and the mag markers are runnable booleans (verified against mart/hv_base.parquet); the numeric multiplier itself is a lookup, not a boolean, hence described here.\n\nCOMPOSITE SCORE this family feeds: materiality_weight = mag_base_weight(mag_band) * category_risk_multiplier(category1). This single product is the dollar-and-context-aware base that every behavioral marker family (round-dollar, duplication, new-vendor, vendor concentration, period-13, manual-rail, robust_z) multiplies into. It ensures a $30M discretionary contract outranks a $300M scheduled transfer.\n\nOVERLAPS WITH OTHER FAMILIES: mag_x_category markers intentionally co-fire with round-dollar (PSPRS $99M), duplication (in_dup_diffday \u2014 PSPRS repeats), vendor-concentration (vendor_share>=50% on large single-vendor contracts), and masked-payee/NULL-vid markers ('N/A'/NULL payee on $33M Corrections Rx). These are not double-counts: this family supplies the materiality magnitude; the other families supply the anomaly signal. The model should multiply, then cap, so one mega-item cannot dominate an agency roll-up.\n\nTHIN-YEAR HANDLING: Every marker here uses only amount, mag_band, and category1 \u2014 all fully populated in FY2019-2020. None depend on vid, appr_type_canon, or fp_canon, so this family runs correctly in thin years and never penalizes a transaction for a system-wide-absent field. This is deliberate: materiality is the one family that must work everywhere as the backbone.\n\nFEATURES NEEDED BUT ABSENT: none for this family \u2014 mag_band and category1 are present and sufficient. (Behavioral families that multiply into this score do reference dup_*, vendor_*, robust_z, payment_method, which exist.) No placeholder columns required.\n\nFRAMING: All four markers produce leads warranting review, not findings of fraud; none names a wrongdoer. Name/category matching is exact-equality over a 17-value controlled vocabulary, so the 'Aztec'->'ZTE' substring false-positive class cannot occur in this family."
+  },
+  {
+   "family": "Round / negotiated-amount marker",
+   "markers": [
+    {
+     "marker_id": "round_1m_discretionary_arms_length",
+     "name": "Exact $1M-multiple in discretionary procurement (arms-length)",
+     "sql_predicate": "amount >= 100000 AND is_round_1m AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES','FOOD','TRAVEL - IN-STATE','TRAVEL - OUT-OF-STATE') AND (payee IS NULL OR (agency <> payee AND NOT regexp_matches(upper(payee), '\\b' || regexp_escape(upper(agency)) || '\\b') AND NOT regexp_matches(upper(agency), '\\b' || regexp_escape(upper(payee)) || '\\b'))) AND upper(coalesce(payee,'X')) NOT IN ('N/A','NULL','NONE','VARIOUS') AND (payment_method IS NULL OR payment_method NOT IN ('INTERNAL','JOURNAL VOUCHER','COST ALLOCATION'))",
+     "severity_weight": 5,
+     "applicable_years": "FY2016-2025 (FY2022 not in mart). Runs in all years incl. thin FY2019/2020 because it depends only on amount, category1, payee, agency, payment_method \u2014 none of the fields that are NULL system-wide in FY19/20 (vid, appr_type_canon, fp_canon).",
+     "rationale": "A payment that lands on an EXACT multiple of $1,000,000 is overwhelmingly likely to be an estimated/negotiated/capped/manually-entered figure rather than an invoice-derived total (which would carry odd dollars and cents). Restricting to discretionary-procurement category1 values (the highest auditor scrutiny weight per the risk framework) concentrates the signal on contracts/services/capital where a clean million is genuinely anomalous: in PROFESSIONAL AND OUTSIDE SERVICES 74% of >=$100K payments carry cents, in OTHER OPERATING 67% do. Entitlement/scheduled categories (AID TO ORGS, TRANSFERS OUT, DEBT SERVICE) \u2014 which are legitimately round (TRANSFERS OUT is 12.5% round-100k / 6% round-1m by design) \u2014 are excluded so the marker never fires on benign appropriated allotments. Calibrated to 0.036% of the >=$100K population, this is a strong standalone scrutiny signal worth a weight of 5.",
+     "guardrails": "(1) Category whitelist EXCLUDES entitlement/scheduled families (AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE, COST ALLOCATION AND INDIRECT COSTS, PERSONAL SERVICES) whose round amounts are benign-by-construction. (2) Arms-length filter: agency<>payee AND word-BOUNDARY (regexp_matches with \\b, never blind substring \u2014 the ZTE/Aztec lesson) name-containment in either direction, to suppress same-entity book transfers that evade exact-equality (e.g. UNIVERSITY OF ARIZONA -> 'THE UNIVERSITY OF ARIZONA'/'...(FINANCIAL SERVICES OFFICE)', PSPRS self-pay). Name overlap is used only to SUPPRESS (never to flag), so substring risk is one-directional/conservative. (3) Excludes INTERNAL/JOURNAL VOUCHER/COST ALLOCATION rails (non-arms-length fund movements). (4) Junk/placeholder payees ('N/A' etc.) excluded. (5) amount>=100000 floor. No dependence on thin-year-NULL fields, so it degrades gracefully and never penalizes a row for a system-wide absent field. These guardrails removed ~48% of raw round_1m discretionary hits (213 -> 110) that were internal/self transfers.",
+     "calibrated_count": 110,
+     "calibrated_exposure_usd": 758000000,
+     "examples": [
+      {
+       "amount": 90000000,
+       "agency": "LOTTERY COMMISSION",
+       "payee": "BANK OF AMERICA - AZ",
+       "why": "Exact $90,000,000 to an external bank coded OTHER OPERATING EXPENDITURES \u2014 a perfectly round nine-figure amount detached from any invoice; lead to confirm the underlying obligation and pricing basis."
+      },
+      {
+       "amount": 23000000,
+       "agency": "DEPT OF HEALTH SERVICES",
+       "payee": "ARIZONA STATE UNIVERSITY",
+       "why": "Exact $23,000,000 to ASU under PROFESSIONAL AND OUTSIDE SERVICES; clean-million services payment warrants review of the contract/scope-of-work supporting the round figure."
+      },
+      {
+       "amount": 80000000,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM",
+       "why": "Exact $80,000,000 pension contribution coded EMPLOYEE RELATED; though partly scheduled, the exact-million roundness is an item to confirm against the actuarial schedule."
+      }
+     ]
+    },
+    {
+     "marker_id": "round_100k_sub1m_discretionary_arms_length",
+     "name": "Exact $100K-multiple (sub-$1M) in discretionary procurement (arms-length)",
+     "sql_predicate": "amount >= 100000 AND is_round_100k AND NOT is_round_1m AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES','FOOD','TRAVEL - IN-STATE','TRAVEL - OUT-OF-STATE') AND (payee IS NULL OR (agency <> payee AND NOT regexp_matches(upper(payee), '\\b' || regexp_escape(upper(agency)) || '\\b') AND NOT regexp_matches(upper(agency), '\\b' || regexp_escape(upper(payee)) || '\\b'))) AND upper(coalesce(payee,'X')) NOT IN ('N/A','NULL','NONE','VARIOUS') AND (payment_method IS NULL OR payment_method NOT IN ('INTERNAL','JOURNAL VOUCHER','COST ALLOCATION'))",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2025 (FY2022 not in mart). Runs in all years incl. thin FY2019/2020 (depends only on amount, category1, payee, agency, payment_method).",
+     "rationale": "The next coarser roundness tier: an EXACT multiple of $100,000 that is NOT also a $1M multiple (that band is captured by the severity-5 marker, so the two are disjoint by construction \u2014 verified 0 overlap). A clean $100K step in discretionary procurement, where invoice-derived totals normally carry cents, is the signature of an estimated/negotiated/manual amount. Slightly weaker than the $1M-exact tier because $100K steps are more common in legitimately-rounded purchase orders, hence weight 4. Calibrated to 0.24% of the >=$100K population \u2014 comfortably in the 'severe/high' band (<5%).",
+     "guardrails": "Identical guardrail stack to the $1M marker: discretionary-only category whitelist (excludes entitlement/scheduled families that are legitimately round), word-boundary same-entity suppression (regexp \\b, never blind substring), INTERNAL/JV/COST-ALLOCATION rail exclusion, junk-payee exclusion, amount>=100000 floor, no thin-year-NULL field dependence. NOT is_round_1m enforces clean tiering vs the severity-5 marker (no double-flagging the same row).",
+     "calibrated_count": 737,
+     "calibrated_exposure_usd": 374600000,
+     "examples": [
+      {
+       "amount": 12500000,
+       "agency": "DEPT OF WATER RESOURCES",
+       "payee": "ACTIVE RESOURCE MANAGEMENT, LLC",
+       "why": "Exact $12,500,000 ($100K-multiple, not $1M) to an external LLC under OTHER OPERATING EXPENDITURES \u2014 round to the hundred-thousand, suggesting a negotiated/capped amount; item to confirm against deliverables."
+      },
+      {
+       "amount": 8700000,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM",
+       "why": "Exact $8,700,000 pension-related payment; clean $100K step warrants reconciliation to the contribution schedule."
+      },
+      {
+       "amount": 14700000,
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "why": "Round $100K-multiple to a disaster-response contractor under PROFESSIONAL AND OUTSIDE SERVICES; lead to confirm whether the round figure is a milestone draw vs an actual-cost invoice."
+      }
+     ]
+    },
+    {
+     "marker_id": "whole_dollar_noncents_discretionary",
+     "name": "Exact whole-dollar (no cents, not even $10K-round) in cents-normal procurement",
+     "sql_predicate": "amount >= 100000 AND is_whole_dollar AND NOT is_round_10k AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES','FOOD') AND (payee IS NULL OR (agency <> payee AND NOT regexp_matches(upper(payee), '\\b' || regexp_escape(upper(agency)) || '\\b') AND NOT regexp_matches(upper(agency), '\\b' || regexp_escape(upper(payee)) || '\\b'))) AND upper(coalesce(payee,'X')) NOT IN ('N/A','NULL','NONE','VARIOUS') AND (payment_method IS NULL OR payment_method NOT IN ('INTERNAL','JOURNAL VOUCHER','COST ALLOCATION'))",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2025 (FY2022 not in mart). Even FY2016-2018 (object_no/invoice_number-rich) need no special field; runs uniformly incl. thin FY2019/2020.",
+     "rationale": "The 'too-clean amount in a category that normally has cents' signal. Restricted to the six discretionary-procurement category1 values where carrying cents is the documented norm (PROFESSIONAL AND OUTSIDE SERVICES 74% carry cents, OTHER OPERATING 67%, CAPITAL OUTLAY 89%). A payment with exactly zero cents AND not even a $10K-round figure (so it is an 'odd whole number' like $28,709,669 or $28,323,000 rather than an obviously-round $X00,000) is statistically detached from invoice arithmetic and points to a negotiated/capped/manually-keyed contract amount. Deliberately the broadest tier (2.65% of the >=$100K pop, squarely in the moderate <15% band) and disjoint from the two round markers above (NOT is_round_10k excludes everything they capture; verified 0 overlap), so weight 3 \u2014 a supporting signal best combined with vendor/duplicate markers.",
+     "guardrails": "(1) Category whitelist restricted to the SIX categories empirically shown to carry cents by default \u2014 DEBT SERVICE (44% cents) and TRANSFERS OUT (47% cents) and PERSONAL SERVICES/payroll-driven categories are excluded precisely because whole-dollar amounts there are normal, not anomalous. (2) NOT is_round_10k removes the obviously/legitimately-round purchase-order amounts (those are the domain of the round-100k/1m markers) so this tier isolates the 'oddly exact whole number' band. (3) Same word-boundary arms-length same-entity suppression (this guardrail alone removed 719 intra-University-of-Arizona self-transfers + 457 'N/A' placeholder payees that otherwise dominated the raw output). (4) INTERNAL/JV/COST-ALLOCATION rail exclusion. (5) amount>=100000 floor; no thin-year-NULL dependence. Confirmed not concentrated in a single benign payer after guardrails; FY distribution is flat ~720-1090/yr across 2016-2025.",
+     "calibrated_count": 8121,
+     "calibrated_exposure_usd": 4225749187,
+     "examples": [
+      {
+       "amount": 28709669,
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "why": "Exact $28,709,669.00 (whole dollars, no cents, not $10K-round) to a disaster-response contractor under PROFESSIONAL AND OUTSIDE SERVICES \u2014 large arms-length services payment with suspiciously cents-free total; item to confirm against invoiced costs."
+      },
+      {
+       "amount": 28323000,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "NAPHCARE INC",
+       "why": "Exact $28,323,000.00 to a prison-healthcare vendor; whole-dollar in a cents-normal services category points to a negotiated capitation/contract figure to reconcile to actuals."
+      },
+      {
+       "amount": 12000000,
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "ZEITLIN AND ZEITLIN PC",
+       "why": "Exact $12,000,000.00 CAPITAL OUTLAY to a law firm/PC \u2014 clean whole-dollar capital payment warranting review of the settlement/acquisition basis. (Note: distinct external payee, passes word-boundary arms-length check.)"
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION: All headline stats restricted to amount>=100000 (pop = 306,604). The three markers form a clean, mutually-exclusive roundness tier with verified 0 row overlap: A = exact $1M-multiple; B = exact $100K-multiple but NOT $1M (NOT is_round_1m); C = whole-dollar but NOT even $10K-round (NOT is_round_10k, which excludes everything A and B capture). They can be summed without double-counting. Combined coverage ~2.92% of the >=$100K pop ($5.36B exposure).\n\nBENIGN-BY-CONSTRUCTION ARTIFACTS FOUND AND SUPPRESSED (the core calibration work): (1) Entitlement/scheduled categories are legitimately round \u2014 TRANSFERS OUT is 12.5% round-100k and 6% round-1m, DEBT SERVICE 55% whole-dollar \u2014 all excluded via category whitelist. (2) Same-entity internal transfers dominated the raw top hits: PSPRS paying itself ($99M unfunded-liability entries coded OTHER OPERATING), and UNIVERSITY OF ARIZONA -> 'THE UNIVERSITY OF ARIZONA' / '...(FINANCIAL SERVICES OFFICE)' where the payee string differs from the agency so exact-equality misses it. Suppressed via WORD-BOUNDARY (regexp \\\\b) name-containment in both directions plus INTERNAL/JV/COST-ALLOCATION rail exclusion. Raw round_1m discretionary dropped 213->110 (48% were book entries). NOTE on the ZTE/Aztec lesson: word-boundary name matching here is used ONLY to SUPPRESS (exclude) rows, never to FLAG them, so even a false name-overlap can only cause a conservative under-flag, never a false accusation \u2014 the dangerous direction is eliminated.\n\nGRACEFUL DEGRADATION: None of the three predicates reference vid, appr_type_canon, fp_canon, object_no, or invoice_number (the fields NULL in thin years or sparsely populated). They depend only on amount, the round-flag columns, category1, agency, payee, payment_method \u2014 all present FY2016-2025. So they run identically in thin FY2019/2020 and never penalize a row for a system-wide-absent field. FY distribution is flat, confirming no thin-year distortion.\n\nOVERLAPS WITH OTHER FAMILIES: (a) round amounts correlate with vendor_first_appearance and dup markers \u2014 recommend treating these as INDEPENDENT additive signals (a round amount to a brand-new vendor, or a round amount in a duplicate-signature cluster, is materially more suspicious than either alone). (b) The manual-rail exclusion here means a separate 'manual rail' marker family should own JV/INTERNAL roundness if desired; I deliberately ceded those to avoid double-counting non-arms-length book entries as procurement roundness. (c) robust_z_in_agencycat (peer-deviation) overlaps: a round amount that is ALSO a peer outlier (robust_z>=10) is a stronger lead \u2014 compose rather than merge.\n\nFEATURES THAT WOULD STRENGTHEN THESE MARKERS BUT ARE ABSENT FROM THE MART: (1) a boolean 'same_legal_entity(agency,payee)' resolved via canonical vendor identity (vid-based) rather than name regex \u2014 would let me drop the regex suppression heuristic and capture self-transfers that share no name tokens; I approximate it with the word-boundary name check. (2) contract_number/contract_name are only ~2-6% populated, so I could not require 'round amount WITHOUT a supporting contract' which would sharpen marker C; if contract linkage were dense, 'is_whole_dollar AND contract_number IS NULL' would be a high-value refinement. (3) a per-payee historical cents-frequency would let me flag vendors who normally invoice with cents but suddenly bill a round number \u2014 not derivable from the current mart at row level."
+  },
+  {
+   "family": "Duplicate & split-payment markers",
+   "markers": [
+    {
+     "marker_id": "dup_diffday_discretionary",
+     "name": "Different-day exact-duplicate payment to a procurement vendor",
+     "sql_predicate": "amount >= 100000 AND in_dup_diffday AND category1 NOT IN ('AID TO ORGANIZATIONS AND INDIVIDUALS','TRANSFERS OUT','DEBT SERVICE')",
+     "severity_weight": 5,
+     "applicable_years": "FY2017-2018, FY2021, FY2023-2025. Fires 0 times in FY2016/FY2019/FY2020 because the underlying duplicate signature relies on transaction_reference_id / invoice_number, which are absent in those years - so the marker degrades gracefully to zero rather than mis-firing in thin years. (FY2022 already excluded from mart.)",
+     "rationale": "in_dup_diffday marks rows belonging to a duplicate signature cluster (same agency + payee/vid + exact amount + transaction_reference_id) whose members post on DIFFERENT days (dup_day_span >= 1). For discretionary procurement (services, equipment, capital), the same vendor receiving the identical dollar amount under the identical PO/reference on separate days is the single strongest standalone duplicate-disbursement lead - it cannot be explained as an intra-batch accounting split. Restricting to non-entitlement categories removes the Medicaid/transfers/debt-service scheduled-batch noise that dominates the raw flag (526 of 533 raw diffday rows are AID-TO-ORGANIZATIONS). Weighting different-day repeats far above same-day batches per the family brief.",
+     "guardrails": "Excludes entitlement/scheduled categories (AID TO ORGANIZATIONS AND INDIVIDUALS = Medicaid capitation; TRANSFERS OUT; DEBT SERVICE) where same-reference repeats are legitimate. No name/substring matching is used (signature is structural: id+amount+reference), so the Aztec/ZTE false-positive class cannot occur. Lead only - identical amounts paid weeks apart may be contractually-scheduled installments under one PO; confirm against the contract/invoice before drawing any conclusion. Names no wrongdoer.",
+     "calibrated_count": 7,
+     "calibrated_exposure_usd": 1629069,
+     "examples": [
+      {
+       "amount": 112560,
+       "agency": "DEPT OF HOMELAND SECURITY",
+       "payee": "22ND CENTURY TECHNOLOGIES INC",
+       "why": "Identical $112,560 paid THREE times (2023-06-27, 09-19, 11-09) under the same reference GAXIV1HLAINV001221781; confirm whether one obligation was disbursed three times."
+      },
+      {
+       "amount": 500000,
+       "agency": "LAND DEPARTMENT",
+       "payee": "JONES LANG LASALLE AMERICAS INC",
+       "why": "Identical $500,000 paid twice 31 days apart (2023-12-19, 2024-01-19) under the same PO reference GAXLDAPO-3923."
+      },
+      {
+       "amount": 145694,
+       "agency": "DEPT OF PUBLIC SAFETY",
+       "payee": "ARIZONA EMERGENCY PRODUCTS INC",
+       "why": "Identical $145,694 paid twice 150 days apart (2022-07-20, 2022-12-17) under the same reference GAXIV1PSAINV000963404."
+      }
+     ]
+    },
+    {
+     "marker_id": "dup_sameday_discretionary_external",
+     "name": "Same-day exact-duplicate payment to an external procurement vendor",
+     "sql_predicate": "amount >= 100000 AND in_dup_signature AND NOT in_dup_diffday AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND payee <> agency",
+     "severity_weight": 3,
+     "applicable_years": "FY2017-2018, FY2021, FY2023-2025 (same signature-availability constraint as dup_diffday_discretionary; zero in FY2016/2019/2020).",
+     "rationale": "in_dup_signature & NOT in_dup_diffday isolates same-day clusters (dup_day_span = 0) of two or more rows sharing the identical agency+payee+amount+reference signature. Restricted to discretionary procurement categories and to external vendors (payee <> agency, which removes intra-government self-pay such as the PSPRS $99M x10 pension-funding batch and similar legitimate same-reference splits). A real outside vendor receiving the exact same large amount twice the same day under one reference is a moderate duplicate-payment lead - more often a legitimate two-line split of one invoice than a true double-pay, hence severity 3 rather than 5.",
+     "guardrails": "payee <> agency suppresses the pension-paydown / intra-fund self-payment batches the brief calls out as benign (PSPRS, fund-to-fund). Entitlement categories excluded. Structural signature match only - no name/substring logic, so no Aztec/ZTE-class risk. Same-day exact repeats are frequently legitimate invoice splits; this is an item to confirm against AP detail, never an accusation.",
+     "calibrated_count": 494,
+     "calibrated_exposure_usd": 114744319,
+     "examples": [
+      {
+       "amount": 1107750,
+       "agency": "AHCCCS",
+       "payee": "ARIZONA STATE UNIVERSITY",
+       "why": "Two identical $1,107,750 ACH payments on 2024-09-10 under the same reference GAXHCAADM250000390; confirm not a double-disbursement."
+      },
+      {
+       "amount": 1003374,
+       "agency": "DEPT OF CHILD SAFETY",
+       "payee": "MICROSOFT",
+       "why": "Two identical $1,003,374 warrants on 2018-06-26 under the same reference PRCPZ1CHAPR0000859606."
+      },
+      {
+       "amount": 1000000,
+       "agency": "DEPT OF EDUCATION",
+       "payee": "NCS PEARSON INC",
+       "why": "Two identical round $1,000,000 ACH payments on 2022-09-29 under the same reference GAXIV1EDAINV001003030."
+      }
+     ]
+    },
+    {
+     "marker_id": "dup_diffday_all_incl_entitlement",
+     "name": "Different-day exact-duplicate payment (all categories, broad sweep)",
+     "sql_predicate": "amount >= 100000 AND in_dup_diffday",
+     "severity_weight": 2,
+     "applicable_years": "FY2017-2018, FY2021, FY2023-2025 (zero in FY2016/2019/2020 by graceful degradation).",
+     "rationale": "Broad, low-severity companion to dup_diffday_discretionary that retains the entitlement rows for completeness/coverage. Captures every different-day exact-amount repeat under one reference, the vast majority being AHCCCS Medicaid managed-care/provider amounts (e.g., cross-fiscal-year reprocessing of the same capitation/recoupment line). These are still legitimately items to confirm (a reissue vs. an unintended second disbursement), but for entitlement spend identical reference repeats are usually scheduled/expected, so suspicion-per-txn is low.",
+     "guardrails": "Severity deliberately low because the population is dominated by entitlement spend where same-reference batches are legitimate (Medicaid capitation, provider recoupments, DES transfers). Use only as a coverage net, not a standalone red flag; route entitlement hits to a lighter reconciliation queue. Structural match only - no name matching. Names no wrongdoer.",
+     "calibrated_count": 533,
+     "calibrated_exposure_usd": 1356916731,
+     "examples": [
+      {
+       "amount": 63279037,
+       "agency": "AHCCCS",
+       "payee": "AHCCCS PAYMENTS TO DES (00110007)",
+       "why": "Identical $63,279,037 posted 25 days apart (2024-10-07, 2024-11-01) under reference GAXNEHCAPMMS25045031; likely a legitimate Medicaid reprocessing but confirm it is not a duplicated transfer."
+      },
+      {
+       "amount": 39559908,
+       "agency": "AHCCCS",
+       "payee": "HEALTH NET ACCESS INC",
+       "why": "Identical $39,559,908 capitation on consecutive days (2024-08-29, 08-30) under reference GAXCMHCAPRG250000018."
+      },
+      {
+       "amount": 189968,
+       "agency": "AHCCCS",
+       "payee": "MERCY CARE",
+       "why": "Identical $189,968 posted 428 days apart across FY2024/FY2025 under the same reference GAXCMHCAPRG240000111 - cross-year reprocessing to confirm."
+      }
+     ]
+    },
+    {
+     "marker_id": "split_under_threshold_window",
+     "name": "Possible split disbursement: clustered sub-threshold payments aggregating over a control limit (REQUIRES NEW FEATURE)",
+     "sql_predicate": "amount >= 100000 AND vid IS NOT NULL AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND split_cluster_flag = TRUE",
+     "severity_weight": 2,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 (requires vid, which is NULL system-wide in FY2019/2020, so the marker cannot run there - state honestly).",
+     "rationale": "The split angle requested by the brief: several distinct payments to the same vid+agency in a short window, each individually below a delegated-authority / competitive-bid threshold, that aggregate above that threshold - a pattern consistent with splitting one obligation to stay under an approval limit. This CANNOT be expressed soundly on the current mart: prototyping a naive version (same vid+agency+day, >=5 distinct txns < $250K summing >= $1M) returned 160 clusters / 2,302 member txns that are overwhelmingly legitimate high-frequency vendors (Cardinal Health pharma to Corrections, Axon, Accenture, SHI IT reseller, ADOT construction firms, a 40-vehicle PFVT fleet buy). Distinguishing a true threshold-evasion split from normal high-volume AP requires features absent from the mart.",
+     "guardrails": "Restricted to discretionary categories, real vendors (vid IS NOT NULL, which also prevents firing in thin FY19/20 years). MUST exclude high-frequency-by-design vendors before flagging, or it reproduces the Aztec/ZTE-class false-positive problem on benign volume. Lead only.",
+     "calibrated_count": 0,
+     "calibrated_exposure_usd": 0,
+     "examples": [
+      {
+       "amount": 243994,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "CARDINAL HEALTH 110 LLC",
+       "why": "Illustrative of the FALSE-POSITIVE risk: 25 same-day sub-$250K invoices summing $3.4M - benign pharma distribution volume, NOT a split. Shown to motivate why the naive predicate is suppressed."
+      },
+      {
+       "amount": 248152,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "AXON ENTERPRISE INC",
+       "why": "19 same-day sub-$250K lines summing $3.1M - routine equipment buy, illustrating the benign pattern the real marker must exclude."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION/PREVALENCE (all restricted to amount>=100000; >=100K pop = 306,604):\n - dup_diffday_discretionary: 7 txns (~0.002%), $1.63M. Extremely rare, very high precision -> severity 5.\n - dup_sameday_discretionary_external: 494 txns (0.16%), $114.7M -> severity 3 (moderate, <5% severe band easily met).\n - dup_diffday_all_incl_entitlement: 533 txns (0.17%), $1.357B; entitlement-dominated -> severity 2 coverage net.\n - split_under_threshold_window: NOT computable on current mart; returned as placeholder with severity 2 and count/exposure 0.\n\nDUP SIGNATURE DEFINITION (reverse-engineered from data): in_dup_signature groups rows sharing agency + payee/vid + EXACT amount + transaction_reference_id; in_dup_diffday is the subset whose members span >=1 calendar day (dup_day_span>=1). Because the signature depends on transaction_reference_id/invoice_number, the flags fire 0 times in FY2016, FY2019, FY2020 - this is the desired graceful degradation, not a bug; vendor/period/appr-type NULLs in FY19/20 are therefore never penalized.\n\nOVERLAPS:\n - dup_diffday_discretionary is a strict subset of dup_diffday_all_incl_entitlement (the 7 vs 533). If both run, dedupe by taking the highest-severity hit per row; do not double-count exposure.\n - dup_sameday_discretionary_external and the diffday markers are mutually exclusive by construction (NOT in_dup_diffday vs in_dup_diffday).\n - All three structural markers overlap with any round-number marker (e.g. NCS Pearson $1,000,000) and with manual-rail markers; treat as corroborating, not additive.\n\nMISSING FEATURES NEEDED TO MAKE THE SPLIT MARKER REAL (precise spec for the mart owner):\n 1) split_cluster_flag (boolean): TRUE iff, within a rolling N-day window (suggest N=7) for a given vid+agency, there are >=K distinct transaction_ids (suggest K>=4) EACH strictly below a named control threshold T, whose sum >= T, AND the vendor is NOT in the agency's high-frequency cohort. Compute high-frequency cohort as vendors whose vid+agency pair has > P payments/year (e.g. > the 95th percentile of vendor_year_txns within that agency) so routine distributors (Cardinal Health, SHI, Axon, ADOT contractors) are excluded.\n 2) control_threshold_usd: the actual Arizona delegated-purchasing / competitive-bid limit applicable to the agency+category+year (e.g. small-purchase / informal-bid ceilings). Needed because 'aggregating over a threshold' is meaningless without the real threshold; $250K/$1M used in prototyping are placeholders.\n 3) distinct_invoice_count_in_window and just_below_threshold_share: how many of the clustered payments fall in a narrow band (e.g. 90-99.9%) just under the control threshold - a high share is the discriminating signal vs. random sub-threshold billing.\nWithout (1)-(3) the split angle is not safely deployable; the prototype confirmed it would flag legitimate high-volume vendors at scale (the Aztec/ZTE-class error this engagement must avoid).\n\nGUARDRAIL NOTE on entitlement: AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE excluded from the high-severity duplicate markers because Medicaid managed-care capitation and pension/fund paydowns are legitimate same-reference batches (verified: PSPRS $99M x10 same-day self-pay; Health Net / Mercy Care / DES Medicaid same-reference cross-period reissues)."
+  },
+  {
+   "family": "Sole-source & vendor-concentration",
+   "markers": [
+    {
+     "marker_id": "sole_source_discretionary_concentration",
+     "name": "Discretionary procurement concentration (external vendor dominates an agency's discretionary spend)",
+     "sql_predicate": "amount >= 100000 AND vid IS NOT NULL AND vendor_share_of_agency_year >= 0.20 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','EQUIPMENT','SUPPLIES AND MATERIALS','TRAVEL') AND NOT (payee = agency OR payee ILIKE 'STATE OF ARIZONA%' OR (payee ILIKE '%UNIVERSITY%' AND agency ILIKE '%UNIVERSITY%') OR (payee ILIKE '%COMMUNITY COLLEGE%' AND agency ILIKE '%COMMUNITY COLLEGE%')) AND NOT (regexp_matches(payee, '(^| )(U S BANK|BANK OF AMERICA|WELLS FARGO|JPMORGAN|BNY MELLON|NORTHERN TRUST)( |$|,)') OR payee ILIKE '%RETIREMENT SYSTEM%')",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025. NOT FY2019/FY2020 (vid is NULL system-wide, so vendor_share_of_agency_year is NULL there and the predicate is correctly false; it never fires merely because the field is absent). FY2022 absent from mart. The 'vid IS NOT NULL' clause makes this degrade gracefully on thin years.",
+     "rationale": "An external (non-self, non-bank/pension) vendor that accounts for >=20% of an agency's TOTAL annual spend, and is paid out of a discretionary procurement category, is the classic sole-source / single-bid lead: the kind of relationship where you would pull the contract file and confirm the award was competed. The 20% floor is deliberately below the entitlement-dominated 50%+ band because, structurally, vendor_share_of_agency_year is measured against the whole agency-year (all categories), so even a true sole-source procurement vendor in a large diverse agency rarely crosses 50%. At 20%, restricted to discretionary categories and external payees, the population is 629 rows / 0.205% of the >=100K pop and the leads are textbook: NAPHCARE INC (sole inmate-healthcare contractor, Dept of Corrections, ~$30M/txn, 20-21% of agency), ASHBRITT INC (no-bid border-fence/disaster contractor, DEMA, 36%), WILLMENG CONSTRUCTION (Legislative Council capitol improvements, 46%), OFF MADISON AVE (Office of Tourism ad agency, 34%). These warrant confirmation that the procurement was competitively bid, not accusations.",
+     "guardrails": "(1) Entitlement/scheduled categories excluded by construction (only discretionary category1 values included) per the auditor risk-weighting brief. (2) Self-payments / intra-governmental transfers suppressed: payee=agency, 'STATE OF ARIZONA*' (school-finance pass-throughs via Dept of Education), university-to-self, community-college-to-self -- these dominate the high-share band and are benign-by-construction. (3) Banks and pension systems suppressed via WORD-BOUNDARY regexp (anchored on '^| ' and a trailing space/comma/end), explicitly so 'BANNER HEALTH' does NOT match 'BANK' -- this is the Aztec/ZTE substring-trap class of error and was unit-tested (BANK OF AMERICA matches, BANNER HEALTH does not). (4) vid IS NOT NULL guarantees the marker cannot fire on FY2019/2020 or on any row whose vendor identity is unresolved, so it never penalizes a system-wide-absent field. (5) amount>=100000 keeps headline stats on the institutional-materiality population. Residual benign risk: a legitimate statewide-sole-provider in a tiny single-purpose commission (e.g. PETSMART CHARITIES at the Spay/Neuter Committee) can appear -- treat as dependency, confirm via contract, do not escalate.",
+     "calibrated_count": 629,
+     "calibrated_exposure_usd": 2249538222,
+     "examples": [
+      {
+       "amount": 30012537,
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "NAPHCARE INC",
+       "why": "Sole contracted inmate-health-care provider; ~$30M single payment, 20% of the entire department's annual spend. Lead: confirm the statewide inmate-healthcare contract was competitively procured."
+      },
+      {
+       "amount": 28709669,
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "why": "Border-security-fence / disaster contractor; 36% of DEMA's FY2023 spend across many large payments. Lead: confirm competitive award vs. emergency no-bid for the border-fence program."
+      },
+      {
+       "amount": 12500000,
+       "agency": "DEPT OF WATER RESOURCES",
+       "payee": "ACTIVE RESOURCE MANAGEMENT, LLC",
+       "why": "$12.5M single payment, 35% of the department's year, Water Banking appropriation. Lead: confirm scope/competition for a single dominant water-banking vendor."
+      },
+      {
+       "amount": 1511077,
+       "agency": "LEGISLATIVE COUNCIL",
+       "payee": "WILLMENG CONSTRUCTION INC",
+       "why": "46% of Legislative Council's year on Capitol Improvements. Lead: confirm the capitol-construction contract was bid, not directed."
+      },
+      {
+       "amount": 1277163,
+       "agency": "OFFICE OF TOURISM",
+       "payee": "OFF MADISON AVE",
+       "why": "Dominant advertising agency, 34% of Office of Tourism spend (Prop 202 statewide promotion). Lead: confirm the agency-of-record contract was competed and renewals re-bid."
+      }
+     ]
+    },
+    {
+     "marker_id": "vendor_agency_dependency_exposure",
+     "name": "Agency dependency / single-vendor exposure (>=33% of total agency-year spend)",
+     "sql_predicate": "amount >= 100000 AND vid IS NOT NULL AND vendor_share_of_agency_year >= 0.33 AND category1 NOT IN ('AID TO ORGANIZATIONS AND INDIVIDUALS','TRANSFERS OUT','DEBT SERVICE') AND NOT (payee = agency OR payee ILIKE 'STATE OF ARIZONA%' OR (payee ILIKE '%UNIVERSITY%' AND agency ILIKE '%UNIVERSITY%') OR (payee ILIKE '%COMMUNITY COLLEGE%' AND agency ILIKE '%COMMUNITY COLLEGE%'))",
+     "severity_weight": 2,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025. NOT FY2019/FY2020 (vendor_share_of_agency_year NULL there because vid is NULL system-wide). FY2022 absent from mart.",
+     "rationale": "Lower-suspicion companion to marker 1: any external vendor commanding >=33% of an agency's full annual spend, in any non-entitlement category. This deliberately KEEPS banks, utilities and pension systems in scope because, per the brief, those are dependency/exposure signals that bondholders care about (concentration risk, continuity-of-operations risk) even though they are NOT irregularities. 552 rows / 0.18% of the >=100K pop, $621M exposure. Composition is a healthy mix of benign-by-design exposure (BANK OF AMERICA -> Lottery Commission, 34% -- the exact example named in the brief; U S BANK as trustee/escrow at Statewide Systems Processing, 74%) and the same genuine-procurement names surfaced in marker 1. Severity is intentionally lower (2): the action is 'note the dependency and confirm contractual basis', not 'investigate'.",
+     "guardrails": "(1) Entitlement categories (AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE) excluded -- these go high for scheduled/benefit reasons (e.g. STATE OF ARIZONA school-finance disbursements through Dept of Education) and carry low per-txn suspicion. (2) Self-payment / intra-governmental suppression identical to marker 1. (3) Banks/pension/utilities INTENTIONALLY retained (not suppressed) and labeled dependency, with the lower severity weight encoding 'exposure not irregularity'. (4) vid IS NOT NULL prevents firing on thin years or unresolved vendors. (5) Because vendor_share is whole-agency, this is an exposure lens, not a procurement-competition lens -- do not read a high share alone as evidence of anything improper.",
+     "calibrated_count": 552,
+     "calibrated_exposure_usd": 620931401,
+     "examples": [
+      {
+       "amount": 363354659,
+       "agency": "LOTTERY COMMISSION",
+       "payee": "BANK OF AMERICA - AZ",
+       "why": "Benign dependency (the brief's own example): banking/settlement provider is structurally 34% of Lottery spend. Flag as exposure/continuity risk, NOT irregularity."
+      },
+      {
+       "amount": 12646724,
+       "agency": "STATEWIDE SYSTEMS PROCESSING",
+       "payee": "U S BANK NATIONAL ASSOCIATION",
+       "why": "Trustee/escrow bank at 74% of a processing entity's spend. Benign dependency; confirm fee schedule, do not escalate."
+      },
+      {
+       "amount": 194730663,
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "why": "Genuine concentration also caught here at the agency level (36%); cross-reference marker 1."
+      },
+      {
+       "amount": 2025031,
+       "agency": "CITIZENS CLEAN ELECTION COMMISSION",
+       "payee": "RIESTER SONORAN LLC",
+       "why": "Media/advertising vendor at 40% of a small commission's spend. Lead: confirm the voter-education media contract was competed."
+      },
+      {
+       "amount": 1330563,
+       "agency": "CITIZENS CLEAN ELECTION COMMISSION",
+       "payee": "R & R PARTNERS INC",
+       "why": "52% of the commission's year on outside services. Dependency on a single agency-of-record; confirm competitive basis."
+      }
+     ]
+    },
+    {
+     "marker_id": "appropriation_near_monopoly",
+     "name": "Appropriation-level near-monopoly (one vendor is the near-entirety of a specific appropriation)",
+     "sql_predicate": "amount >= 100000 AND vid IS NOT NULL AND vendor_approp_year_share >= 0.80 AND approp_year_total >= 250000 AND category1 NOT IN ('AID TO ORGANIZATIONS AND INDIVIDUALS','TRANSFERS OUT','DEBT SERVICE') AND NOT (payee = agency OR payee ILIKE 'STATE OF ARIZONA%')",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 once the feature exists (requires vid; NULL in FY2019/2020). FY2022 absent from mart.",
+     "rationale": "The family description explicitly calls for 'a vendor that is the near-entirety of an appropriation' as a distinct, sharper signal than agency-wide share. An appropriation is a far narrower budget unit than an agency, so a vendor at >=80% of a single appropriation_1_code's year is a much tighter sole-source signal than agency share and would surface directed/earmarked single-vendor appropriations that agency-level concentration dilutes away. This is a PLACEHOLDER predicate: the mart exposes approp_year_total and approp_year_txns but NOT a per-(appropriation_1_code, fiscal_year, vid) vendor total, so vendor_approp_year_share cannot be computed from existing columns. I could not run this predicate; the calibrated_count/exposure below are 0 to mark it as not-yet-runnable rather than a measured population.",
+     "guardrails": "Same self-pay / entitlement guardrails as markers 1-2; word-boundary matching for any future name-based suppression. approp_year_total>=250000 floor avoids trivially-small appropriations where any single payment is 100% by arithmetic. vid IS NOT NULL for thin-year safety. The feature must be aggregated at the (appropriation_1_code, fiscal_year, vid) grain -- NOT on appropriation_1_name (names are non-unique across agencies) -- to avoid cross-agency contamination.",
+     "calibrated_count": 0,
+     "calibrated_exposure_usd": 0,
+     "examples": [
+      {
+       "amount": 450000,
+       "agency": "COMPANION ANIMAL SPAY/NEUTER COMMITTEE",
+       "payee": "PETSMART CHARITIES INC",
+       "why": "Illustrative of the pattern the proposed feature targets: a single vendor at 99% of the Spaying-and-Neutering appropriation. Surfaced today only because this tiny committee has one appropriation; the proposed vendor_approp_year_share would generalize this to large agencies whose appropriation-level monopolies are hidden by agency-wide aggregation."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION REASONING. vendor_share_of_agency_year is populated exactly when vid IS NOT NULL (1:1) -- both are NULL for 42.7% of the >=100K pop and 100% NULL in FY2019/2020 -- so 'vid IS NOT NULL' is the single guardrail that makes every marker degrade gracefully on thin years and unresolved vendors. The raw >=50% share band is a trap: it contains only 6 distinct agencies and ~90% of its rows are self-payments / intra-governmental transfers (universities paying themselves, STATE OF ARIZONA school-finance pass-throughs via Dept of Education, ARIZONA COMMERCE AUTHORITY). I therefore did NOT use a high raw-share cut as the headline marker; instead marker 1 lowers the threshold to 20% but restricts to discretionary categories + external payees, which is where genuine sole-source procurement lives. Both runnable markers fire on ~0.2% of the >=100K pop (well under the 5% severe ceiling).\n\nWORD-BOUNDARY / ZTE-CLASS GUARDRAIL. The bank/pension suppression uses an anchored regexp ('(^| )(...)( |$|,)') not a substring ILIKE, and I unit-tested that 'BANK OF AMERICA' matches while 'BANNER HEALTH' does not -- directly addressing the Aztec/ZTE $47M false-positive lesson. Any future name-based rule should use the same anchoring.\n\nOVERLAP WITH OTHER FAMILIES. (a) vendor_first_appearance (new-vendor family): a vendor that is both new AND concentrated is a stronger compound lead -- recommend AND-combining markers 1/2 with vendor_first_appearance in the scoring layer rather than duplicating here. (b) Round-dollar and dup-signature families overlap on the same NAPHCARE/ASHBRITT payment streams; concentration should add, not double-count. (c) robust_z_in_agencycat (peer-outlier) frequently co-fires on the large concentrated payments (NAPHCARE ~$30M txns) -- treat as corroboration. (d) Self-payment suppression here is also reusable by the intra-governmental-transfer family.\n\nFEATURES NEEDED BUT ABSENT FROM MART. (1) vendor_approp_year_share (and its denominator vendor_approp_year_total) at the (appropriation_1_code, fiscal_year, vid) grain -- required for marker 3 (appropriation near-monopoly). Use appropriation_1_code, never appropriation_1_name (names repeat across agencies). (2) A canonical 'is_intragovernmental' / 'is_self_payment' boolean (and ideally a benign-counterparty registry: trustee banks, PSPRS, statewide sole providers, universities) -- I approximated self-payment with payee=agency plus ILIKE rules, which is robust for the dominant cases but will miss DBA/name-variant self-payments and is the main residual benign-leakage risk. (3) vendor_agency_years_active (count of distinct years a vendor has held a given agency relationship) would let marker 1 distinguish a long-standing competed incumbent from a sudden single-year monopoly, sharpening severity. (4) A herfindahl/HHI of vendor shares per agency-year would give a cleaner agency-level concentration scalar than thresholding a single vendor's share.\n\nCATEGORY RISK-WEIGHTING applied per brief: AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE are excluded as scheduled/entitlement (low per-txn suspicion); PROFESSIONAL AND OUTSIDE SERVICES / OTHER OPERATING / CAPITAL OUTLAY / EQUIPMENT / SUPPLIES / TRAVEL are the discretionary-procurement scope for the severe marker 1."
+  },
+  {
+   "family": "New / first-appearance vendor at high value",
+   "markers": [
+    {
+     "marker_id": "new_vendor_dominant_agency_share",
+     "name": "New vendor immediately dominates an agency's spend (onboarding-control lead)",
+     "sql_predicate": "vid IS NOT NULL AND vendor_first_appearance AND fiscal_year > 2016 AND amount >= 100000 AND vendor_year_total >= 1000000 AND vendor_share_of_agency_year >= 0.10 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND NOT (upper(appropriation_1_name) LIKE '%LUMP SUM%')",
+     "severity_weight": 5,
+     "applicable_years": "FY2017, FY2018, FY2021, FY2023, FY2024, FY2025. CANNOT run FY2019/FY2020 (vid NULL system-wide, so vendor_first_appearance/vendor_year_total/share are unreliable). FY2016 EXCLUDED by predicate (left-censored first year of data: 100% of vendors falsely flag as first-appearance). FY2022 absent from mart.",
+     "rationale": "A vendor that appears for the very first time AND in that same year already accounts for >=10% of an entire agency's annual spend (with a year total >=$1M) is the canonical new-vendor onboarding-control lead: big money flowing to an entity with no prior procurement track record, concentrated in one agency. Restricted to discretionary procurement categories where vendor selection is controllable, so the same dollar carries real scrutiny weight (unlike entitlement/scheduled spend). Calibrated to 0.16% of the >=$100K population - well under the <5% severe-marker bar - so it is highly discriminating. Real leads surfaced: AshBritt Inc (new in FY2023, immediately 36% / $194M of Dept of Emergency & Military Affairs on border-security work) and Active Resource Management LLC (new in FY2017, 35% of Dept of Water Resources in its first year).",
+     "guardrails": "(1) vid IS NOT NULL required so the marker NEVER fires in thin years FY2019/2020 where vendor identity is system-wide NULL. (2) fiscal_year>2016 excludes the left-censoring artifact: FY2016 is the first data year so every vendor reads as first-appearance (e.g. ASU paying itself $90M lump-sum mislabeled 'new'). (3) Entitlement/scheduled categories (AID TO ORGANIZATIONS AND INDIVIDUALS = Medicaid/benefits, TRANSFERS OUT, DEBT SERVICE, COST ALLOCATION) are excluded - a new Medicaid MCO like Bridgeway Health Solutions at $59M is a scheduled capitation, not a procurement red flag. (4) LUMP SUM appropriations excluded - these are intra-government university/agency operating transfers, not arm's-length vendor onboarding. (5) CAVEAT, confirm before escalating: FY2021 is inflated by the post-gap re-appearance effect (vendors untracked during the FY2019/2020 NULL-vid gap re-surface as 'first appearance'); FY2021 leads need an independent corroborant (prior-period spend, contract record) before being treated as truly new. (6) Benign-match suppression to verify on review: legitimate competitively-awarded new contracts, renamed/merged entities reusing a new vid, one-off capital grants to municipalities, and federal pass-through grantees. This is a LEAD WARRANTING REVIEW, not a finding; it names no wrongdoer. Any future name-based refinement must use word-boundary matching, never substring (cf. the Aztec/ZTE false-positive class).",
+     "calibrated_count": 494,
+     "calibrated_exposure_usd": 1537767496,
+     "examples": [
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "amount": 28709669,
+       "why": "First-appearance vendor in FY2023 that immediately became 36% ($194.7M year-total) of the agency's spend on PROFESSIONAL AND OUTSIDE SERVICES under a Border Security Fence appropriation - new vendor, immediate concentration; confirm competitive award and onboarding controls."
+      },
+      {
+       "agency": "DEPT OF WATER RESOURCES",
+       "payee": "ACTIVE RESOURCE MANAGEMENT, LLC",
+       "amount": 12500000,
+       "why": "New vendor in FY2017 reaching 35% of the agency's OTHER OPERATING EXPENDITURES in its first year ($12.5M year-total); single-agency concentration by a no-track-record LLC warrants vendor-vetting review."
+      },
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "amount": 26436579,
+       "why": "Second large FY2023 invoice to the same new vendor, reinforcing rapid spend ramp to a first-appearance contractor; confirm contract basis and deliverables."
+      }
+     ]
+    },
+    {
+     "marker_id": "new_vendor_large_first_payment_discretionary",
+     "name": "First-appearance vendor with a large first discretionary payment",
+     "sql_predicate": "vid IS NOT NULL AND vendor_first_appearance AND fiscal_year > 2016 AND amount >= 100000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND NOT (upper(appropriation_1_name) LIKE '%LUMP SUM%')",
+     "severity_weight": 3,
+     "applicable_years": "FY2017, FY2018, FY2021, FY2023, FY2024, FY2025. CANNOT run FY2019/FY2020 (vid NULL). FY2016 EXCLUDED (left-censoring). FY2022 absent.",
+     "rationale": "Broader moderate-severity net: any first-appearance vendor receiving a >=$100K discretionary-procurement payment. New vendor + immediate large money is a classic onboarding-control lead even without the agency-dominance test. Calibrated to 1.73% of the >=$100K population (moderate band, <15%). This is the volume layer that feeds review queues; the dominant-share marker above is the high-confidence subset. Real leads: CRE-WPL Estrella JV LLC ($18.5M freeway construction, JV/SPV naming) and SJW Land Company ($18.8M land acquisition).",
+     "guardrails": "Same structural guardrails as the dominant-share marker: vid IS NOT NULL (never fires thin years), fiscal_year>2016 (drops FY2016 left-censoring), entitlement categories excluded (AID/TRANSFERS OUT/DEBT SERVICE), LUMP SUM excluded. HEAVY CAVEAT: 73% of this marker's rows fall in FY2021, driven by the post-NULL-vid-gap re-appearance artifact rather than true newness - treat FY2021 hits as low-confidence pending an independent prior-spend check; the ~1,400 non-FY2021 rows are the trustworthy core. Expected benign matches to confirm-not-accuse: legitimately competed new awards, renamed/merged entities, one-off municipal capital grants, federal pass-through grantees. Lead-not-finding framing; no name substring matching (word-boundary only).",
+     "calibrated_count": 5291,
+     "calibrated_exposure_usd": 3914256455,
+     "examples": [
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "CRE-WPL ESTRELLA JV LLC",
+       "amount": 18557107,
+       "why": "First-appearance joint-venture entity (JV/SPV naming pattern) receiving $18.6M for freeway construction (CAPITAL OUTLAY) in FY2024; new construction JVs are common but the large first payment warrants confirming the underlying competitively-bid contract."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "SJW LAND COMPANY",
+       "amount": 18860000,
+       "why": "New vendor's $18.9M first payment for a land/right-of-way acquisition (CAPITAL OUTLAY, FEDERAL AID) in FY2017; large one-off real-property purchases to a first-seen entity merit appraisal/title review."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "BLUE CROSS BLUE SHIELD OF AZ INC",
+       "amount": 27742566,
+       "why": "Reads as first-appearance in FY2021 ($27.7M, employee benefits program) - an example of the FY2021 post-gap artifact: a long-standing benefits administrator that only looks 'new' because of the FY2019/2020 vid gap; illustrates why FY2021 hits need prior-spend corroboration before escalation."
+      }
+     ]
+    },
+    {
+     "marker_id": "concentrated_short_tenure_vendor",
+     "name": "Short-tenure vendor with concentrated large spend (catches re-appearing JV/SPV entities)",
+     "sql_predicate": "vid IS NOT NULL AND vendor_years_active <= 2 AND vendor_year_total >= 2000000 AND fiscal_year > 2016 AND amount >= 100000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','CAPITAL OUTLAY','CAPITAL EQUIPMENT') AND NOT (upper(appropriation_1_name) LIKE '%LUMP SUM%')",
+     "severity_weight": 4,
+     "applicable_years": "FY2017, FY2018, FY2021, FY2023, FY2024, FY2025. CANNOT run FY2019/FY2020 (vid/vendor features NULL). FY2016 EXCLUDED. FY2022 absent.",
+     "rationale": "Complements the first-appearance markers by using vendor_years_active <= 2 rather than the strict first-appearance flag, so it captures very-short-lived vendors that received a large year total (>=$2M) but whose literal first appearance was a prior year - exactly the profile of single-project joint ventures / special-purpose vehicles that spin up, take large money, and dissolve. Restricted to the most procurement-discretionary categories (PROFESSIONAL/OUTSIDE SERVICES, CAPITAL OUTLAY/EQUIPMENT). Calibrated to 0.29% of the >=$100K population (well under severe bar). Surfaces Coffman Ames Joint Venture ($34M over 2 active years on CAPITAL OUTLAY) - a JV the pure first-appearance marker misses.",
+     "guardrails": "vid IS NOT NULL (no thin-year firing), fiscal_year>2016 (no left-censoring), LUMP SUM excluded, entitlement categories already excluded by the narrow category list. Note: legitimate short-duration construction/engineering JVs are common in ADOT capital programs and are the dominant benign class here - the marker flags them as items to confirm (is this a real competitively-awarded JV with bonded principals?), never as findings. vendor_years_active is computed only over years where the vendor is observable; the FY2019/2020 gap can understate tenure, so a vendor reading '2 years active' may have been active longer - corroborate tenure before treating short tenure as suspicious. Lead-not-finding; word-boundary not substring for any name logic.",
+     "calibrated_count": 895,
+     "calibrated_exposure_usd": 1236406325,
+     "examples": [
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "COFFMAN AMES JOINT VENTURE",
+       "amount": 22360256,
+       "why": "Joint-venture entity active only 2 years with a $34.4M year-total on CAPITAL OUTLAY (FY2023); short-lived JV/SPV taking concentrated capital dollars warrants confirming the JV agreement, bonding, and competitive award - not captured by first-appearance flag alone."
+      },
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "amount": 28709669,
+       "why": "Single-year-active vendor with a $194.7M year-total on PROFESSIONAL AND OUTSIDE SERVICES (FY2023); extreme spend through a short-tenure vendor is a strong concentration lead worth onboarding/contract review."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "SJW LAND COMPANY",
+       "amount": 18860000,
+       "why": "One-year-active vendor with a $20M year-total on CAPITAL OUTLAY (FY2017); transient vendor receiving large capital/land payments merits title and appraisal corroboration."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION & ARTIFACT FINDINGS (load-bearing): (1) FY2016 is the FIRST data year, so 100% of observable vendors (19,172 of 19,172 vid rows) carry vendor_first_appearance=true - a pure left-censoring artifact. ALL three markers exclude fiscal_year=2016. Verified that vendor_first_year = fiscal_year is exactly equivalent to vendor_first_appearance (perfect 1:1 overlap), so the boolean flag is the right anchor. (2) FY2021 is inflated by a post-gap re-appearance effect: vendors were untracked during FY2019/2020 (vid NULL system-wide), so many long-standing vendors re-surface as 'first appearance' in FY2021. FY2021 alone is 73% of Marker A's rows (3,886 of 5,291); the BCBS-of-AZ example (a clearly pre-existing benefits administrator reading as 'new' in FY2021) demonstrates the false-positive mechanism. Recommendation: keep FY2021 firing but down-weight / require an independent prior-spend corroborant. The trustworthy core of Marker A is the ~1,405 non-FY2021 rows.\\n\\nGUARDRAIL RATIONALE: Entitlement categories dominate raw first-appearance volume - AID TO ORGANIZATIONS AND INDIVIDUALS is ~70% of first-appearance >=$100K spend ($28.5B), and these are Medicaid MCOs/benefits/grants (e.g. Bridgeway Health Solutions $59M AHCCCS capitation) that are scheduled, not discretionary. Excluding entitlement/scheduled categories (AID, TRANSFERS OUT, DEBT SERVICE, COST ALLOCATION) and LUMP SUM appropriations (intra-government university operating transfers, e.g. ASU/UofA) removes the largest benign-by-construction mass and is what takes the family from 12.1% of the population (37,153 raw first-appearances) down to the calibrated 0.16-1.73% bands.\\n\\nOVERLAP: Marker A (broad, sev 3) is a superset of Marker B (dominant share, sev 5) - all 494 B rows are within A. Marker C (short-tenure, sev 4) overlaps A/B on first-appearance vendors but ADDS value by catching 2-year-active JV/SPV entities (e.g. Coffman Ames Joint Venture) whose literal first appearance was a prior year, which the first-appearance flag misses. In a composite score, treat B as the high-confidence escalation of A, and C as an orthogonal short-tenure-concentration signal. Suggested composite: fire A as the base lead, +score if B (dominance) or C (short-tenure concentration) also fire, and corroborate with round-number flags (only 2.4% of Marker A rows are round_100k/round_1m, so round-number co-occurrence is a genuine additional signal, not baseline noise).\\n\\nFEATURES NEEDED BUT ABSENT FROM MART (would sharpen this family, all currently approximated): (a) a vendor_observable_first_year that accounts for the FY2019/2020 gap, to distinguish true new vendors from post-gap re-appearances - the single biggest precision improvement available; the current vendor_first_appearance/vendor_first_year cannot see across the gap. (b) entity-type / SOS-registration-age flag (LLC/JV/SPV vs established corp vs municipality vs federal grantee) to auto-suppress the benign municipal-grant and federal-pass-through classes the guardrails currently can only describe. (c) a contract-existence flag (contract_number is only ~2-6% populated) - presence of a competitively-awarded contract record would materially de-risk a new-vendor lead. (d) vendor name-normalization with WORD-BOUNDARY tokenization for any future watchlist/affiliation matching - explicitly required to avoid the Aztec/ZTE substring false-positive class. All predicates above were executed against mart/hv_base.parquet and return the stated calibrated counts."
+  },
+  {
+   "family": "Year-end & adjustment-period timing",
+   "markers": [
+    {
+     "marker_id": "p13_adjustment_period_highvalue",
+     "name": "High-value posting in adjustment period 13 (top-side closing entry)",
+     "sql_predicate": "amount >= 100000 AND fp_canon = 13",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 (fp_canon present). NOT FY2019/2020 (fp_canon NULL system-wide) and FY2022 (excluded from mart). Within these years the marker self-restricts: rows with fp_canon NULL never fire, so it degrades gracefully.",
+     "rationale": "fp_canon=13 is the post-June-close adjustment period used for year-end true-ups and top-side entries. Only 0.16% of the >=$100K population posts here (486 rows, $2.93B), so any high-value item is a closing-entry lead worth confirming. Empirically 100% of these are INTERNAL/JOURNAL VOUCHER/NULL rail with NULL or 'N/A' payee (370 INTERNAL, 114 NULL, 2 JV; zero ACH/WARRANT external payments) \u2014 they are book entries, exactly the population where management override and reclassification risk concentrates. This is the broad standalone timing flag; pair it with the discretionary sub-marker for sharper triage.",
+     "guardrails": "Item to confirm, not a finding: the dominant content is legitimate scheduled true-ups -- DEBT SERVICE ($571M, median $66.7M, clearly scheduled), AID TO ORGANIZATIONS AND INDIVIDUALS ($1.64B Medicaid/benefit accruals) and TRANSFERS OUT ($562M). These are expected-large entitlement/scheduled categories and should be DOWN-weighted (treat as informational, not severe) when reviewing. Never fires in FY19/20 because fp_canon IS NULL there. No name matching used, so no ZTE/Aztec-class substring risk. Do not penalize a row merely for NULL payee here -- NULL payee is the structural norm for period-13 book entries.",
+     "calibrated_count": 486,
+     "calibrated_exposure_usd": 2933903238,
+     "examples": [
+      {
+       "agency": "LOTTERY COMMISSION",
+       "payee": "N/A",
+       "amount": 5646598,
+       "why": "$5.6M sales-commission accrual booked in adjustment period 13 on INTERNAL rail with no payee -- a closing true-up to confirm against the retailer commission schedule."
+      },
+      {
+       "agency": "DEPT OF EDUCATION",
+       "payee": "N/A",
+       "amount": 3000000,
+       "why": "Round $3.0M 'Education for the Disadvantaged' booked in period 13, INTERNAL rail -- year-end grant reclassification to verify."
+      },
+      {
+       "agency": "SUPREME COURT",
+       "payee": "N/A",
+       "amount": 1641480,
+       "why": "$1.64M judicial private-grants entry in adjustment period -- top-side closing entry warranting documentation review."
+      }
+     ]
+    },
+    {
+     "marker_id": "p13_discretionary_closing_entry",
+     "name": "Discretionary-procurement value posted in adjustment period 13",
+     "sql_predicate": "amount >= 100000 AND fp_canon = 13 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT')",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 (fp_canon present). NOT FY2019/2020 (fp_canon NULL) or FY2022 (excluded). Self-restricts on fp_canon, so degrades gracefully in thin years.",
+     "rationale": "Sharpens the broad period-13 flag by removing scheduled/entitlement categories (DEBT SERVICE, AID, TRANSFERS OUT, COST ALLOCATION, PERSONAL SERVICES) and keeping only discretionary procurement, where a closing-period entry is least expected and carries the most scrutiny weight. Fires on just 0.063% of the >=$100K population (192 rows, $120.3M) -- a tight, high-discrimination set. Of these, 29 also carry robust_z>=10 (anomalously large within their agency x category peer group) and 13 are round 100K/1M, reinforcing the 'estimated/sweep entry' read. Reclassifying discretionary spend into the adjustment period is a classic period-shifting / use-it-or-lose-it move that should be confirmed against supporting invoices/accrual basis.",
+     "guardrails": "Item to confirm, not an accusation: legitimate year-end accruals for services delivered-not-yet-invoiced and IT/automation true-ups appear here (e.g. court 'AUTOMATION', 'IBM LEGACY PROJECT'). Reviewer should confirm an accrual basis and that goods/services were received by June 30. Entitlement categories are excluded by construction so the marker never penalizes scheduled benefit spending. Never fires FY19/20. No substring name matching. NULL/'N/A' payee is structurally normal for these book entries and must not itself raise severity.",
+     "calibrated_count": 192,
+     "calibrated_exposure_usd": 120296970,
+     "examples": [
+      {
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "N/A",
+       "amount": 5367900,
+       "why": "$5.37M 'Non Contract Medication' (OTHER OPERATING) posted in adjustment period -- discretionary procurement reclassified at close; confirm receipt/accrual basis."
+      },
+      {
+       "agency": "DEPT OF EDUCATION",
+       "payee": "N/A",
+       "amount": 2000000,
+       "why": "Round $2.0M 'Statewide Assessment Supplemental' (PROFESSIONAL SERVICES) in period 13 -- round-dollar discretionary closing entry to verify."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "NULL",
+       "amount": 1505432,
+       "why": "$1.5M 'IBM Legacy Project' CAPITAL EQUIPMENT on JOURNAL VOUCHER in adjustment period -- capital reclassification at year-end warranting review."
+      }
+     ]
+    },
+    {
+     "marker_id": "june_useitorloseit_round_discretionary",
+     "name": "Year-end (June) round-dollar discretionary spend (use-it-or-lose-it signature)",
+     "sql_predicate": "amount >= 100000 AND fp_canon = 12 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES') AND (is_round_100k OR is_round_1m)",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 (fp_canon present). NOT FY2019/2020 (fp_canon NULL) or FY2022 (excluded). Self-restricts on fp_canon.",
+     "rationale": "A flat 'posted in June' flag is too broad (June = 10.6% of the >=$100K pop, exceeding the <15% moderate threshold). This marker isolates the disproportionate signal: round-dollar (exactly $X00,000 or $Xm) DISCRETIONARY spend in the final budget period. Round-number rate in June discretionary is 2.86% vs 1.91% in other months -- a 1.5x year-end lift consistent with appropriation-sweeping / estimated commitments before lapse. Fires on only 0.062% of the population (191 rows, $1.18B). The round amount is the discriminator that separates a true 'use-it-or-lose-it' estimate from ordinary invoice-driven June activity. Reviewer confirms whether the round figure reflects a real deliverable or a budget-balance estimate.",
+     "guardrails": "Item to confirm, not a finding: round-dollar June payments are frequently legitimate (grant disbursements, contract milestone draws, intergovernmental transfers). Notable benign-by-pattern subset: PSPRS booking ten identical round $99M 'Unfunded Liability Reduction' self-payments (agency=payee) in June FY2021 -- scheduled pension contributions, low suspicion despite firing. Excludes entitlement/scheduled categories (AID, DEBT SERVICE, TRANSFERS OUT). To prioritize the cleanest external leads, reviewers may add 'AND payee <> agency AND vid IS NOT NULL' (filters intra-government and thin-year rows). Never fires FY19/20. No substring name matching -- only exact category-set and numeric round flags, so no ZTE/Aztec-class false positives.",
+     "calibrated_count": 191,
+     "calibrated_exposure_usd": 1180200000,
+     "examples": [
+      {
+       "agency": "DEPT OF HEALTH SERVICES",
+       "payee": "ARIZONA STATE UNIVERSITY",
+       "amount": 23000000,
+       "why": "Round $23.0M PROFESSIONAL SERVICES (federal grants) to ASU posted in June FY2021 -- external round-dollar year-end payment; confirm it maps to a defined deliverable, not a lapse-driven estimate."
+      },
+      {
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "NAPHCARE INC",
+       "amount": 4000000,
+       "why": "Round $4.0M June payment to a healthcare vendor -- year-end round-dollar procurement draw to verify against contract milestones."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "CGI TECHNOLOGIES AND SOLUTIONS INC",
+       "amount": 3000000,
+       "why": "Round $3.0M IT services to CGI in June FY2024 -- round-figure year-end spend warranting confirmation of work performed vs. budget-balance estimate."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION: All headline stats restricted to amount>=100000 (the 306,604-row >=$100K population per the brief). Counts: p13_all=486 (0.159%), p13_discretionary=192 (0.063%), june_round_disc=191 (0.062%) -- all well under the <5% severe threshold, so all three are clean, discriminating signals rather than noise. fp_canon is present in FY2016-2018, 2021, 2023-2025; NULL system-wide in FY2019/2020; FY2022 absent from mart. Every predicate self-restricts on fp_canon so none can fire in a thin year (graceful degradation requirement satisfied).\n\nKEY EMPIRICAL FINDING: There are ZERO external-vendor (ACH/WARRANT) payments in adjustment period 13 at >=$100K -- every period-13 high-value row is INTERNAL/JV/NULL rail with NULL or 'N/A' payee. Period-13 is therefore intrinsically a book-entry/top-side phenomenon, so 'real external payee' cannot be used to sharpen it; I sharpened via discretionary category instead (p13_discretionary). Conversely, the June marker DOES contain real external vendors (ASU, NaphCare, Centurion, CGI, Pulice), so the round-amount + discretionary-category filter is the right discriminator there.\n\nGUARDRAIL DESIGN: Entitlement/scheduled categories (AID TO ORGANIZATIONS AND INDIVIDUALS, DEBT SERVICE, TRANSFERS OUT) are excluded from the two sharpened markers per the expected-large vs discretionary risk-weighting; they dominate raw period-13 dollars ($2.77B of the $2.93B) and are benign-by-construction year-end true-ups. NULL/'N/A' payee is treated as structurally normal (not penalized) for closing entries. No marker uses any name/substring matching, so the ZTE/Aztec false-positive class is impossible here -- predicates are purely categorical, numeric-round-flag, and fiscal-period based.\n\nOVERLAP WITH OTHER FAMILIES: (1) p13_discretionary overlaps the manual-rail family -- 100% of period-13 rows are INTERNAL/JV (which equals the 'manual rail' 11.5% baseline driver); dedupe so a row firing here is not double-counted as a generic manual-rail flag. (2) june_round_disc overlaps the round-number family (is_round_100k/is_round_1m, baselines 1.8%/0.6%) and the duplicate family (the PSPRS $99M repeats would also trip dup_signature/dup_diffday); compose with OR and de-duplicate exposure. (3) p13_discretionary overlaps the peer-anomaly family (29 of 192 have robust_z>=10) -- a row firing both is a stronger composite lead.\n\nFEATURES NEEDED BUT ABSENT FROM MART (returned via placeholder, not used in the running predicates above): A true 'disproportionate final-period concentration' signal would need a per-vendor-year or per-appropriation-year monthly distribution -- e.g. a column like june_share_of_vendor_year (fraction of a vendor's annual dollars posted in fp_canon=12). The mart has vendor_year_total and approp_year_total but no within-year monthly/period breakdown, so I approximated 'use-it-or-lose-it' with the round-amount + June + discretionary composite. If added, the ideal predicate would be: amount>=100000 AND fp_canon=12 AND june_share_of_appropriation_year >= 0.5 AND approp_year_txns >= 4 (an appropriation that dumps >=half its annual high-value dollars in June across multiple transactions). Recommend adding june_share_of_appropriation_year and june_share_of_vendor_year to the mart to upgrade marker 3 from a proxy to a direct concentration measure."
+  },
+  {
+   "family": "Manual / non-standard payment rail",
+   "markers": [
+    {
+     "marker_id": "manual_rail_discretionary_procurement",
+     "name": "JOURNAL VOUCHER / INTERNAL rail on discretionary procurement",
+     "sql_predicate": "payment_method IN ('JOURNAL VOUCHER','INTERNAL') AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT')",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025, plus FY2019-2020 (payment_method is populated system-wide in every year, including the thin years; this family does NOT depend on appr_type_canon/vid/fp_canon, so it degrades gracefully and runs in FY19/20).",
+     "rationale": "JOURNAL VOUCHER and INTERNAL bypass the normal ACH accounts-payable workflow and are manually-keyed ledger entries. On scheduled/entitlement spend (Medicaid AID, inter-fund TRANSFERS OUT, DEBT SERVICE) such entries are routine and benign. But on DISCRETIONARY procurement (professional/outside services, other operating, capital outlay/equipment) a manual rail at >=$100K means a high-value purchase was settled outside the standard vendor-AP control path - a classic override/segregation-of-duties lead warranting review. Calibrates to 3.29% of the >=$100K population, appropriate for a severe standalone signal. Examples include a $92M border-fence equipment buy posted INTERNAL with payee 'N/A' and a $35M ADOT freeway-construction capital outlay posted as a JOURNAL VOUCHER with a null payee - items an auditor would want to confirm against source documentation.",
+     "guardrails": "Entitlement/scheduled categories are EXCLUDED by construction: the predicate whitelists only the four discretionary procurement category1 values, so it never fires on TRANSFERS OUT (10,013 INTERNAL rows / $20.2B), AID TO ORGANIZATIONS AND INDIVIDUALS, DEBT SERVICE, or COST ALLOCATION AND INDIRECT COSTS - exactly the inter-fund JV/INTERNAL traffic the family caveat warns about. No name/substring matching is involved (rail + category enums only), so the ZTE/Aztec false-positive class cannot occur. Produces leads to confirm, not findings. Note OTHER OPERATING EXPENDITURES still contains some scheduled COP debt-service paydowns labeled under that category (e.g. DOA 'COP DEBT SERVICE' INTERNAL entries); reviewers should de-prioritize rows whose appropriation_1_name contains a debt-service token - this is a refinement, not a fraud determination.",
+     "calibrated_count": 10101,
+     "calibrated_exposure_usd": 6768299319,
+     "examples": [
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "N/A",
+       "amount": 91965905,
+       "why": "$92M of CAPITAL EQUIPMENT (Border Security Fence and Technologies) settled on the INTERNAL rail with no named payee - a very large discretionary capital buy outside the standard AP/ACH path; confirm vendor and procurement authority."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "NULL",
+       "amount": 35442815,
+       "why": "$35M CAPITAL OUTLAY (freeway construction, M-RARF) posted as a JOURNAL VOUCHER with a null payee - manual ledger entry for a large capital project; confirm supporting documentation."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "N/A",
+       "amount": 35918200,
+       "why": "$36M OTHER OPERATING EXPENDITURES via INTERNAL with null appropriation and no payee (FY2020) - high-value manual entry to confirm; reviewer should check whether it is a scheduled COP debt paydown before escalating."
+      }
+     ]
+    },
+    {
+     "marker_id": "manual_rail_nonentitlement_broad",
+     "name": "Any JOURNAL VOUCHER / INTERNAL rail outside entitlement categories (broad sweep)",
+     "sql_predicate": "payment_method IN ('JOURNAL VOUCHER','INTERNAL') AND category1 NOT IN ('TRANSFERS OUT','AID TO ORGANIZATIONS AND INDIVIDUALS','DEBT SERVICE','COST ALLOCATION AND INDIRECT COSTS')",
+     "severity_weight": 3,
+     "applicable_years": "All in-scope years FY2016-2025 (payment_method populated system-wide every year; runs in thin FY2019-2020).",
+     "rationale": "Broader companion to the discretionary marker: captures ALL manual-rail (JV/INTERNAL) high-value spend that is not a scheduled entitlement, including PERSONAL SERVICES, EMPLOYEE RELATED EXPENDITURES, TRAVEL and FOOD in addition to the core procurement categories. Useful as a moderate-weight net so genuinely-manual operational spend in categories outside the strict procurement whitelist is still surfaced. Calibrates to 4.49% of the >=$100K population - within the <15% moderate band, and tighter than the raw 11.5% manual-rail baseline because entitlements are removed.",
+     "guardrails": "Excludes the four scheduled/entitlement categories (TRANSFERS OUT, AID, DEBT SERVICE, COST ALLOCATION AND INDIRECT COSTS) where JV/INTERNAL is the normal mechanism - this is the explicit inter-fund-transfer guardrail from the family brief. Pure enum logic, no name matching, so no substring false-positive risk. Lower severity (3) than the discretionary marker because PERSONAL SERVICES / EMPLOYEE RELATED / TRAVEL manual entries are more often legitimate payroll-adjacent reclassifications; treat as a corroborating signal, not standalone. Leads to confirm only.",
+     "calibrated_count": 13780,
+     "calibrated_exposure_usd": 8526129835,
+     "examples": [
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "N/A",
+       "amount": 91965905,
+       "why": "Same border-fence CAPITAL EQUIPMENT INTERNAL entry - also caught by the broad net; high-value manual rail outside entitlements."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "NULL",
+       "amount": 60105600,
+       "why": "$60M OTHER OPERATING via INTERNAL (recurring across FY16-21) - large repeating manual entry to confirm as a scheduled COP obligation vs. a discretionary item."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "NULL",
+       "amount": 35442815,
+       "why": "$35M freeway-construction JOURNAL VOUCHER - manual capital entry outside entitlement categories."
+      }
+     ]
+    },
+    {
+     "marker_id": "nonstandard_rail_null_or_warrant_discretionary",
+     "name": "Unclassified (NULL) or WARRANT rail on discretionary procurement",
+     "sql_predicate": "(payment_method IS NULL OR payment_method = 'WARRANT') AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT')",
+     "severity_weight": 2,
+     "applicable_years": "All in-scope years FY2016-2025. NULL payment_method runs ~15-18% in EVERY year (it is a real 'rail not classified' state, NOT a system-wide-absent field), so this is a genuine signal in all years including the thin ones - it is not penalizing a year for an absent field.",
+     "rationale": "WARRANT (paper-warrant) and unclassified-rail (NULL payment_method) high-value items also sit off the standard ACH path. On discretionary procurement these are weaker but real leads: paper warrants for large purchases are unusual and NULL-rail means the settlement channel was never recorded. Calibrates to 5.78% of the >=$100K population. Lower severity (2) because NULL/WARRANT are far noisier than JV/INTERNAL and a sizeable share are legitimate (e.g. real-property closings paid by warrant to title companies).",
+     "guardrails": "Restricted to the discretionary procurement categories so the very large NULL-rail entitlement traffic (AID 28,588 rows / $59B, TRANSFERS 5,876 rows / $21.7B) is excluded - those would otherwise swamp the marker. Because NULL is common and partly benign, this marker is intended only as a low-weight corroborator that should be combined with another red flag (e.g. vendor_first_appearance, round_100k, robust_z>=10) before escalation; do NOT treat a NULL rail alone as suspicious. No name matching, so no substring false-positive risk. Leads to confirm only.",
+     "calibrated_count": 17724,
+     "calibrated_exposure_usd": 11506670538,
+     "examples": [
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "SECURITY TITLE AGENCY INC",
+       "amount": 28425000,
+       "why": "$28M CAPITAL OUTLAY paid by WARRANT to a title agency - a real-property closing; plausibly legitimate but a paper-warrant high-value item worth confirming against the land-acquisition file."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "SJW LAND COMPANY",
+       "amount": 18860000,
+       "why": "$19M CAPITAL OUTLAY by WARRANT for land - non-ACH high-value settlement; confirm appraisal/closing documentation."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "N/A",
+       "amount": 35918200,
+       "why": "Large OTHER OPERATING discretionary item with no recorded rail/payee - confirm the settlement channel."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION: All three predicates were run against mart/hv_base.parquet restricted to amount>=100000 (population = 306,604). Raw rail mix in that population: ACH 162,489; NULL 48,937; INTERNAL 27,802; PAYMENT 25,445; WARRANT 25,298; COST ALLOCATION 9,297; JOURNAL VOUCHER 7,336. Raw manual-rail (JV+INTERNAL) baseline = 35,138 = 11.5% (matches the brief's stated 11.5% manual-rail baseline). Filtering to non-entitlement brings it to 4.49% (marker B); filtering to the strict discretionary whitelist brings it to 3.29% (marker A).\n\nGUARDRAIL DETAIL / GOTCHA: category1 uses the value 'COST ALLOCATION AND INDIRECT COSTS', NOT 'COST ALLOCATION' (which is only a payment_method value). The exclusion lists use the correct category1 spelling. The single biggest benign block the brief warns about - INTERNAL on inter-fund TRANSFERS OUT - is 10,013 rows / $20.2B and is fully excluded by all three markers.\n\nTHIN-YEAR BEHAVIOR: payment_method is populated system-wide in every fiscal year including FY2019 and FY2020 (FY19 has_rail 23,337/28,360; FY20 25,920/31,822). This family therefore does NOT need a 'vid IS NOT NULL' or 'appr_type_canon IS NOT NULL' guard - it does not depend on any of the three fields that go NULL in the thin years. I deliberately did NOT add such a guard because it would needlessly suppress valid FY19/20 leads. The NULL-rail share (~15-18%) is stable across all years, confirming NULL is a genuine 'unrecorded channel' state rather than an absent-field artifact - so marker C does not penalize any year for a system-wide gap.\n\nOVERLAP WITH OTHER FAMILIES: (1) NULL/empty payee ('N/A', SQL NULL) co-occurs heavily with these manual-rail items - a 'missing payee' marker family would overlap strongly with markers A and C and should be combined, not double-counted. (2) Period-13 / fp_canon=13 adjustment entries are frequently posted as JOURNAL VOUCHER; a period-13 marker overlaps with marker A/B but fp_canon is NULL in FY19/20 so that family cannot corroborate there. (3) round-dollar and robust_z markers are the recommended corroborators for the low-weight marker C before escalation.\n\nFEATURES NEEDED BUT ABSENT FROM MART: A cleaner severity split would benefit from (a) a boolean is_debt_service_appropriation flag derived from appropriation_1_name (to demote the COP/debt-paydown rows that currently sit in OTHER OPERATING EXPENDITURES and INTERNAL - I left these in marker A but flagged them in guardrails because no such column exists), and (b) a payee_is_missing boolean (payee IS NULL OR payee IN ('N/A','NULL','MISCPAYVEND')) to let manual-rail-with-no-payee be scored higher. Both can be added as derived columns; the current predicates use only existing hv_base columns and are valid DuckDB boolean expressions as run."
+  },
+  {
+   "family": "Peer-outlier & spike marker",
+   "markers": [
+    {
+     "marker_id": "peer_outlier_discretionary_zextreme",
+     "name": "Extreme peer-outlier on discretionary spend (robust-z within agency x category)",
+     "sql_predicate": "amount >= 100000 AND robust_z_in_agencycat >= 20 AND ac_n >= 8 AND category1 NOT IN ('AID TO ORGANIZATIONS AND INDIVIDUALS','TRANSFERS OUT','DEBT SERVICE','COST ALLOCATION AND INDIRECT COSTS','PERSONAL SERVICES','EMPLOYEE RELATED EXPENDITURES')",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2025 (excl. FY2022 not in mart). Fires in ALL available years including the thin FY2019/2020: robust_z_in_agencycat is derived from amount vs the agency x category1 median/IQR and does NOT depend on vid, appr_type_canon, or fp_canon, so it degrades gracefully where those are NULL. Verified 181-375 hits/yr with no degenerate year.",
+     "rationale": "robust_z_in_agencycat = (amount - median)/(IQR/1.349) within each agency x category1 peer set. A z >= 20 means the line item is ~20 robust-SDs above its own agency's typical spend for that category - i.e. the amount dwarfs the peer norm. The baseline says robust_z>=10 is 14.4% of the >=$100K pop, far too broad (it is mostly the benign entitlement tail). Restricting to z>=20 AND removing scheduled/entitlement categories isolates the genuine procurement outliers: 2,278 rows (0.74% of the 306,604 >=$100K pop), $15.6B exposure. The cutoff was tuned by sweeping z in {15,20,25,30,40} on the discretionary subset (3,504 / 2,279 / 1,709 / 1,355 / 843) and choosing 20 as the knee that stays <1% of pop while keeping enough volume to be a usable lead queue.",
+     "guardrails": "(1) EXCLUDES entitlement / scheduled categories (AID TO ORGANIZATIONS AND INDIVIDUALS = AHCCCS/Medicaid capitation, TRANSFERS OUT, DEBT SERVICE) plus COST ALLOCATION, PERSONAL SERVICES and EMPLOYEE RELATED - these are the documented mega-program benign outliers (AHCCCS Prop 204 capitation hit z up to 3,864 for benign reasons; 33,108 of 44,158 z>=10 rows are entitlement). (2) Requires ac_n >= 8 so z is computed against a stable peer group, not 2-3 rows (only 118 rows in pop have ac_n<8, so this barely costs coverage but prevents unstable-denominator artifacts). (3) Pure-amount signal, so no name-matching false-positive class here; the Aztec/ZTE substring lesson does not apply but is respected by avoiding any LIKE on payee. (4) This is a LEAD, not a finding: a high z legitimately occurs for one-off emergency procurement (e.g. AshBritt border-fence) - the marker says 'confirm the contracting basis,' it does not assert impropriety.",
+     "calibrated_count": 2278,
+     "calibrated_exposure_usd": 15551200000,
+     "examples": [
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "ASHBRITT INC",
+       "amount": 28709669,
+       "why": "robust_z=839.8 within DEMA x Professional Services; $28.7M to a single disaster/logistics vendor under BORDER SECURITY FENCE appropriation - ~840 robust-SDs above DEMA's normal professional-services line. Review the emergency-contracting basis and competitive process."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "(payee NULL)",
+       "amount": 30916785,
+       "why": "robust_z=880.4 within ADOT x Professional Services under HIGHWAY USER REVENUE; largest single professional-services line for the agency-category, and payee is unnamed - confirm counterparty and scope."
+      },
+      {
+       "agency": "LOTTERY COMMISSION",
+       "payee": "BANK OF AMERICA - AZ",
+       "amount": 92162002,
+       "why": "robust_z=490.2 within Lottery x Other Operating; $92M single line to a bank, round-ish, NULL appropriation - confirm whether this is a prize-pool/banking sweep (likely benign mechanics) vs a procurement item."
+      },
+      {
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "N/A",
+       "amount": 17468300,
+       "why": "robust_z=444.5 within ADC x Other Operating under PRIVATE PRISON COP; $17.5M outlier with masked payee - confirm the private-prison vendor identity and the per-diem basis."
+      }
+     ]
+    },
+    {
+     "marker_id": "vendor_dominance_third_party_concentration",
+     "name": "Single third-party vendor dominates an agency's discretionary year (sole-source concentration / spike proxy)",
+     "sql_predicate": "amount >= 100000 AND vid IS NOT NULL AND vendor_share_of_agency_year >= 0.33 AND vendor_agency_year_total >= 1000000 AND category1 NOT IN ('AID TO ORGANIZATIONS AND INDIVIDUALS','TRANSFERS OUT','DEBT SERVICE','COST ALLOCATION AND INDIRECT COSTS') AND payee IS NOT NULL AND payee NOT IN ('N/A','STATE OF ARIZONA') AND NOT (upper(regexp_replace(payee,'[^A-Za-z0-9]','','g')) LIKE upper(regexp_replace(agency,'[^A-Za-z0-9]','','g')) || '%') AND NOT (upper(regexp_replace(agency,'[^A-Za-z0-9]','','g')) LIKE upper(regexp_replace(payee,'[^A-Za-z0-9]','','g')) || '%')",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 ONLY. CANNOT run in FY2019/FY2020 because vid is NULL system-wide there; the predicate's vid IS NOT NULL clause makes it self-suppress in thin years (it will simply not fire rather than mis-fire). Also note vid is only ~24-48% populated even in good years (42.7% of pop has NULL vid), so this marker covers the vid-identified subset and is deliberately conservative.",
+     "rationale": "vendor_share_of_agency_year is the fraction of an agency's total spend in a fiscal year captured by one vendor. A single third-party vendor taking >=1/3 of an agency's discretionary year (with >= $1M absolute to that vendor) approximates the requested year-over-year / concentration-spike angle: it surfaces sole-source-like dependence and large vendor ramps. Baseline vendor_share>=50% is 3.1% of pop, but ~80% of that is intra-government self-payment (agency paying itself - e.g. ASU->ASU, UofA Financial Services). After removing self-payments the share>=50% population collapses to 8 genuine third-party rows; loosening to share>=0.33 (vendor is the dominant single counterparty, 1/3+ of the year) yields 594 rows (0.19% of the >=$100K pop), $952.5M exposure - a tight, high-precision lead set.",
+     "guardrails": "(1) SELF-PAYMENT GUARDRAIL using word/character-normalized PREFIX matching, not substring: strips non-alphanumerics and checks whether payee starts-with agency (or vice-versa). This was essential - a naive payee<>agency exact check leaked 'UNIVERSITY OF ARIZONA (FINANCIAL SERVICES OFFICE)' as if it were a third party. This is the exact discipline lesson from the Aztec/ZTE incident applied in reverse: match on normalized boundaries, never raw substrings. (2) Explicitly excludes the intra-gov sinks 'STATE OF ARIZONA' and masked 'N/A' payees. (3) vid IS NOT NULL guarantees it never fires in thin FY2019/2020 and never penalizes a row for a system-wide-absent field. (4) Excludes entitlement/scheduled categories where one payee legitimately dominates (Medicaid MCOs, debt trustees, transfer recipients). (5) vendor_agency_year_total >= $1M floor prevents firing on tiny agencies where one $100K invoice is mechanically 100% of a trivial budget. (6) Severity 3 (moderate) not 4: high concentration is common and often legitimate (a genuine sole authorized provider); the marker says 'confirm sole-source justification / verify this is not a split-driver,' it is a context flag, not a standalone red flag.",
+     "calibrated_count": 594,
+     "calibrated_exposure_usd": 952500000,
+     "examples": [
+      {
+       "agency": "STATEWIDE SYSTEMS PROCESSING",
+       "payee": "U S BANK NATIONAL ASSOCIATION",
+       "amount": 3290003,
+       "why": "vendor_share=0.74 - US Bank captured ~74% of this unit's discretionary year; new-vendor-first-appearance=true in FY2016. Confirm whether this is a contracted banking/p-card program (likely benign) vs unreviewed concentration."
+      },
+      {
+       "agency": "CITIZENS CLEAN ELECTION COMMISSION",
+       "payee": "R & R PARTNERS INC",
+       "amount": 171254,
+       "why": "vendor_share=0.52 - one advertising/communications firm took >half the Commission's professional-services year, first appearance FY2016. Review the procurement/competitive basis for a sole dominant media vendor at an elections body."
+      },
+      {
+       "agency": "OFFICE OF ECONOMIC OPPORTUNITY",
+       "payee": "ARIZONA COMMERCE AUTHORITY",
+       "amount": 1099579,
+       "why": "vendor_share=0.46 across multiple FY2021 line items (Professional Services + Capital Outlay) to a single quasi-public counterparty - confirm the interagency-agreement basis and that this is not a pass-through obscuring ultimate recipients."
+      }
+     ]
+    }
+   ],
+   "notes": "OVERLAP: The two markers are nearly disjoint - only 151 rows satisfy both the z>=20 discretionary predicate AND the vendor-dominance predicate (before the M2 self-pay/share refinement; under the final M2 share>=0.33 the practical overlap is smaller). They capture different angles: M1 = a single line item is huge vs its category peers (amount-anomaly); M2 = a vendor relationship dominates an agency-year (relationship/concentration-anomaly). They should be combined with OR and the row carries the max severity, with a small bonus if BOTH fire (corroborated outlier).\n\nCALIBRATION REASONING: Headline stats restricted to amount>=100000 (306,604-row pop). M1 = 2,278 rows (0.74%), $15.55B. M2 = 594 rows (0.19%), $952.5M. Both comfortably under the <5% severe-marker rule of thumb. M1's z cutoff (20) was chosen from a sweep {15,20,25,30,40} on the non-entitlement subset; 20 is the knee keeping it <1% of pop. M2's share cutoff (0.33) was chosen after a sweep {0.50:8, 0.40:25, 0.33:594, 0.25:1587} on the self-pay-cleaned third-party subset; 0.33 is the lowest threshold that stays a tight high-precision queue (<0.2% of pop) while giving usable volume - 0.50 was too sparse (8 rows) to be a standalone marker once self-payments were stripped.\n\nKEY GUARDRAIL FINDING (benign-by-construction artifacts caught): (a) The entitlement tail is the dominant benign-outlier class for robust_z - AHCCCS Prop 204 capitation reaches z up to 3,864 legitimately; 33,108 of 44,158 z>=10 rows are entitlement. Excluding those categories is what makes M1 discriminating. (b) For M2, ~80% of high vendor_share rows are intra-government self-payments (agency paying a decorated version of its own name, e.g. ASU->ASU, 'UNIVERSITY OF ARIZONA (FINANCIAL SERVICES OFFICE)'->UNIVERSITY OF ARIZONA). A normalized-prefix (boundary, not substring) self-payment filter was required and removes 1,942 of 2,434 share>=50% rows. This directly honors the Aztec/ZTE word-boundary discipline.\n\nFEATURES NEEDED BUT ABSENT FROM MART (returned predicates use only existing columns, but these would strengthen the family): (1) A true year-over-year vendor-spend delta (vendor_year_total this FY vs prior FY for the same vid) would let M2 flag genuine spikes/ramps rather than static concentration; the mart has vendor_year_total and vendor_first_year/vendor_years_active but not a prior-year-total column, so I approximated the spike via concentration share. Suggested column: vendor_prior_year_total (DECIMAL) and vendor_yoy_growth (double). (2) An explicit is_self_payment / is_intragovernmental boolean precomputed from a normalized agency-vs-payee/entity comparison would make the M2 guardrail robust and reusable rather than embedding the regexp_replace prefix logic inline; suggested column: is_self_or_intragov (bool). (3) A peer-group fiscal-year-scoped robust_z (robust_z_in_agencycat_year) would prevent a structural change across years from inflating z; current robust_z appears pooled across years within agency x category1.\n\nFRAMING: Both markers produce items-to-confirm, never findings. Named payees in examples (AshBritt, US Bank, R&R Partners, Commerce Authority) are reproduced solely as the data shows them for traceability of the lead; nothing here asserts wrongdoing by any party - each example's 'why' states the specific thing an auditor should confirm (emergency-contracting basis, sole-source justification, interagency-agreement basis, prize-pool mechanics)."
+  },
+  {
+   "family": "Accountability-gap marker",
+   "markers": [
+    {
+     "marker_id": "generic_placeholder_payee_on_discretionary",
+     "name": "Generic/placeholder payee on a discretionary procurement item",
+     "sql_predicate": "amount >= 100000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND (payee IN ('N/A','MISCELLANEOUS VENDOR','MISCELLANEOUS CUSTOMER') OR payee IS NULL OR regexp_matches(upper(payee), '(^| )(PCARD|FUEL) VENDOR( |$)'))",
+     "severity_weight": 4,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 (all non-thin years). Also runs in FY2019-2020 because it depends only on payee+category1, both of which are populated in thin years; however vid/appr_type context for triage is unavailable there.",
+     "rationale": "A six-figure discretionary-procurement payment (professional services, capital outlay/equipment, other operating) with no identifiable counterparty is a core accountability gap: oversight cannot verify who was paid or whether the vendor was eligible/competitively selected. The generic tokens are an exact allow-list curated from the data: 'N/A' (11,742 discretionary rows), actual NULL payee (3,139), 'MISCELLANEOUS VENDOR'/'MISCELLANEOUS CUSTOMER', and the system's own 'PCARD VENDOR xxx'/'FUEL VENDOR xxx' purchase-card placeholders (a $100K+ p-card line with no named merchant is itself a control concern). Fires on 15,047 rows / $8.92B = 4.91% of the >=$100K population, just under the 5% severe threshold.",
+     "guardrails": "WORD-BOUNDARY / EXACT-MATCH ONLY to avoid the ZTE/Aztec false-positive class: payee tokens are matched by exact equality ('N/A' etc.) or regex with explicit word boundaries '(^| )(PCARD|FUEL) VENDOR( |$)' -- NEVER a substring LIKE '%TEMP%' (which spuriously hit CITY OF TEMPE, TEMPLE EMANUEL, CONTEMPORARY SERVICES). DELIBERATELY EXCLUDES the literal string payee 'NULL' and 'NAME REDACTED': those are concentrated in AID TO ORGANIZATIONS AND INDIVIDUALS / TRANSFERS OUT / PERSONAL SERVICES (privacy-redacted benefit recipients and payroll) and are benign-by-construction, not procurement gaps. Restricting category1 to discretionary procurement excludes entitlement/scheduled spend where a missing individual name is expected. No vid/appr_type/fp dependence, so it degrades gracefully and never penalizes a thin-year field.",
+     "calibrated_count": 15047,
+     "calibrated_exposure_usd": 8916804076.57,
+     "examples": [
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "N/A",
+       "amount": 91965905,
+       "why": "$92M CAPITAL EQUIPMENT line 'BORDER SECURITY FENCE AND TECHNOLOGIES' on an INTERNAL rail with payee 'N/A' -- no identifiable vendor on a very large discretionary capital purchase; confirm counterparty and procurement basis."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "NULL",
+       "amount": 35442815,
+       "why": "$35M CAPITAL OUTLAY ('M-RARF CONSTRUCT FREEWAYS') via JOURNAL VOUCHER with a NULL payee -- large construction spend with no recorded payee; item to confirm."
+      },
+      {
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "N/A",
+       "amount": 33851184,
+       "why": "$34M PROFESSIONAL AND OUTSIDE SERVICES ('HEPATITIS C TREATMENT RX') with payee 'N/A' -- large professional/pharma services payment with no named vendor; confirm payee identity."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "PCARD VENDOR PSA",
+       "amount": 132378,
+       "why": "$132K OTHER OPERATING EXPENDITURES booked to the generic 'PCARD VENDOR PSA' purchase-card placeholder -- six-figure p-card line with no named merchant; confirm the actual vendor behind the aggregated p-card charge."
+      }
+     ]
+    },
+    {
+     "marker_id": "triple_gap_nullvid_manualrail_noPayee_discretionary",
+     "name": "Triple accountability gap: no vendor id + manual/internal rail + no payee on discretionary spend",
+     "sql_predicate": "amount >= 100000 AND fiscal_year NOT IN (2019,2020) AND vid IS NULL AND payment_method IN ('JOURNAL VOUCHER','INTERNAL') AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT')",
+     "severity_weight": 5,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 ONLY. EXPLICITLY EXCLUDES FY2019-2020 because vid is NULL system-wide there -- firing on a thin year would be a pure data-quality artifact, not a real gap.",
+     "rationale": "This is the higher-severity intersection: a large discretionary expenditure that simultaneously (1) has no real vendor id (vid NULL) in a year where vid IS otherwise populated ~70%, (2) moves through a manual JOURNAL VOUCHER / INTERNAL rail that bypasses normal AP/vendor-payment controls, and (3) sits in a discretionary procurement category. Three independent oversight enablers are missing at once. In the data, 100% of these rows also carry an 'N/A' or NULL payee, so they represent the most opaque slice. Fires on 8,016 rows / $5.34B = 2.61% of the >=$100K population -- a strict subset of the generic-payee marker (A_and_B = 8,016, B_not_A = 0) but elevated to severity 5 by the compounded gaps.",
+     "guardrails": "vid IS NULL is REQUIRED and fiscal_year NOT IN (2019,2020) is hard-coded, so the marker can NEVER fire merely because vid is system-wide absent in a thin year (the critical degrade-gracefully requirement). Manual-rail restricted to JOURNAL VOUCHER/INTERNAL (not ACH/WARRANT, which are normal vendor payments). Discretionary category filter excludes entitlement/scheduled spend. Because it is a subset of the generic_placeholder_payee marker, in a combined score it should be treated as an ESCALATOR of those rows rather than additive double-counting -- document the overlap so the two are not summed independently.",
+     "calibrated_count": 8016,
+     "calibrated_exposure_usd": 5336099464,
+     "examples": [
+      {
+       "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+       "payee": "N/A",
+       "amount": 91965905,
+       "why": "$92M CAPITAL EQUIPMENT (border fence) -- vid NULL + INTERNAL rail + N/A payee: all three oversight enablers absent on a very large capital purchase."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "NULL",
+       "amount": 60105600,
+       "why": "$60M OTHER OPERATING ('COP DEBT SERVICE') via INTERNAL rail with NULL payee and no vid -- though labeled debt-service-adjacent, it is booked under a discretionary category with full triple gap; confirm classification and counterparty."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "NULL",
+       "amount": 35442815,
+       "why": "$35M CAPITAL OUTLAY freeway construction via JOURNAL VOUCHER, vid NULL, NULL payee -- large capital JV with no traceable vendor; high-priority item to confirm."
+      }
+     ]
+    },
+    {
+     "marker_id": "large_procurement_no_contract_reference",
+     "name": "Large procurement to a named real vendor with no contract reference",
+     "sql_predicate": "amount >= 1000000 AND fiscal_year NOT IN (2019,2020) AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','CAPITAL OUTLAY') AND contract_number IS NULL AND vid IS NOT NULL AND payee IS NOT NULL AND payee NOT IN ('N/A','NULL','MISCELLANEOUS VENDOR','MISCELLANEOUS CUSTOMER') AND upper(trim(payee)) <> upper(trim(agency))",
+     "severity_weight": 2,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025. Excludes FY2019-2020 (vid NULL system-wide; cannot satisfy vid IS NOT NULL there anyway). Note FY2019/2020 actually DO carry some contract_number values, but the vid gate makes the marker dark in those years by design to keep it a real gap.",
+     "rationale": "A $1M+ professional-services or capital-outlay payment to a real, identifiable vendor (vid present) that carries NO contract_number is a procurement-documentation gap: a million-dollar consulting or construction payment should trace to a contract instrument. Distinct from markers A/B (those have generic/no payee; this has a fully named vendor) -- A_and_C overlap = 0, so it adds genuinely new leads. Fires on 1,474 rows / $4.67B = 0.48% of the >=$100K population. Examples include $20-28M capital-outlay payments to P3 concessionaires (CONNECT 202 PARTNERS) and land-title agents (SECURITY TITLE AGENCY) with no contract reference.",
+     "guardrails": "MODERATE severity (2), NOT severe, because contract_number is only ~2-6% populated mart-wide -- absence may reflect a data-feed limitation rather than a truly missing contract, so this is explicitly an 'item to confirm,' never an assertion that no contract exists. vid IS NOT NULL is REQUIRED, which both ensures a real named vendor and makes the marker dark in thin years (never fires on a system-wide-absent field). Self-payments are excluded via upper(trim(payee)) <> upper(trim(agency)) -- this removed a benign-by-construction artifact where PSPRS paid ITSELF $99M for 'unfunded liability reduction' (an internal funding transfer, not a procurement, so no contract is expected). Generic payee tokens excluded so it does not double-count marker A. Category restricted to true procurement (PROFESSIONAL/CAPITAL OUTLAY); OTHER OPERATING was dropped because it mixed in non-procurement internal transfers.",
+     "calibrated_count": 1474,
+     "calibrated_exposure_usd": 4673714003.9,
+     "examples": [
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "SECURITY TITLE AGENCY INC",
+       "amount": 28425000,
+       "why": "$28M CAPITAL OUTLAY to a named title agency (likely land acquisition) with vid present but no contract_number on the record -- confirm the underlying contract/escrow instrument."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "CONNECT 202 PARTNERS",
+       "amount": 24045200,
+       "why": "$24M CAPITAL OUTLAY to a named P3 highway concessionaire with no contract reference -- a payment of this size to a design-build-finance partner should trace to a concession agreement; item to confirm."
+      },
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "CONNECT 202 PARTNERS",
+       "amount": 23994241,
+       "why": "$24M CAPITAL OUTLAY (Federal Aid) to the same concessionaire, again with no contract_number recorded -- recurring large procurement payments lacking the contract linkage that enables oversight."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION & VALIDATION (all stats restricted to amount>=100000; population = 306,604; queries run against mart/hv_base.parquet only):\n- Marker A fires 15,047 (4.91%, $8.92B); Marker B 8,016 (2.61%, $5.34B); Marker C 1,474 (0.48%, $4.67B). Union of all three = 16,521 rows (5.39%) -- complementary, not redundant.\n- OVERLAP MAP (measured, not assumed): B is a STRICT SUBSET of A (A_and_B=8,016, B_not_A=0); B should be used as a severity ESCALATOR on A's rows, NOT summed additively, or the same dollars double-count. C is fully DISJOINT from A (A_and_C=0) -- different gap class (named vendor + missing contract vs. generic/absent payee), so C adds independent leads.\n\nFIELDS I DISCARDED AS NON-DISCRIMINATING (important negative results):\n- appropriation_1_code IS NULL: in all non-thin years it is 100% populated; only 1 row in good years is NULL. NULL apcode is purely a FY2019/2020 thin-year artifact, so I did NOT build a marker on it (it would only ever fire on thin years -- exactly the forbidden behavior).\n- Bare 'missing contract' (without the $1M + named-vendor gates): contract_number is present on only ~37-46% of professional/capital items even in good years, so a standalone 'no contract' marker would fire on ~55-60% of discretionary procurement = pure noise. I tightened it to >=$1M + vid present + non-self-payment to reach 0.48%.\n- NULL vid alone in good years: 70,771 rows = 28.7% of pop -- far too broad (vid is only ~70% populated even in good years). I made it discriminating only in combination (Marker B = NULL vid + manual rail + discretionary).\n\nFEATURES NEEDED BUT ABSENT FROM THE MART:\n- payee_dba_name 'differs oddly from payee' sub-idea is NOT IMPLEMENTABLE: payee_dba_name is 100% NULL in the >=$100K population (system-wide absent), so any predicate over it would be dead. To enable it, the mart would need a populated payee_dba_name plus a derived similarity feature, e.g. dba_payee_token_jaccard DOUBLE (token-set Jaccard between payee and payee_dba_name) and a boolean dba_present_and_divergent (payee_dba_name IS NOT NULL AND jaccard < 0.3) -- compute with WORD/TOKEN matching, never substring, to avoid the ZTE/Aztec class of false positive.\n- A clean 'contract expected' flag would sharpen Marker C: a boolean procurement_contract_expected derived from object_no / appropriation_category / contract-vehicle metadata would let us distinguish 'contract genuinely missing' from 'contract not expected for this spend type' and could raise C's severity above 2.\n\nZTE/AZTEC GUARDRAIL APPLIED THROUGHOUT: every payee match is exact-equality or explicit-word-boundary regex '(^| )(PCARD|FUEL) VENDOR( |$)'; I verified that a naive substring LIKE '%TEMP%' spuriously matched CITY OF TEMPE, TEMPLE EMANUEL, CONTEMPORARY SERVICES, TEMPEST INC, etc., and avoided all substring matching accordingly.\n\nCATEGORY RISK-WEIGHTING: all three markers are confined to DISCRETIONARY procurement categories (PROFESSIONAL AND OUTSIDE SERVICES, OTHER OPERATING, CAPITAL OUTLAY/EQUIPMENT, NON-CAPITAL EQUIPMENT) and deliberately EXCLUDE the scheduled/entitlement categories (AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE, PERSONAL SERVICES) where missing payee/contract detail is normal-by-construction (privacy-redacted benefit recipients, payroll, debt schedules).\n\nFRAMING: every marker yields 'items to confirm' / leads warranting review; none names a wrongdoer or asserts fraud. Marker C in particular is severity 2 specifically because contract_number sparsity means its absence may be a data-feed gap, not a true missing contract."
+  },
+  {
+   "family": "Discretionary-procurement concentration (large, off-contract, vendor-concentrated procurement lacking competitive-bid linkage)",
+   "markers": [
+    {
+     "marker_id": "disc_proc_offcontract_base",
+     "name": "Large off-contract discretionary procurement (moderate tier)",
+     "sql_predicate": "amount >= 100000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND contract_number IS NULL AND vid IS NOT NULL AND coalesce(category2,'') <> 'INTRASTATE DISTRIBUTIONS' AND payee IS DISTINCT FROM agency",
+     "severity_weight": 2,
+     "applicable_years": "FY2016, FY2017, FY2018, FY2021, FY2023, FY2024, FY2025. NOT FY2019/FY2020 (vid is NULL system-wide in those years, so the vid IS NOT NULL guardrail correctly suppresses the marker rather than firing blindly). FY2022 is absent from the mart entirely.",
+     "rationale": "Isolates the highest competitive-bidding-risk surface: large (>=$100K) spend in the three true discretionary-procurement category1 families (PROFESSIONAL AND OUTSIDE SERVICES, OTHER OPERATING EXPENDITURES, CAPITAL OUTLAY/EQUIPMENT) that carries NO contract_number linkage. This mirrors the AG 'vendors without fair/open competition' finding: a real third-party vendor (vid present) receiving a material payment with no visible contract is a lead warranting review of whether a competitive solicitation existed. Entitlement/scheduled families (AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE, COST ALLOCATION, PERSONAL/EMPLOYEE-RELATED) are deliberately excluded because large amounts there are normal and not procurement. This is a 'leads warranting review' screen, not a finding of fraud; nothing here names a wrongdoer.",
+     "guardrails": "(1) vid IS NOT NULL requires a REAL vendor id, which both proves the payee is an external vendor (not a sentinel/intra-state shell) AND auto-suppresses the marker in thin years FY2019/FY2020 where vid is NULL system-wide -- so we never penalize a transaction for a field that is absent by year. (2) coalesce(category2,'')<>'INTRASTATE DISTRIBUTIONS' removes benign intra-governmental distributions miscoded under OTHER OPERATING EXPENDITURES (e.g. PSPRS pension unfunded-liability transfers). (3) payee IS DISTINCT FROM agency removes self-payee internal transfers (NULL-safe). (4) Category whitelist (not a substring match) avoids the ZTE/Aztec class of error -- we match exact category1 strings, never substrings of names. (5) contract_number is only ~8-30% populated even in good years, so absence is the screening signal, NOT proof of off-contract spend; an absent linkage in this field can mean the contract exists but was not keyed -- hence moderate severity and 'item to confirm', not accusation. Known residual: ADOT CAPITAL OUTLAY construction frequently runs on engineering/construction contracts whose number is simply not linked in this field; reviewers should de-prioritize ADOT FEDERAL AID / M-RARF construction draws.",
+     "calibrated_count": 18685,
+     "calibrated_exposure_usd": 16600574297,
+     "examples": [
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "UNITED HEALTHCARE",
+       "amount": 10150758,
+       "why": "$10.2M to a single health-benefits administrator under NON APPROPRIATED BENEFITS PROGRAM with no contract_number linked and the vendor holding 25% of the agency's category spend that year -- confirm the underlying benefits-admin contract and solicitation."
+      },
+      {
+       "agency": "DEPT OF WATER RESOURCES",
+       "payee": "ACTIVE RESOURCE MANAGEMENT, LLC",
+       "amount": 12500000,
+       "why": "$12.5M off-contract to an LLC under WATER BANKING AUTHORITY, 35% of agency category spend -- large concentrated professional-services payment warranting confirmation of competitive procurement."
+      },
+      {
+       "agency": "DEPT OF REVENUE",
+       "payee": "FAST ENTERPRISES, LLC",
+       "amount": 422500,
+       "why": "Tax-system vendor paid off-contract under REVENUE COLLECTIONS -- confirm the IT contract vehicle backing the payment."
+      },
+      {
+       "agency": "SUPREME COURT",
+       "payee": "XEROX STATE & LOCAL SOLUTIONS INC",
+       "amount": 667912,
+       "why": "Professional-services payment with no contract linkage to a major outsourcing vendor -- verify solicitation."
+      }
+     ]
+    },
+    {
+     "marker_id": "disc_proc_offcontract_concentrated_large",
+     "name": "Off-contract discretionary procurement, large AND vendor-concentrated (severe tier)",
+     "sql_predicate": "amount >= 1000000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND contract_number IS NULL AND vid IS NOT NULL AND coalesce(category2,'') <> 'INTRASTATE DISTRIBUTIONS' AND payee IS DISTINCT FROM agency AND vendor_share_of_agency_year >= 0.20",
+     "severity_weight": 4,
+     "applicable_years": "FY2016, FY2017, FY2018, FY2021, FY2023, FY2024, FY2025 (vid IS NOT NULL excludes thin FY2019/FY2020; FY2022 not in mart).",
+     "rationale": "Adds two discriminating dimensions on top of the base: (a) amount >= $1M (material single payment) and (b) vendor_share_of_agency_year >= 20% (the vendor captures a dominant slice of the agency's spend that year -- a concentration signal consistent with sole-source / no-open-competition risk). The combination of off-contract + large + concentrated is the strongest standalone competitive-bidding red flag in the procurement families. Still a review lead, not a fraud finding.",
+     "guardrails": "Inherits all base guardrails (real-vid external-vendor gate that also kills thin years, INTRASTATE DISTRIBUTIONS exclusion, NULL-safe self-payee exclusion, exact category whitelist not substring). The INTRASTATE/self-payee guardrails are LOAD-BEARING here: without them this tier was dominated by PSPRS pension-fund self-distributions ($99M intra-governmental transfers, 99% share) -- exactly the benign-by-construction artifact to suppress; guardrails cut the tier from 1,835 to 588 rows. vendor_share_of_agency_year is a clean double in the mart (no thin-year NULL issue). Residual caveat: LOTTERY COMMISSION 'RESALE SUPPLIES' to Bank of America (prize/payment-processing mechanics) appears here and is operationally explainable -- keep but de-prioritize; confirm it is a banking-services contract vehicle.",
+     "calibrated_count": 588,
+     "calibrated_exposure_usd": 2066211449,
+     "examples": [
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "UNITED HEALTHCARE",
+       "amount": 10150758,
+       "why": "$10.2M, 25% of agency category spend, no contract -- dominant single benefits vendor warranting solicitation confirmation."
+      },
+      {
+       "agency": "DEPT OF WATER RESOURCES",
+       "payee": "ACTIVE RESOURCE MANAGEMENT, LLC",
+       "amount": 12500000,
+       "why": "$12.5M single LLC payment, 35% concentration, off-contract -- high competitive-bidding-review priority."
+      },
+      {
+       "agency": "DEPT OF VETERANS SERVICES",
+       "payee": "(external construction/services vendor)",
+       "amount": 1500000,
+       "why": "Concentrated off-contract construction-in-progress spend at a smaller agency where one vendor dominates the year -- confirm procurement method."
+      },
+      {
+       "agency": "OFFICE OF ECONOMIC OPPORTUNITY",
+       "payee": "(external professional-services vendor)",
+       "amount": 3280000,
+       "why": "Large professional-services payment, no contract, dominant vendor share at a small office -- review solicitation."
+      }
+     ]
+    },
+    {
+     "marker_id": "disc_proc_offcontract_concentrated_peer_outlier",
+     "name": "Off-contract concentrated procurement that is also a peer-group statistical outlier (very-severe tier)",
+     "sql_predicate": "amount >= 1000000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND contract_number IS NULL AND vid IS NOT NULL AND coalesce(category2,'') <> 'INTRASTATE DISTRIBUTIONS' AND payee IS DISTINCT FROM agency AND vendor_share_of_agency_year >= 0.20 AND robust_z_in_agencycat >= 10",
+     "severity_weight": 5,
+     "applicable_years": "FY2016, FY2017, FY2018, FY2021, FY2023, FY2024, FY2025 (thin years excluded via vid; FY2022 not in mart).",
+     "rationale": "Strongest standalone signal: every condition of the severe tier PLUS robust_z_in_agencycat >= 10, meaning the payment is a >=10-IQR outlier versus the median transaction in its own agency x category1 peer group. This selects off-contract, concentrated payments that are ALSO anomalously large relative to peers -- the narrowest, highest-confidence lead set for manual review.",
+     "guardrails": "All prior guardrails apply. robust_z_in_agencycat is computed within agency x category1 so it is self-normalizing (a $1M payment in a small agency scores high; the same in a big procurement shop may not), which is the intended behavior. robust_z is a double present in all retained years (not thin-year-gated), but the vid gate already removes FY2019/2020. Because this tier is small (274 rows), treat it as a curated review queue, not an automated action; each is an 'item to confirm.'",
+     "calibrated_count": 274,
+     "calibrated_exposure_usd": 1613707140,
+     "examples": [
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "UNITED HEALTHCARE",
+       "amount": 10150758,
+       "why": "Off-contract, 25% vendor concentration, AND a >10-IQR outlier vs other DOA other-operating transactions -- top-priority confirm of contract/solicitation."
+      },
+      {
+       "agency": "DEPT OF WATER RESOURCES",
+       "payee": "ACTIVE RESOURCE MANAGEMENT, LLC",
+       "amount": 12500000,
+       "why": "Single $12.5M LLC payment that is a strong peer-group outlier at a small agency, off-contract -- highest review weight."
+      },
+      {
+       "agency": "LAND DEPARTMENT",
+       "payee": "(external services vendor)",
+       "amount": 7000000,
+       "why": "$7M off-contract concentrated payment that dwarfs peer transactions in the agency category -- confirm procurement vehicle."
+      }
+     ]
+    }
+   ],
+   "notes": "CALIBRATION: All three predicates were run against mart/hv_base.parquet. Headline stats restricted to amount>=100000 and reported against the 306,604-row >=$100K population. Moderate base = 18,685 rows (6.09%, $16.6B) -> proper 'moderate' band (<15%). Severe = 588 rows (0.19%, $2.07B) and very-severe = 274 rows (0.09%, $1.61B) -> both well under the 5% 'severe' ceiling. The three markers are NESTED (very-severe subset of severe subset of base), so they should compose as severity TIERS, not be summed.\n\nKEY GUARDRAIL FINDING (false-positive class avoided): the un-guarded severe predicate was dominated by PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM paying ITSELF $99M (category2='INTRASTATE DISTRIBUTIONS', 99% share) -- scheduled intra-governmental pension unfunded-liability transfers miscoded under OTHER OPERATING EXPENDITURES. These are benign-by-construction, exactly the ZTE/Aztec class of error in spirit. Two guardrails neutralize them: coalesce(category2,'')<>'INTRASTATE DISTRIBUTIONS' and payee IS DISTINCT FROM agency. Together they removed ~1,247 false positives from the severe tier (1,835 -> 588). The vid IS NOT NULL gate does double duty: it proves an external vendor AND mechanically excludes FY2019/FY2020 where vid is NULL system-wide, so the markers degrade gracefully (suppress) rather than mis-fire in thin years -- verified: zero FY2019/FY2020 rows survive.\n\nNAME MATCHING: no substring/name matching is used anywhere; all category gating is exact-string equality on category1/category2, immune to the Aztec/ZTE substring problem.\n\nOVERLAP WITH OTHER FAMILIES: (a) vendor_first_appearance overlaps a 'new-vendor' family -- ~4,951 base rows are first-appearance; consider that family for vendors brand-new to the state rather than double-counting here. (b) vendor_share>=50% overlaps a 'vendor-dominance/single-source' family. (c) robust_z>=10 overlaps a generic 'statistical-outlier' family (14.4% baseline) -- I use it only as the top tier's amplifier, not standalone, to avoid noise. (d) The Lottery/Bank-of-America prize/resale cluster (category2 RESALE SUPPLIES) and ADOT FEDERAL AID/M-RARF construction draws are the two most explainable residuals reviewers will see; both are operationally plausible (payment-processing mechanics; construction on contracts not keyed to contract_number) and should be de-prioritized but not auto-excluded.\n\nFEATURES NEEDED BUT ABSENT FROM MART: (1) A reliable contract-coverage flag -- contract_number is only ~8-30% populated even in good years, so its absence is a weak proxy for 'truly off-contract'; a 'vendor-has-ANY-contract-with-this-agency-this-year' boolean would sharpen this materially. Placeholder name: vendor_agency_has_contract_year. (2) A solicitation/procurement-method code (sole-source vs competitive) would let us target the AG finding directly; not in mart. (3) A self-payee / intra-governmental flag would be cleaner than the agency=payee + INTRASTATE heuristic; placeholder: is_intragovernmental. (4) object_no (procurement object detail) is FY2016-2018 only, so not usable as a cross-year guardrail. All three returned predicates use only existing hv_base columns and were executed successfully; no placeholder columns appear in the predicates themselves."
+  },
+  {
+   "family": "Entity / payee-name anomaly",
+   "markers": [
+    {
+     "marker_id": "person_name_payee_in_discretionary",
+     "name": "Individual-person-style payee in discretionary/non-benefit category (possible related party)",
+     "sql_predicate": "amount >= 100000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT','EMPLOYEE RELATED EXPENDITURES') AND payee ~ '^[A-Z][A-Z''-]+ [A-Z][A-Z''-]+$' AND NOT regexp_matches(payee, '(INC|LLC|LLP|CORP|COMPANY|LTD|PLLC|ASSOC|GROUP|TRUST|BANK|COUNTY|UNIV|DEPT|SERVICE|SYSTEM|SOLUTION|TECH|CONSULT|ENTERPRISE|HOLDING|PARTNER|FUND|FOUNDATION|HOSPITAL|CLINIC|CENTER|CENTRE|INSTITUTE|SCHOOL|DISTRICT|HEALTH|MEDICAL|INSURANCE|CONSTRUCT|ELECTRIC|SUPPLY|EQUIP|PRODUCT|INDUSTR|MGMT|MANAGEMENT|CAPITAL|FINANCIAL|REALTY|PROPERT|MOTOR|AUTO|ENERGY|POWER|WATER|COMMUNICAT|MEDIA|PRESS|ENGINEER|ARCHITECT|PHARM|NETWORK|SOFTWARE|DESIGN|CONTRACT|BUILDER|FARM|RANCH|MARKET|STORE|FOOD|INTERNATIONAL|NATIONAL|GLOBAL|AMERICA|DIGITAL|CREATIVE|DEVELOP|LEARNING|DISTRIBUT|NEXTEL|INSIGHT|VENDOR|CUSTOMER|MISC|VARIOUS|REDACTED|TRANSPORT|MINISTR|CASINO|RISK|LENS|PIPELINE|STORAGE|TRAURIG|ROCK|CHEVROLET|KENWORTH)')",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2025 (all years incl. thin FY2019/2020; FY2022 absent from mart). Marker depends only on payee string + category1, NOT on vid/appr_type/fp_canon, so it runs and is valid in every available year.",
+     "rationale": "A payee that parses as a two-token all-caps personal name (FIRSTNAME LASTNAME) receiving a >=$100K discretionary-procurement disbursement is a related-party / direct-to-individual lead. All payees in this mart are uppercase and corporate names dominate, so a clean two-token alpha string with no business-entity keyword is a strong structural signal of a natural person rather than a firm. Real examples (TALONYA ADAMS $300K Risk Management, KENNETH PORTER $398K Corrections AOOE, JOSE SORTO $604K ADOT freeway construction, JOANNE BOALER $167K Governor ARPA, JAMES ADAMS $283K Land Dept broker commissions) are exactly the items an auditor would confirm: many are legitimate (legal settlements/judgments paid to named plaintiffs, expert witnesses, individual brokers) but each warrants a confirm because individuals receiving six-figure discretionary procurement money is where related-party/ghost-vendor risk concentrates. Calibrated to 0.069% of the >=$100K population (211 rows / 54 distinct names), well inside the 'severe' rule-of-thumb band, so it is discriminating not noise.",
+     "guardrails": "(1) WORD-BOUNDARY/regexp_matches business-keyword exclusion (NOT substring) directly answers the ZTE/Aztec failure mode: company names containing INC/LLC/CORP/COUNTY/HEALTH/etc. are excluded so 'PITNEY BOWES'/'RR DONNELLEY'/'GRANITE CONSTRUCTION' do not fire. (2) Scoped to DISCRETIONARY categories only; entitlement/benefit categories (AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE) and PERSONAL SERVICES payroll are excluded, so privacy-redacted benefit recipients are never flagged. (3) Excludes 'NAME REDACTED'/'N/A' sentinels via the keyword list. (4) SEVERITY HELD AT 3 (not 5) BY DESIGN: legitimate sole proprietors, individual contractors, expert witnesses, and litigation-settlement payees with common surnames exist; this is a lead-to-confirm, never an accusation. (5) CONFIRMATION STEP (recommended, requires a feature not in mart): validate split_part(payee,' ',1) against a US Census/SSA given-name gazetteer (a needs_firstname_gazetteer flag) to raise precision and drop two-token brand names like 'CUSTOM STORAGE'/'ORIGAMI RISK' that survive the keyword filter. With a gazetteer the fire set tightens further (~23 rows on a tiny demo list), so the structural predicate here is the recall-side net and the gazetteer is the precision-side confirm. (6) Independent of vid/appr_type, so it never penalizes a thin-year (FY19/20) row for a system-wide-absent field.",
+     "calibrated_count": 211,
+     "calibrated_exposure_usd": 85102650.27,
+     "examples": [
+      {
+       "agency": "DEPT OF TRANSPORTATION",
+       "payee": "JOSE SORTO",
+       "amount": 604500,
+       "why": "Individual-person payee receiving $604.5K under M-RARF freeway-construction appropriation (CAPITAL OUTLAY); a natural-person name on a six-figure construction disbursement is a related-party/direct-payment item to confirm (e.g. right-of-way land purchase vs. individual contractor)."
+      },
+      {
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "KENNETH PORTER",
+       "amount": 398584.57,
+       "why": "Same individual-name payee appears repeatedly (FY23-24) totaling ~$877K across NON-HEALTH CARE AOOE and CAPITAL OUTLAY APPN; recurring six-figure payments to a named individual in discretionary operating/capital lines warrant vendor-identity confirmation."
+      },
+      {
+       "agency": "DEPT OF ADMINISTRATION",
+       "payee": "TALONYA ADAMS",
+       "amount": 300000,
+       "why": "Two identical $300K payments under RISK MANAGEMENT LOSSES AND PREMIUMS to a named individual; likely a legitimate litigation settlement but the duplicate-amount + individual-payee combination is a confirm-worthy lead (settlement docs / no-related-party attestation)."
+      },
+      {
+       "agency": "LAND DEPARTMENT",
+       "payee": "JAMES ADAMS",
+       "amount": 283000,
+       "why": "$283K to an individual under BROKER COMMISSIONS; individual broker payments are legitimate by nature but six-figure commissions to a natural person are exactly the population to confirm against the broker registry."
+      },
+      {
+       "agency": "GOVERNOR'S OFFICE",
+       "payee": "JOANNE BOALER",
+       "amount": 167296.06,
+       "why": "$167K to a named individual from the CORONAVIRUS STATE & LOCAL FISCAL RECOVERY FUND (ARPA) appropriation; individual payee on federal-recovery discretionary grant money is a heightened-scrutiny confirm item."
+      }
+     ]
+    },
+    {
+     "marker_id": "placeholder_masked_payee_external_rail_discretionary",
+     "name": "Generic/placeholder/masked payee on an EXTERNAL payment rail in discretionary procurement",
+     "sql_predicate": "amount >= 100000 AND category1 IN ('PROFESSIONAL AND OUTSIDE SERVICES','OTHER OPERATING EXPENDITURES','CAPITAL OUTLAY','CAPITAL EQUIPMENT','NON-CAPITAL EQUIPMENT') AND payment_method IN ('ACH','WARRANT','PAYMENT') AND (payee IS NULL OR upper(payee) IN ('N/A','NA','NONE','NULL','UNKNOWN','TBD','VOID') OR regexp_matches(payee, '(^|\\s)(MISC|MISCELLANEOUS|VARIOUS|VENDOR|CUSTOMER|PAYEE|PLACEHOLDER|TEMP|TEMPORARY|TEST|DUMMY|DEFAULT|SUNDRY|PCARD|FUEL VENDOR)(\\s|$)'))",
+     "severity_weight": 3,
+     "applicable_years": "FY2016-2025 (all years incl. thin FY2019/2020; FY2022 absent). Depends only on payee + payment_method + category1; none are NULL in thin years for the external-rail subset, so it runs cleanly every year.",
+     "rationale": "An external disbursement (ACH/WARRANT/PAYMENT \u2014 money actually leaving the state to a third party) of >=$100K in a discretionary procurement category where the payee is a placeholder ('N/A', NULL) or a deliberately masked aggregate ('MISCELLANEOUS VENDOR', 'MISCELLANEOUS CUSTOMER', 'PCARD VENDOR PSA', 'FUEL VENDOR PSA') means a material sum left the door with no identified beneficiary. Examples: STATE TREASURER $2.23M WARRANT to 'MISCELLANEOUS VENDOR' (Fund Administration), DEPT OF CORRECTIONS two $750K WARRANTs to 'MISCELLANEOUS VENDOR' (Non-Health-Care AOOE), LAND DEPARTMENT multiple $300-500K WARRANTs to 'MISCELLANEOUS CUSTOMER' (Broker Commissions). These are review-worthy because an unidentified payee defeats vendor-master controls and is the canonical place ghost/fictitious-vendor or split-disbursement schemes hide. Calibrated to 0.055% of the >=$100K population (169 rows, $27.3M) \u2014 squarely 'severe'-tier discriminating.",
+     "guardrails": "(1) CRITICAL RAIL GUARDRAIL: restrict to external rails ('ACH','WARRANT','PAYMENT') and EXCLUDE internal-accounting rails ('INTERNAL','JOURNAL VOUCHER','COST ALLOCATION'). Without this the marker balloons to ~14,900 rows / $8.9B because 'N/A' is the normal, benign placeholder on internal cost-allocation and inter-fund transfer entries (no external payee exists by design). The rail filter is what converts a benign-by-construction artifact into a real lead. (2) Scoped to discretionary procurement categories only; entitlement/transfer/debt-service categories where placeholders are routine are excluded. (3) WORD-BOUNDARY regex ((^|\\s)...(\\s|$)) so 'VENDOR'/'CUSTOMER' match only as standalone tokens and never as a substring inside a legitimate firm name (e.g. avoids flagging a real company whose name contains 'VENDOR'). (4) Independent of vid/appr_type, so no thin-year penalty. (5) Severity 3, not 5: many of these are legitimate pooled/p-card or escrow-style aggregations and broker-commission clearing accounts \u2014 each is an item to confirm (who was actually paid?), not a finding.",
+     "calibrated_count": 169,
+     "calibrated_exposure_usd": 27289641.96,
+     "examples": [
+      {
+       "agency": "STATE TREASURER",
+       "payee": "MISCELLANEOUS VENDOR",
+       "amount": 2230352.74,
+       "why": "$2.23M WARRANT (external rail) under FUND ADMINISTRATION with no identified payee; a multi-million-dollar disbursement to a masked aggregate defeats the vendor master and is a top confirm item (who received the funds?)."
+      },
+      {
+       "agency": "DEPT OF CORRECTIONS",
+       "payee": "MISCELLANEOUS VENDOR",
+       "amount": 750000,
+       "why": "Two separate $750K WARRANTs to 'MISCELLANEOUS VENDOR' under NON-HEALTH CARE AOOE; round-dollar six-figure payments to an unidentified payee on an external rail warrant supporting-document review."
+      },
+      {
+       "agency": "LAND DEPARTMENT",
+       "payee": "MISCELLANEOUS CUSTOMER",
+       "amount": 500000,
+       "why": "$500K WARRANT under BROKER COMMISSIONS to a masked 'CUSTOMER' placeholder; recurring $300-500K masked-payee broker-commission warrants are a confirm cluster (identify the actual commission recipients)."
+      },
+      {
+       "agency": "DEPT OF PUBLIC SAFETY",
+       "payee": "PCARD VENDOR PSA",
+       "amount": 294902.27,
+       "why": "$294.9K ACH to a p-card aggregation placeholder under DPS JOINT FUND; a single $295K p-card-pool ACH should be decomposed to confirm the underlying merchants and that no single transaction exceeds card limits."
+      },
+      {
+       "agency": "DEPT OF ECONOMIC SECURITY",
+       "payee": "MISCELLANEOUS VENDOR",
+       "amount": 325000,
+       "why": "$325K WARRANT to unidentified vendor under DDD/LTC OPERATING CLR; an unnamed payee on a quarter-million external disbursement in a discretionary operating line is a clean lead-to-confirm."
+      }
+     ]
+    }
+   ],
+   "notes": "OVERLAPS WITH OTHER FAMILIES: (a) The placeholder-payee marker correlates with the 'manual/unusual rail' family only at its boundary \u2014 by design I REQUIRE external rails and EXCLUDE the manual internal rails (JV/INTERNAL/COST ALLOCATION), so it is complementary to, not duplicative of, a manual-rail marker. (b) Both markers will co-occur with round-dollar markers (several examples are exact $300K/$500K/$750K); when composing the overall score, treat round-dollar as an amplifier on these payee anomalies rather than double-counting. (c) The person-name marker can overlap a 'vendor_first_appearance' / single-txn-vendor marker (most named individuals are one-shot payees) \u2014 that combination should RAISE confidence, not be deduped away.\n\nFEATURES NEEDED BUT ABSENT FROM THE MART:\n1) payee_dba_name IS 100% NULL system-wide (0 of 1,015,977 rows populated). The requested 'DBA != legal name' sub-marker is therefore UNRUNNABLE on this mart. Placeholder predicate if the field is ever backfilled: `payee_dba_name IS NOT NULL AND upper(regexp_replace(payee_dba_name,'[^A-Z0-9]','','g')) <> upper(regexp_replace(payee,'[^A-Z0-9]','','g'))` \u2014 fires when the doing-business-as name normalizes differently from the legal payee (classic shell/pass-through signal). Add payee_dba_name to the mart to enable.\n2) FIRST-NAME GAZETTEER: the person-name marker's precision is capped because I cannot ship a multi-thousand-name given-name dictionary inline as a SQL predicate. Recommend adding a boolean column `payee_token1_is_given_name` = (split_part(payee,' ',1) is in a US SSA/Census given-name list). Predicate would then become the structural pattern AND payee_token1_is_given_name, raising precision and dropping two-token brand names ('CUSTOM STORAGE','ORIGAMI RISK','WW CLYDE') that currently survive the keyword blocklist. The inline keyword blocklist in the shipped predicate is an interim approximation tuned on observed false positives and WILL need maintenance; the gazetteer column is the durable fix.\n3) NEAR-DUPLICATE VENDOR-NAME VARIANTS (the 'shell-company variant' sub-family): I prototyped it (normalize payee to an alnum key stripping INC/LLC/CORP suffixes, group by key, flag keys with >=3 distinct raw forms). RESULT: it is NOT recommended as a standalone marker on this mart. The collisions are almost entirely benign punctuation/escaping/suffix data-entry noise on LEGITIMATE large vendors \u2014 e.g. 'CENPATICO OF ARIZONA, INC.' vs 'CENPATICO OF ARIZONA\\\\, INC' vs 'CENPATICO OF ARIZONA LLC' ($1.85B, a real Medicaid MCO), 'WELLS FARGO BANK, N.A.' variants, 'GRANITE CONSTRUCTION CO/COMPANY'. Flagging these would reproduce the false-positive class the engagement warns against (benign-by-construction). It also cannot be expressed as a single-row boolean predicate (requires a self-join/window over the population), so it does not fit the compose-into-one-query constraint. If pursued, it belongs in a separate vendor-master-dedup pass with a clean normalized vendor key, NOT in this row-level marker set. The raw '\\\\,' escaped-comma artifacts also indicate an upstream ingestion-quality issue worth fixing before any name-similarity work.\n\nCALIBRATION REASONING: Headline stats restricted to amount>=100000 against the 306,604-row >=$100K population per instructions. Person-name = 211 rows / 0.069%; placeholder-external-rail = 169 rows / 0.055%. Both sit far below the 5% 'severe' ceiling, confirming they are discriminating leads rather than population-level noise. I held both at severity 3 (not 5) because each family contains a real benign sub-population (legitimate sole proprietors / litigation-settlement individuals; legitimate pooled p-card and broker-commission clearing accounts) \u2014 these are confirm-worthy leads, never findings of fraud, and nothing here names a wrongdoer. Both markers verified stable across all fiscal years including thin FY2019/2020 (they depend on no field that is system-wide NULL in those years), so no graceful-degradation gating is required."
+  },
+  {
+   "family": "Benford / digit-pattern at stratum",
+   "markers": [
+    {
+     "marker_id": "agency_benford_digit_nonconformity",
+     "name": "Agency-level Benford digit nonconformity (corroborated first + second digit)",
+     "sql_predicate": "agency_benford_flag = TRUE AND amount >= 100000 AND category1 NOT IN ('AID TO ORGANIZATIONS AND INDIVIDUALS','TRANSFERS OUT','DEBT SERVICE')",
+     "severity_weight": 2,
+     "applicable_years": "FY2016-2018, FY2021, FY2023-2025 AND FY2019-2020. The agency_benford_flag depends ONLY on agency, amount, and first_digit, all of which are fully populated (0 NULLs) in every year including the thin FY2019/FY2020. It does NOT use vid, appr_type_canon, or fp_canon, so it degrades gracefully and runs in thin years. FY2022 is absent from the mart entirely. MAD is computed pooled across ALL available years per agency to maximize sample size (a population diagnostic, not a per-year test).",
+     "rationale": "Within the >=$100K population, each agency's leading-digit and second-digit frequency distribution is compared to the Benford expectation via Mean Absolute Deviation (MAD). An agency is flagged only when BOTH its first-digit MAD AND its second-digit MAD fall in the upper quartile (>p75) of the agency peer distribution, with a minimum sample of n>=500 high-value txns. Requiring corroboration across two independent digit tests is the core anti-false-positive control: it rejects agencies that deviate on only one test (e.g. NORTHERN ARIZONA UNIVERSITY has high second-digit MAD 0.0757 but only moderate first-digit MAD 0.0460, so it is correctly NOT flagged). Absolute Nigrini thresholds (MAD>0.015 = nonconformity) are NOT used because a population truncated at $100K is inherently not full-range Benford data \u2014 every one of the 34 qualifying agencies exceeds 0.015, so the absolute test has zero discrimination here. A relative (peer-percentile) test is the correct stratum design. The flag elevates an agency's discretionary transactions modestly; it is a directional 'where to look first' signal that estimated/rounded/fabricated amounts may be over-represented, never a per-transaction accusation. 5 agencies are flagged: SCHOOLS FOR THE DEAF AND THE BLIND (mad1 0.1148/mad2 0.0477), CORPORATION COMMISSION (0.1097/0.0568), DEPT OF VETERANS SERVICES (0.1065/0.0503), ATTORNEY GENERAL (0.0960/0.0336), DEPT OF PUBLIC SAFETY (0.0902/0.0422).",
+     "guardrails": "(1) ENTITLEMENT EXCLUSION: even within a flagged agency, scheduled/entitlement categories (AID TO ORGANIZATIONS AND INDIVIDUALS, TRANSFERS OUT, DEBT SERVICE) are excluded \u2014 large scheduled amounts are expected and Benford conformity is not a fraud signal there; this drops exposure from $5.24B to $1.97B by removing $3.0B of TRANSFERS OUT. (2) CORROBORATION: requires BOTH first- AND second-digit MAD above peer p75, so a single-test outlier cannot trigger the flag (prevents the NAU-type false positive). (3) MINIMUM SAMPLE: n>=500 high-value txns per agency, so digit frequencies are statistically meaningful and small agencies cannot be flagged on noise. (4) NO NAME MATCHING: this marker keys on agency name as an exact categorical grouping, not substring \u2014 so it is immune to the 'Aztec'->'ZTE' substring class of error. (5) THIN-YEAR SAFE: uses no field that is NULL in FY2019/2020. (6) LOW WEIGHT: severity 2, never standalone \u2014 it elevates an agency's transactions modestly and should only escalate when combined with a transaction-level signal (round-amount, vendor-concentration, duplicate). (7) PAYROLL CAVEAT (note, not hard-coded): PERSONAL SERVICES is the largest discretionary category in the flagged set ($882M); payroll amounts follow salary schedules, so reviewers should down-weight digit signals on PERSONAL SERVICES / EMPLOYEE RELATED EXPENDITURES and focus on PROFESSIONAL AND OUTSIDE SERVICES, OTHER OPERATING EXPENDITURES, CAPITAL OUTLAY/EQUIPMENT (procurement-only subset = 2,763 txns / $846.6M).",
+     "calibrated_count": 9070,
+     "calibrated_exposure_usd": 1968100000,
+     "examples": [
+      {
+       "amount": 750000,
+       "agency": "DEPT OF PUBLIC SAFETY",
+       "payee": "MOTOROLA SOLUTIONS INC",
+       "why": "Round $750K under 'LAND MOBILE RADIO EXPANSION AND UPGRADES' (OTHER OPERATING EXPENDITURES) at a flagged agency. A legitimate-looking procurement, but the round amount plus the agency's digit nonconformity makes it a confirm-the-basis lead, not an accusation."
+      },
+      {
+       "amount": 650000,
+       "agency": "ATTORNEY GENERAL (DEPT OF LAW)",
+       "payee": "N/A",
+       "why": "Round $650K against 'OPERATING LUMP SUM APPROPRIATION' (OTHER OPERATING EXPENDITURES) with no named payee. Lump-sum + round + N/A payee at a digit-nonconformant agency is the estimated/fabricated-amount pattern this family targets; review the supporting detail."
+      },
+      {
+       "amount": 900000,
+       "agency": "DEPT OF PUBLIC SAFETY",
+       "payee": "N/A",
+       "why": "Round $900K CAPITAL EQUIPMENT with NULL appropriation and no named payee at a flagged agency (round_100k = true). Item to confirm: what asset and which vendor underlie an exactly-$900K capital outlay."
+      },
+      {
+       "amount": 520000,
+       "agency": "ATTORNEY GENERAL (DEPT OF LAW)",
+       "payee": "TRANSACTION RECORD ANALYSIS CENTER INC",
+       "why": "$520K (round-10k) OTHER OPERATING EXPENDITURES, NULL appropriation, at a flagged agency; same payee also appears at exactly $500K. Repeated round amounts to one payee in a digit-nonconformant agency warrant a look at how the amounts were set."
+      },
+      {
+       "amount": 500000,
+       "agency": "SCHOOLS FOR THE DEAF AND THE BLIND",
+       "payee": "N/A",
+       "why": "Exactly $500K CAPITAL OUTLAY, NULL appropriation, no named payee, at the agency with the highest first-digit MAD (0.1148). Confirm the underlying capital project and vendor for this exactly-round capital amount."
+      }
+     ]
+    }
+   ],
+   "notes": "PREDICATE / PLACEHOLDER COLUMN: agency_benford_flag is NOT in the mart and must be added. It is a boolean computed once per agency over the >=$100K population, then joined back to every row by agency. Precise definition: (a) restrict to amount>=100000; (b) FIRST-DIGIT MAD per agency = mean over digits 1-9 of |observed_freq - benford_p1| where benford_p1 = log10(1+1/d) (0.30103,0.17609,0.12494,0.09691,0.07918,0.06695,0.05799,0.05115,0.04576); (c) SECOND-DIGIT MAD per agency = mean over digits 0-9 of |observed_freq - benford_p2| where benford_p2 = (0.11968,0.11389,0.10882,0.10433,0.10031,0.09668,0.09337,0.09035,0.08757,0.08500), second digit taken as substr of the integer-dollar string position 2; (d) keep agencies with n>=500; (e) compute p75 of mad1 and p75 of mad2 across those agencies; (f) agency_benford_flag = (mad1 > p75(mad1) AND mad2 > p75(mad2)). With current data this resolves to exactly 5 agencies: SCHOOLS FOR THE DEAF AND THE BLIND, CORPORATION COMMISSION, DEPT OF VETERANS SERVICES, ATTORNEY GENERAL (DEPT OF LAW), DEPT OF PUBLIC SAFETY. The exact SQL was run against mart/hv_base.parquet and verified; an equivalent fully-inlined predicate is `agency IN ('SCHOOLS FOR THE DEAF AND THE BLIND','CORPORATION COMMISSION','DEPT OF VETERANS SERVICES','ATTORNEY GENERAL (DEPT OF LAW)','DEPT OF PUBLIC SAFETY')` if a precomputed column is not desired, but recompute the flag whenever new fiscal years load.\\n\\nCALIBRATION: 34 agencies clear the n>=500 floor; median first-digit MAD 0.0565, p90 0.0960. The corroborated p75-on-both rule selects 5 agencies. In the >=$100K population these 5 hold 11,319 txns / $5.24B total; after the entitlement exclusion the marker fires on 9,070 txns / $1,968.1M = 3.0% of the 306,604-row >=$100K population (within the <5% 'severe' band, but weighted 2 because it is an agency-level diagnostic, not a transaction-specific signal). Procurement-only subset (PROF/OUTSIDE SVCS, OTHER OPERATING, CAPITAL OUTLAY/EQUIP) = 2,763 txns / $846.6M.\\n\\nOVERLAPS: This family deliberately co-fires with (1) round-amount markers (is_round_100k/is_round_1m) \u2014 digit-nonconformity is the population-level explanation for which agencies the round-amount markers cluster in, so combining them is corroborative, not double-counting; weight the COMBINATION higher than either alone. (2) vendor-concentration markers (vendor_share_of_agency_year) \u2014 a single dominant vendor can itself bend an agency's digit distribution. (3) robust_z peer-outlier markers within agency x category1. Recommended composition: use agency_benford_flag as a multiplier/elevator on transaction-level markers within the agency, NOT as a standalone lead generator.\\n\\nFEATURES THAT WOULD STRENGTHEN THIS BUT ARE ABSENT FROM THE MART: (1) a chi-square or Nigrini-Z statistic and p-value per agency (currently only MAD is derivable); (2) a per-agency 'excess repeated-digit' count (e.g. share of amounts whose digits are all identical or of form ABABAB) \u2014 repeated-digit excess is a classic fabrication tell but requires a dedicated computed column; (3) per-agency-PER-YEAR digit MAD to detect a single anomalous year within an otherwise-conformant agency (pooling across years can mask a one-year spike). All three should be added as precomputed agency(/year)-level columns and joined by agency.\\n\\nDATA-QUALITY HONESTY: first_digit and amount have 0 NULLs in all 9 present fiscal years, so the flag computes identically in thin years FY2019/2020; no thin-year suppression is needed and none is applied. The marker uses no NULL-in-thin-year field. No substring name matching is used anywhere (agency is an exact categorical key), so the 'Aztec'->'ZTE' false-positive class cannot occur here."
+  }
+ ],
+ "model": {
+  "marker_weights": [
+   {
+    "marker_id": "mag_band_base_weight",
+    "weight": 0,
+    "reason": "NOT an additive marker \u2014 it is the materiality BASE WEIGHT, not part of marker_sum. Used only as the mag_band rank that selects the row's magnitude band in the Tier matrix (M1=4.0..M6=0.5 as documented but the BAND, not the points, drives tiering). Excluded from the weighted marker sum to prevent a large amount alone manufacturing a risk flag."
+   },
+   {
+    "marker_id": "category_risk_multiplier",
+    "weight": 0,
+    "reason": "NOT additive \u2014 it is the MULTIPLIER applied to marker_sum (range 0.3-1.5 per category1). risk_score = marker_sum * category_risk_multiplier. This is what suppresses entitlement (the $4.66B TRANSFERS OUT scores 0.0; a $318M AID payment firing 3 marker points scores only 1.2). Verified live."
+   },
+   {
+    "marker_id": "mag_x_category_severe",
+    "weight": 0,
+    "reason": "Folded into the Tier MATRIX (magnitude x risk), not the marker sum. '>=$10M discretionary' is exactly M1-M3 x discretionary-category, which the matrix already captures via mag_band rank + category multiplier. Adding it as a separate point would double-count magnitude, which already drives the tier axis."
+   },
+   {
+    "marker_id": "mag_x_category_moderate",
+    "weight": 0,
+    "reason": "Same as severe \u2014 subsumed by the magnitude axis of the Tier matrix. '>=$1M discretionary' = M1-M4 x discretionary; counting it as marker points would re-introduce dollar-driven inflation the multiplier design explicitly avoids."
+   },
+   {
+    "marker_id": "round_1m_discretionary_arms_length",
+    "weight": 5,
+    "reason": "Round family contributes ONE value = the max tier that fires (markers are disjoint by construction: round_1m, round_100k-not-1m, whole-not-10k). Severity 5 faithful to spec; arms-length + ext-rail + discretionary guardrails intact. 195 disc hits."
+   },
+   {
+    "marker_id": "round_100k_sub1m_discretionary_arms_length",
+    "weight": 4,
+    "reason": "Disjoint middle tier of the round family (NOT is_round_1m). Severity 4 per spec. Contributes only when the $1M tier did not fire. 1,087 disc hits."
+   },
+   {
+    "marker_id": "whole_dollar_noncents_discretionary",
+    "weight": 3,
+    "reason": "Broadest disjoint round tier (NOT is_round_10k). Severity 3 per spec. Round family takes GREATEST of the three so a single estimate never scores 5+4+3."
+   },
+   {
+    "marker_id": "dup_diffday_discretionary",
+    "weight": 5,
+    "reason": "Duplicate family contributes its MAX tier only. Different-day exact-dup to a procurement vendor is the strongest dup lead; severity 5 retained. Rare (7 rows) so no over-firing."
+   },
+   {
+    "marker_id": "dup_sameday_discretionary_external",
+    "weight": 3,
+    "reason": "Same-day external dup, severity 3, mutually exclusive with diffday by construction. 494 rows."
+   },
+   {
+    "marker_id": "dup_diffday_all_incl_entitlement",
+    "weight": 2,
+    "reason": "Broad coverage net, severity 2. Strict superset of dup_diffday_discretionary, so the family GREATEST collapse means an entitlement diffday scores 2 and a discretionary diffday scores 5 \u2014 never both."
+   },
+   {
+    "marker_id": "sole_source_discretionary_concentration",
+    "weight": 4,
+    "reason": "Concentration family MAX tier. >=20% external discretionary share, severity 4 per spec. Bank/pension/self-pay word-boundary suppression intact (BANK OF AMERICA matches, BANNER HEALTH does not)."
+   },
+   {
+    "marker_id": "vendor_agency_dependency_exposure",
+    "weight": 2,
+    "reason": "Lower-severity dependency companion (>=33% any non-entitlement, banks retained as exposure). Severity 2. Family takes GREATEST(sole_source=4, dependency=2) so a row firing both scores 4, not 6."
+   },
+   {
+    "marker_id": "appropriation_near_monopoly",
+    "weight": 0,
+    "reason": "NOT RUNNABLE on current mart (requires vendor_approp_year_share at the appropriation_1_code x year x vid grain, which the mart does not expose). Calibrated count 0. Carry as a future feature; contributes nothing today so it cannot inflate scores."
+   },
+   {
+    "marker_id": "new_vendor_dominant_agency_share",
+    "weight": 5,
+    "reason": "New-vendor family MAX tier, severity 5. fiscal_year>2016 (drops FY2016 left-censoring); FY2021 contribution HALVED (floor(w/2)) to neutralize the post-NULL-vid-gap re-appearance artifact (3,893 FY21 rows down-weighted). vid IS NOT NULL keeps it dark in FY2019/2020."
+   },
+   {
+    "marker_id": "new_vendor_large_first_payment_discretionary",
+    "weight": 3,
+    "reason": "Broad new-vendor net, severity 3. Superset of the dominant-share marker; family GREATEST collapse means a dominant new vendor scores 5 (not 5+3). Same FY2021 halving and FY2016 exclusion."
+   },
+   {
+    "marker_id": "concentrated_short_tenure_vendor",
+    "weight": 4,
+    "reason": "Short-tenure (<=2yr active) >=$2M JV/SPV catcher, severity 4. Orthogonal to first-appearance (catches prior-year-first JVs like Coffman Ames); family takes GREATEST so it does not stack additively with the first-appearance tiers."
+   },
+   {
+    "marker_id": "p13_adjustment_period_highvalue",
+    "weight": 3,
+    "reason": "Year-end family MAX tier. Broad period-13 book-entry flag, severity 3. fp_canon-gated so it is dark in FY2019/2020 (fp_canon NULL) \u2014 graceful degradation, never penalizes the thin years."
+   },
+   {
+    "marker_id": "p13_discretionary_closing_entry",
+    "weight": 4,
+    "reason": "Sharpened period-13 (discretionary only), severity 4. Family GREATEST(p13_all=3, p13_disc=4, june_round=3) collapses to 4 for a discretionary closing entry; the broad p13 never adds on top."
+   },
+   {
+    "marker_id": "june_useitorloseit_round_discretionary",
+    "weight": 3,
+    "reason": "June round-dollar discretionary use-it-or-lose-it, severity 3. Part of the year-end family GREATEST collapse; overlaps the round family but year-end and round are SEPARATE evidence axes (timing vs amount-shape) so they may both contribute one value each."
+   },
+   {
+    "marker_id": "manual_rail_discretionary_procurement",
+    "weight": 4,
+    "reason": "Manual-rail family MAX tier, severity 4. CRITICAL DEDUP: when triple-gap (accountability sev 5) fires, w_rail is set to 0 because the triple-gap IS BUILT FROM manual-rail+no-vid+no-payee \u2014 verified 8,016/8,016 triple-gap rows also fire manual-disc-rail, so summing both double-counts. Rail subsumed into the gap contribution."
+   },
+   {
+    "marker_id": "manual_rail_nonentitlement_broad",
+    "weight": 3,
+    "reason": "Broader manual-rail net (PERSONAL SERVICES/TRAVEL etc.), severity 3. Family GREATEST(disc=4, broad=3); also zeroed when triple-gap subsumes it."
+   },
+   {
+    "marker_id": "nonstandard_rail_null_or_warrant_discretionary",
+    "weight": 2,
+    "reason": "NULL/WARRANT discretionary low-weight corroborator, severity 2. Part of rail-family GREATEST. Documented as needing a co-marker before escalation; the low weight encodes that."
+   },
+   {
+    "marker_id": "peer_outlier_discretionary_zextreme",
+    "weight": 4,
+    "reason": "robust_z>=20 + ac_n>=8 discretionary peer outlier, severity 4. Pure-amount signal, runs in all years incl. thin (robust_z is amount-derived). Independent evidence axis (peer deviation) so it contributes its own value; corroborates concentration on AshBritt/Fondomonte."
+   },
+   {
+    "marker_id": "generic_placeholder_payee_on_discretionary",
+    "weight": 4,
+    "reason": "Accountability family. Placeholder/no-payee on discretionary, severity 4. Family takes MAX(triple-gap=5, placeholder=4, off-contract=2). When triple-gap fires (vid NULL + manual + no payee) the placeholder is its superset, so the family value is 5 once, not 5+4."
+   },
+   {
+    "marker_id": "triple_gap_nullvid_manualrail_noPayee_discretionary",
+    "weight": 5,
+    "reason": "Highest accountability tier, severity 5. Strict subset of placeholder-payee AND of manual-rail-disc. Implemented as an ESCALATOR: it sets the accountability-family value to 5 AND zeros the separately-counted manual-rail contribution (8,016 rows deduped). fiscal_year NOT IN (2019,2020) hard-coded so it never fires on the thin-year vid gap."
+   },
+   {
+    "marker_id": "large_procurement_no_contract_reference",
+    "weight": 2,
+    "reason": "Named vendor + no contract_number, severity 2 (contract_number only ~2-6% populated, so absence is weak evidence). Disjoint from placeholder markers (named vs unnamed payee). Lowest tier of the accountability family GREATEST."
+   },
+   {
+    "marker_id": "disc_proc_offcontract_base",
+    "weight": 2,
+    "reason": "Off-contract discretionary procurement (moderate), severity 2. Heavily overlaps the accountability 'no contract' marker and the concentration family on the SAME vendors (UnitedHealthcare, Active Resource Mgmt). Treated as ONE off-contract evidence axis: contributes via the accountability-family GREATEST, not as an independent add, to avoid triple-counting the missing-contract fact."
+   },
+   {
+    "marker_id": "disc_proc_offcontract_concentrated_large",
+    "weight": 0,
+    "reason": "NESTED tier of disc_proc_offcontract_base (off-contract + >=$1M + >=20% share). Its concentration component is already counted by sole_source_discretionary_concentration (sev 4) and its off-contract component by the accountability family. Zero independent weight \u2014 it is a tier label, not new evidence."
+   },
+   {
+    "marker_id": "disc_proc_offcontract_concentrated_peer_outlier",
+    "weight": 0,
+    "reason": "NESTED top tier (adds robust_z>=10). Its peer-outlier component is already counted by peer_outlier_discretionary_zextreme and its concentration/off-contract components by their families. Zero independent weight; it manifests as a high COMBINED score (AshBritt/Active Resource score 24-30) via the other families co-firing, which is the intended corroboration."
+   },
+   {
+    "marker_id": "person_name_payee_in_discretionary",
+    "weight": 3,
+    "reason": "Individual-person payee in discretionary (possible related party), severity 3. Word-boundary business-keyword exclusion (no substring) per the ZTE/Aztec discipline. Independent evidence axis (payee-entity shape). 211 rows."
+   },
+   {
+    "marker_id": "placeholder_masked_payee_external_rail_discretionary",
+    "weight": 3,
+    "reason": "Masked payee on EXTERNAL rail (ACH/WARRANT) discretionary, severity 3. DEDUP: zeroed when the accountability gap family already fired >=4 on the same row (169 rows subsumed) since both encode the missing-payee fact; only its distinct external-rail-masked cases survive as independent."
+   },
+   {
+    "marker_id": "agency_benford_digit_nonconformity",
+    "weight": 2,
+    "reason": "Agency-level Benford elevator (5 named agencies), severity 2. Implemented as the inlined exact-agency list (recomputable, no substring). A multiplier-style elevator per spec but added as a small flat 2 points and only on non-entitlement rows; never standalone-decisive at weight 2."
+   }
+  ],
+  "risk_bands": [
+   {
+    "label": "R0_NONE",
+    "min_score": 0,
+    "max_score": 0
+   },
+   {
+    "label": "R1_LOW",
+    "min_score": 0.01,
+    "max_score": 2.999
+   },
+   {
+    "label": "R2_MODERATE",
+    "min_score": 3,
+    "max_score": 5.999
+   },
+   {
+    "label": "R3_ELEVATED",
+    "min_score": 6,
+    "max_score": 9.999
+   },
+   {
+    "label": "R4_HIGH",
+    "min_score": 10,
+    "max_score": 999
+   }
+  ],
+  "tier_matrix": "FINAL TIER = f(magnitude band rank x risk band). Two axes, both recomputable from source fields.\n\nAXIS 1 \u2014 Magnitude rank (from mag_band, which derives only from amount, populated every year incl. thin FY19/20):\n  MB_HIGH = M1_100M+ , M2_10M-100M , M3_1M-10M   (rank<=3 ; '>= $1M' materiality)\n  MB_LOW  = M4_250K-1M , M5_100K-250K , M6_25K-100K (rank>=4)\n\nAXIS 2 \u2014 Risk band (from risk_score = marker_sum * category_risk_multiplier; bands per risk_bands field):\n  R0 NONE (=0) | R1 LOW (0<s<3) | R2 MODERATE (3<=s<6) | R3 ELEVATED (6<=s<10) | R4 HIGH (s>=10)\n\nTIER MATRIX (recompute with CASE, in this order):\n  Tier 1  (top review priority)  := MB_HIGH AND (R3 OR R4)            -> high materiality AND elevated markers\n  Tier 2  (secondary review)     := (MB_HIGH AND R2) OR (MB_LOW AND (R3 OR R4))  -> material+moderate, or smaller+elevated\n  Tier 3  (screen/queue)         := (any remaining row with R1 OR R2 OR R3 OR R4 not caught above)  i.e. risk_score>0\n  Tier 4  (high value, CLEAN)    := MB_HIGH AND R0                    -> high dollar but zero markers (e.g. the $4.66B scheduled transfer)\n  Unranked (low value, clean)    := MB_LOW AND R0\n\nVALIDATED PREVALENCE on the 306,604-row >=$100K population:\n  Tier1   3,009 (0.98%)  $15.1B  \u2014 100% discretionary (zero entitlement), surfaces AshBritt, Fondomonte, Kiewit, NaphCare-class leads\n  Tier2  20,008 (6.53%)  $12.3B\n  Tier3  27,368 (8.93%)  $14.4B\n  Tier4  39,428 (12.86%) $291.9B \u2014 overwhelmingly entitlement mega-flows, correctly clean/no-marker (this is the 'large but benign' bucket the brief requires Tier4 to hold)\n  Unranked 216,791 (70.71%) $59.4B\n\nNOTE: Tier order = priority (1 highest). Tier 4 is deliberately 'high value but clean' per the requirement, distinct from Unranked low-value-clean. A bondholder reproduces any tier from: amount (-> mag_band), category1 (-> multiplier), and the fired markers (-> marker_sum).",
+  "overlap_notes": "Resolved by (a) collapsing each MARKER FAMILY to a single contribution = GREATEST tier that fires within it (families are internally nested/disjoint), and (b) explicit cross-family escalator-subsumption for the documented true double-counts. Specifics, all verified live against mart/hv_base.parquet:\n\n1) ROUND family (round_1m / round_100k-not-1m / whole-not-10k): disjoint by construction (verified 0 overlap by the specialists). Contributes ONE value = GREATEST. A single estimate JV never scores 5+4+3.\n\n2) DUPLICATE family: dup_diffday_discretionary (5) is a STRICT SUBSET of dup_diffday_all (2); sameday(3) is mutually exclusive with diffday. GREATEST -> a discretionary diffday scores 5, an entitlement diffday scores 2, never both.\n\n3) ACCOUNTABILITY + MANUAL-RAIL (the biggest double-count): triple_gap (sev 5) = vid NULL + manual rail + no payee. Verified 8,016/8,016 triple-gap rows ALSO fire manual_rail_discretionary (4) AND are a subset of generic_placeholder_payee (4). The manual-rail fact and the missing-payee fact are the COMPONENTS of the triple gap, so summing them triple-counts one piece of evidence. FIX: when triple_gap fires, set the accountability family to 5 and ZERO the separately-summed manual-rail contribution (w_rail_net=0) and the placeholder external-rail entity contribution (169 rows subsumed). This dropped population avg risk_score 1.06 -> 0.87 and p99 13.5 -> 11.2.\n\n4) OFF-CONTRACT chain: disc_proc_offcontract_base/_concentrated_large/_concentrated_peer_outlier are NESTED (each a subset of the prior) and their three components are ALREADY owned by other families \u2014 concentration by sole_source_discretionary_concentration, peer-outlier by peer_outlier_discretionary_zextreme, missing-contract by large_procurement_no_contract_reference. Only the base off-contract 'missing contract' fact is counted once (weight 2 via the accountability family GREATEST); the two nested tiers get weight 0 and instead surface as HIGH COMBINED scores when the independent families co-fire (AshBritt scores 24-30 because new-vendor + concentration + peer + off-contract are genuinely DISTINCT evidence).\n\n5) NEW-VENDOR family: new_vendor_large (3) is a superset of new_vendor_dominant (5); short_tenure (4) overlaps both. GREATEST collapse. PLUS FY2021 contribution HALVED (floor/2, 3,893 rows) to neutralize the post-NULL-vid-gap re-appearance artifact the specialists flagged (vendors look 'new' only because FY19/20 vid was NULL).\n\n6) YEAR-END family (p13_all/p13_disc/june_round): GREATEST. june_round overlaps the ROUND family but timing(year-end) and amount-shape(round) are SEPARATE evidence axes, so each family may contribute one value \u2014 that is corroboration, not double-count.\n\n7) BENFORD: agency-level elevator (weight 2) deliberately co-fires with round/concentration/peer within the 5 named agencies; kept additive at low weight because it is the population-level EXPLANATION of where those cluster \u2014 combining is corroborative.\n\n8) NON-RUNNABLE markers (appropriation_near_monopoly; off-contract nested tiers) carry weight 0 so absent mart features cannot inflate any score.\n\nPRINCIPLE: same FACT counted once (subsume); distinct evidence axes counted additively then category-multiplied; each family capped at its own GREATEST so over-firing within a theme is impossible.",
+  "scoring_formula": "PER-TRANSACTION risk_score, fully recomputable from source fields (only rows with amount>=100000 are scored; below that is out of model scope):\n\nSTEP 1 \u2014 Compute each FAMILY's contribution = the GREATEST severity tier that fires within that family (0 if none). Family predicates and tier weights are the specialists' calibrated SQL (exact-equality categories, word-BOUNDARY name logic only \u2014 never substring \u2014 to preclude the Aztec/ZTE class):\n  f_round      = GREATEST over {round_1m=5 , round_100k_not1m=4 , whole_not10k=3}\n  f_dup        = GREATEST over {diffday_disc=5 , sameday_disc_ext=3 , diffday_all=2}\n  f_conc       = GREATEST over {sole_source_>=20%_disc=4 , dependency_>=33%=2}\n  f_newvendor  = GREATEST over {dominant_new=5 , short_tenure_JV=4 , large_first=3}  ; THEN if fiscal_year=2021: f_newvendor = floor(f_newvendor/2)  (FY21 post-gap artifact down-weight)\n  f_yearend    = GREATEST over {p13_disc=4 , p13_all=3 , june_round_disc=3}\n  f_peer       = {z>=20 & ac_n>=8 & non-entitlement = 4 , else 0}\n  f_account    = GREATEST over {triple_gap=5 , placeholder_payee_disc=4 , no_contract_named=2 , offcontract_base=2}\n  f_rail       = GREATEST over {manual_disc=4 , manual_nonentitlement=3 , null_or_warrant_disc=2}\n  f_entity     = GREATEST over {person_name_disc=3 , masked_payee_extrail_disc=3}\n  f_benford    = {agency in 5-name list & non-entitlement = 2 , else 0}\n\nSTEP 2 \u2014 Cross-family DEDUP (subsume same-fact double counts):\n  IF triple_gap fired (f_account=5):  f_rail := 0  AND  drop the masked-payee external-rail entity case from f_entity   (the rail + missing-payee facts are the components of the triple gap)\n  Off-contract nested tiers contribute 0 (their concentration/peer/contract facts already live in f_conc / f_peer / f_account).\n\nSTEP 3 \u2014 marker_sum = f_round + f_dup + f_conc + f_newvendor + f_yearend + f_peer + f_account + f_rail_net + f_entity_net + f_benford\n         (magnitude and category are NOT summed here \u2014 they modulate, not add.)\n\nSTEP 4 \u2014 risk_score = marker_sum * category_risk_multiplier(category1)\n         where the multiplier is the documented CASE map (DEBT 0.3 ; AID 0.4 ; TRANSFERS OUT 0.4 ; COST ALLOC 0.5 ; CONVERSION 0.5 ; PERSONAL SVCS 0.7 ; EMPLOYEE-RELATED 0.9 ; FOOD 0.9 ; TRAVEL 1.0 ; N/A 1.0 ; NULL 1.0 ; NON-CAP EQUIP 1.2 ; CAP EQUIP 1.2 ; CAP OUTLAY 1.3 ; OTHER OPERATING 1.4 ; PROF & OUTSIDE SVCS 1.5).\n\nThis is the ONLY place dollars/category enter the SCORE; the mag_band itself is reserved for the Tier matrix axis so a large amount alone can never manufacture a high score. Verified distribution on 306,604 rows: 83.6% score 0 (clean), avg 0.87, p90 3.0, p95 7.0, p99 11.2, max 30.0. Mega-transfers validate: $4.66B TRANSFERS OUT -> 0.0 ; $318M AID firing 3 marker pts -> 1.2 (LOW). Thin years FY19/20 show the LOWEST fire rate (14-16%) because vid/fp/appr-dependent families self-suppress \u2014 graceful degradation, never a penalty for a system-wide-absent field.",
+  "category_multipliers": [
+   {
+    "category1": "DEBT SERVICE",
+    "multiplier": 0.3
+   },
+   {
+    "category1": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+    "multiplier": 0.4
+   },
+   {
+    "category1": "TRANSFERS OUT",
+    "multiplier": 0.4
+   },
+   {
+    "category1": "COST ALLOCATION AND INDIRECT COSTS",
+    "multiplier": 0.5
+   },
+   {
+    "category1": "CONVERSION",
+    "multiplier": 0.5
+   },
+   {
+    "category1": "PERSONAL SERVICES",
+    "multiplier": 0.7
+   },
+   {
+    "category1": "EMPLOYEE RELATED EXPENDITURES",
+    "multiplier": 0.9
+   },
+   {
+    "category1": "FOOD",
+    "multiplier": 0.9
+   },
+   {
+    "category1": "TRAVEL - IN-STATE",
+    "multiplier": 1
+   },
+   {
+    "category1": "TRAVEL - OUT-OF-STATE",
+    "multiplier": 1
+   },
+   {
+    "category1": "N/A",
+    "multiplier": 1
+   },
+   {
+    "category1": "NULL",
+    "multiplier": 1
+   },
+   {
+    "category1": "NON-CAPITAL EQUIPMENT",
+    "multiplier": 1.2
+   },
+   {
+    "category1": "CAPITAL EQUIPMENT",
+    "multiplier": 1.2
+   },
+   {
+    "category1": "CAPITAL OUTLAY",
+    "multiplier": 1.3
+   },
+   {
+    "category1": "OTHER OPERATING EXPENDITURES",
+    "multiplier": 1.4
+   },
+   {
+    "category1": "PROFESSIONAL AND OUTSIDE SERVICES",
+    "multiplier": 1.5
+   }
+  ]
+ }
+}

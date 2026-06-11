@@ -1,0 +1,265 @@
+# =============================================================================
+# OpenBooks Tiering Configuration — single source of truth for all thresholds,
+# marker families, category multipliers, benign allowlists, and state-specific
+# parameters.  Extracted from sql/tiering_v2.sql.  Edit this file to retune the
+# model; the pipeline reads it at runtime — no SQL constants to hunt down.
+# =============================================================================
+
+# ---- Magnitude & Tier Thresholds --------------------------------------------
+magnitude:
+  hv_spine_min: 25000          # transactions enter the feature mart >= $25K
+  tiering_min: 100000           # transactions are tiered >= $100K
+  bands:
+    M1_100M_plus: 100000000
+    M2_10M_100M: 10000000
+    M3_1M_10M: 1000000
+    M4_250K_1M: 250000
+    M5_100K_250K: 100000
+    M6_25K_100K: 25000
+
+tier_matrix:
+  - { tier: 1, rule: 'MB_HIGH AND risk_score >= 6', label: 'top review priority' }
+  - { tier: 2, rule: '(MB_HIGH AND risk_score >= 3) OR (MB_LOW AND risk_score >= 6)', label: 'secondary review' }
+  - { tier: 3, rule: 'risk_score > 0', label: 'screening queue' }
+  - { tier: 4, rule: 'MB_HIGH AND risk_score = 0', label: 'high-value but clean (scheduled mega-flows)' }
+  - { tier: 5, rule: 'else', label: 'unranked' }
+
+risk_bands:
+  R0_NONE: 0
+  R1_LOW: 3
+  R2_MODERATE: 6
+  R3_ELEVATED: 10
+  R4_HIGH: 999
+
+# ---- Category Risk Multiplier -----------------------------------------------
+category_multiplier:
+  'DEBT SERVICE': 0.3
+  'AID TO ORGANIZATIONS AND INDIVIDUALS': 0.4
+  'TRANSFERS OUT': 0.4
+  'COST ALLOCATION AND INDIRECT COSTS': 0.5
+  CONVERSION: 0.5
+  'PERSONAL SERVICES': 0.7
+  'EMPLOYEE RELATED EXPENDITURES': 0.9
+  FOOD: 0.9
+  'TRAVEL - IN-STATE': 1.0
+  'TRAVEL - OUT-OF-STATE': 1.0
+  'NON-CAPITAL EQUIPMENT': 1.2
+  'CAPITAL EQUIPMENT': 1.2
+  'CAPITAL OUTLAY': 1.3
+  'OTHER OPERATING EXPENDITURES': 1.4
+  'PROFESSIONAL AND OUTSIDE SERVICES': 1.5
+  _default: 1.0
+
+# ---- Marker Families ---------------------------------------------------------
+# Each family contributes only its single strongest firing sub-marker.
+marker_families:
+  round:
+    label: 'Round / negotiated amounts'
+    sub_markers:
+      round_1m:    { score: 5, suppression: [benign_approp, benign_payee, is_postage] }
+      round_100k:  { score: 4, suppression: [benign_approp, benign_payee, is_postage] }
+      whole_dollar: { score: 3, suppression: [benign_approp, benign_payee, is_postage] }
+  duplicate:
+    label: 'True duplicates (>=2 distinct documents, same vendor+amount, 1-90 days)'
+    sub_markers:
+      true_duplicate: { score: 4, suppression: [benign_approp, benign_payee, is_igov] }
+  concentration:
+    label: 'Vendor concentration (share of agency-year discretionary spend)'
+    sub_markers:
+      sole_source:  { score: 4, suppression: [benign_approp, is_igov] }
+      dependency:   { score: 2, suppression: [benign_approp, is_igov] }
+  new_vendor:
+    label: 'First-appearance vendor (by NAME, not just vendor_id)'
+    sub_markers:
+      new_vendor_dominant: { score: 5, suppression: [is_igov] }
+      short_tenure:        { score: 4, suppression: [is_igov] }
+      new_vendor_large:    { score: 3, suppression: [is_igov] }
+  yearend:
+    label: 'Year-end / closing-entry timing'
+    sub_markers:
+      period13_disc: { score: 4, suppression: [] }
+      june_round:    { score: 3, suppression: [benign_approp, is_postage] }
+  peer_outlier:
+    label: 'Amount dwarfs agency x category norm'
+    sub_markers:
+      peer_outlier: { score: 4, suppression: [benign_approp, benign_payee, is_igov] }
+  accountability:
+    label: 'External-rail blank payee / missing contract'
+    sub_markers:
+      placeholder_payee: { score: 4, suppression: [] }
+      no_contract:       { score: 2, suppression: [benign_approp, is_igov] }
+      offcontract:       { score: 2, suppression: [benign_approp, is_igov] }
+  manual_rail:
+    label: 'JOURNAL VOUCHER / INTERNAL / NULL payment method'
+    sub_markers:
+      manual_rail_disc: { score: 4, suppression: [] }
+      manual_rail:      { score: 3, suppression: [] }
+      nonstd_rail:      { score: 2, suppression: [] }
+  entity_name:
+    label: 'Individual-looking or masked payee on discretionary spend'
+    sub_markers:
+      person_name_payee: { score: 3, suppression: [is_igov] }
+      masked_payee:      { score: 3, suppression: [is_igov], dedup_with: [placeholder_payee] }
+
+# ---- Structural Suppression Guards ------------------------------------------
+structural_guards:
+  benign_appropriation_patterns:
+    - '%UNFUNDED LIABILITY%'
+    - '%BENEFITS PROGRAM%'
+    - '%RISK MANAGEMENT%'
+    - '%PRIZE%'
+    - '%DEBT SERVICE%'
+  benign_payee_patterns:
+    - 'BANK OF AMERICA'
+    - 'U S BANK|US BANK'
+    - 'WELLS FARGO'
+    - JPMORGAN
+    - 'BNY MELLON'
+    - 'NORTHERN TRUST'
+    - 'UNITED HEALTHCARE'
+    - 'BLUE CROSS'
+    - 'RETIREMENT SYSTEM'
+  igov_patterns:
+    - 'DEPARTMENT OF|DEPT OF'
+    - UNIVERSITY
+    - 'COMMUNITY COLLEGE'
+    - COUNTY
+    - 'CITY OF'
+    - 'TOWN OF'
+    - 'STATE OF'
+    - 'STATE TREASUR|TREASURER'
+    - 'US TREASURY'
+    - 'RETIREMENT SYSTEM'
+    - 'SCHOOL DISTRICT'
+    - REGENTS
+  postage_patterns:
+    - 'PITNEY BOWES%'
+    - '%POSTAGE%'
+  excluded_payees:
+    - N/A
+    - 'NULL'
+    - NONE
+    - VARIOUS
+    - UNKNOWN
+    - TBD
+    - VOID
+    - 'MISCELLANEOUS VENDOR'
+    - 'MISCELLANEOUS CUSTOMER'
+  internal_rails:
+    - INTERNAL
+    - 'JOURNAL VOUCHER'
+    - 'COST ALLOCATION'
+  external_rails:
+    - ACH
+    - WARRANT
+    - PAYMENT
+  peer_outlier_exclude_categories:
+    - 'AID TO ORGANIZATIONS AND INDIVIDUALS'
+    - 'TRANSFERS OUT'
+    - 'DEBT SERVICE'
+    - 'COST ALLOCATION AND INDIRECT COSTS'
+    - 'PERSONAL SERVICES'
+    - 'EMPLOYEE RELATED EXPENDITURES'
+  person_name_exclusion_pattern: >-
+    (INC|LLC|LLP|CORP|COMPANY|LTD|PLLC|PC|APC|PLC|LP|USA|JV|ASSOC|
+    GROUP|PARTNER|TRUST|BANK|COUNTY|UNIV|DEPT|SERVICE|SYSTEM|SOLUTION|
+    TECH|CONSULT|ENTERPRISE|HOLDING|FUND|FOUNDATION|HOSPITAL|CLINIC|
+    CENTER|CENTRE|INSTITUTE|SCHOOL|DISTRICT|HEALTH|MEDICAL|INSURANCE|
+    CONSTRUCT|ELECTRIC|SUPPLY|EQUIP|PRODUCT|INDUSTR|MGMT|MANAGEMENT|
+    CAPITAL|FINANCIAL|REALTY|PROPERT|MOTOR|AUTO|ENERGY|POWER|WATER|
+    COMMUNICAT|MEDIA|PRESS|ENGINEER|ARCHITECT|PHARM|NETWORK|SOFTWARE|
+    DESIGN|CONTRACT|BUILDER|FARM|RANCH|MARKET|STORE|FOOD|
+    INTERNATIONAL|NATIONAL|GLOBAL|AMERICA|DIGITAL|CREATIVE|DEVELOP|
+    LEARNING|DISTRIBUT|NEXTEL|INSIGHT|VENDOR|CUSTOMER|MISC|VARIOUS|
+    REDACTED|TRANSPORT|MINISTR|CASINO|RISK|LENS|PIPELINE|STORAGE|
+    TRAURIG|ROCK|CHEVROLET|KENWORTH|BOWES|DONNELLEY|DONNELLY|CALMAT|
+    CLYDE|GRAINGER|SALES|LABOR|TREASUR)
+
+# ---- State-Specific Parameters ----------------------------------------------
+state:
+  az:
+    label: Arizona
+    missing_fiscal_years: [2022]
+    vendor_id_null_years: [2019, 2020]
+    vendor_id_present_pct: 42.7
+    contract_number_present_pct: 4
+    contract_dark_switch_agencies: []    # determined dynamically: contract_rate == 0
+    vendor_id_remark_year: 2021
+
+# ---- Verification Overlay ---------------------------------------------------
+verification:
+  verdicts:
+    - genuine_review
+    - explained_benign
+    - false_positive_marker
+    - mixed
+  default_status: screened_unreviewed
+  recommended_actions:
+    - keep
+    - downgrade
+    - annotate
+    - suppress_marker
+  unreviewed_badge_label: 'machine-screened, not reviewed'
+
+# ---- Multi-State Ingest Canon -----------------------------------------------
+canonical_columns:
+  - [record_number, str]
+  - [fiscal_year, int]
+  - [entity_name, str]
+  - [fund_1_name, str]
+  - [fund_2_name, str]
+  - [fund_3_name, str]
+  - [fund_4_name, str]
+  - [organization_level_1_name, str]
+  - [organization_level_2_name, str]
+  - [organization_level_3_name, str]
+  - [organization_level_4_name, str]
+  - [organization_level_5_name, str]
+  - [organization_level_6_name, str]
+  - [organization_level_7_name, str]
+  - [organization_level_8_name, str]
+  - [organization_level_9_name, str]
+  - [organization_level_10_name, str]
+  - [transaction_type, str]
+  - [category_level_1_name, str]
+  - [category_level_2_name, str]
+  - [category_level_3_name, str]
+  - [category_level_4_name, str]
+  - [category_level_5_name, str]
+  - [category_level_6_name, str]
+  - [category_level_7_name, str]
+  - [payee_customer_vendor_name, str]
+  - [payee_dba_name, str]
+  - [vendor_id_code, str]
+  - [posting_date, date]
+  - [transaction_description, str]
+  - [transaction_id, str]
+  - [transaction_reference_id, str]
+  - [contract_name, str]
+  - [contract_number, str]
+  - [position_title, str]
+  - [hourly_rate, dec]
+  - [gender, str]
+  - [amount, dec]
+  - [payment_method, str]
+  - [protection_indicator, str]
+  - [fund_1_code, str]
+  - [fund_2_code, str]
+  - [fund_3_code, str]
+  - [appropriation_1_name, str]
+  - [appropriation_1_code, str]
+  - [appropriation_type, str]
+  - [appropriation_category_1_name, str]
+  - [appropriation_category_1_code, str]
+  - [category_level_1_code, str]
+  - [category_level_2_code, str]
+  - [category_level_3_code, str]
+  - [payment__, str]
+  - [fiscal_period, str]
+  - [cabinet, str]
+  - [cabinet_name, str]
+  - [department_code, str]
+  - [bfy, str]
+  - [invoice_number, str]
+  - [subfund_no, str]
+  - [object_no, str]

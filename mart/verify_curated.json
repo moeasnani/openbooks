@@ -1,0 +1,295 @@
+{
+ "marquee": [
+  {
+   "name": "FONDOMONTE ARIZONA LLC",
+   "kind": "private agricultural lessee (Saudi-owned)",
+   "exposure": "$7,000,000 \u2014 single FY2025 round-dollar WARRANT, sole_source, from STATE AND LOCAL FISCAL RECOVERY FUNDS via LAND DEPARTMENT; vendor_share 0.24, robust_z 24.4, risk_score 30.8",
+   "tier": "Tier-1 / genuine_review (KEEP)",
+   "why_interesting": "A single, sole-source, round $7M uncontracted disbursement of federal COVID-recovery money to a private foreign-owned agricultural lessee. No benign-by-structure carve-out applies. Markers all firing on genuine signal. Public reporting indicates a state-law-required reimbursement for lease improvements \u2014 exactly the kind of politically salient, discretionary item a bondholder would want surfaced.",
+   "public_context": "Fondomonte Arizona LLC is the US subsidiary of Saudi dairy giant Almarai, growing alfalfa on Arizona state land for export as cattle feed; its cheap leases and unmetered groundwater pumping drew national scrutiny, an Auditor General investigation, and lease terminations/non-renewals by Gov. Hobbs in 2023."
+  },
+  {
+   "name": "ASHBRITT INC",
+   "kind": "private disaster-response / border-barrier contractor",
+   "exposure": "$194,730,663 across 15 FY2023 txns; all on contract CTR060412 from the BORDER SECURITY FUND via DEMA; vendor_share 0.358, robust_z up to 839.8",
+   "tier": "Tier-1 / genuine_review (KEEP)",
+   "why_interesting": "Genuinely new, dominant, sole-source emergency contractor \u2014 the single largest named vendor in the Border Security appropriation. Real, concentrated, discretionary spend with no structural caveat applying (2023 fund and contract are genuinely new; not a vid-blackout resurfacing). Markers fire correctly.",
+   "public_context": "AshBritt built Gov. Ducey's 2022 Arizona shipping-container border wall under a no-bid sole-source emergency contract (the only company considered), paid ~$194.7M to erect and later ~$76M to remove the barrier after federal objections, drawing procurement and oversight scrutiny."
+  },
+  {
+   "name": "NAPHCARE INC",
+   "kind": "private correctional-healthcare provider",
+   "exposure": "~$1.4B five-year contract (~$279.7M/yr); 88 Tier-1 txns on contract CTR060508, DEPT OF CORRECTIONS",
+   "tier": "Tier-1 / mixed (annotate)",
+   "why_interesting": "A single documented statewide inmate-healthcare contract (most markers downweight), but it carries real headline risk: in Feb 2026 a federal court ordered a receivership over Arizona prison healthcare with authority to renegotiate or terminate the NaphCare contract. The concentration is structurally expected but the litigation overlay is genuinely review-worthy.",
+   "public_context": "NaphCare won a five-year, ~$1.4B full-risk Arizona DOC inmate medical/mental/dental contract effective Oct 2022; a Feb 2026 federal receivership order gives a court-appointed receiver power to renegotiate or terminate it after sustained constitutional-violation litigation."
+  },
+  {
+   "name": "ACTIVE RESOURCE MANAGEMENT, LLC",
+   "kind": "private water-asset holding company (Vidler-owned)",
+   "exposure": "$12,500,000 \u2014 single FY2017 ACH; the largest payment ever from the WATER BANKING AUTHORITY appropriation; vendor_share 0.354, robust_z 133.7",
+   "tier": "Tier-1 / genuine_review (KEEP)",
+   "why_interesting": "This vendor's only transaction in the entire dataset \u2014 a perfectly round, sole-source, off-contract $12.5M purchase from a private LLC where nearly every other large recipient of the fund is a government/tribal/municipal entity. Discretionary, concentrated, and publicly questioned as a high-priced private sale.",
+   "public_context": "ARM (owned by Vidler Water Company) sold 50,000 Long Term Storage Credits to the Arizona Water Banking Authority for $12.5M (~$250/credit); local reporting characterized it as a private sale at a notably high price relative to ARM's underlying acquisition cost."
+  },
+  {
+   "name": "ARIZONA JEWISH HISTORICAL SOCIETY",
+   "kind": "private nonprofit (earmark recipient)",
+   "exposure": "$7,000,000 \u2014 single FY2025 WARRANT, GENERAL FUND via DEPT OF EDUCATION, on named appropriation/contract 'ARIZONA HOLOCAUST EDUCATION CENTER' (CTR073049); robust_z 54.3",
+   "tier": "Tier-1 / genuine_review (annotate)",
+   "why_interesting": "A one-off, highly concentrated legislative earmark to a named private nonprofit \u2014 the vendor IS the entire appropriation line. Purpose is documented and benign, but it is a discretionary capital grant a bondholder would legitimately want surfaced.",
+   "public_context": "The Society received a $7M FY2025 state appropriation (sponsored by Reps. Alma Hernandez and David Marshall, distributed by Supt. Tom Horne) to help build the Hilton Family Holocaust Education Center in Phoenix, which broke ground in 2025 and is slated to open 2027; a condition was free admission for Arizona students."
+  },
+  {
+   "name": "KINELLA CONSTRUCTION LLC",
+   "kind": "private general contractor (Legislature work)",
+   "exposure": "$5.77M across 11 FY2023-24 rows (one $1.5M Tier-1), GENERAL FUND OPERATING LUMP SUM at the SENATE and HOUSE; 20.3% of Senate FY2023 spend; robust_z 29.1 (~24x category median)",
+   "tier": "Tier-1 / genuine_review (KEEP)",
+   "why_interesting": "Discretionary, highly concentrated, exact-round, sole-source-style construction spend at the Legislature with no contract named and no transaction description. The $1.5M payment is ~24x the Senate R&M category median; Kinella alone took $3.9M of that category vs $118K for the next vendor. A legitimately review-worthy item, not a misfire.",
+   "public_context": "Kinella Construction LLC is a Phoenix Valley general contractor (AZ registry L11030783) doing commercial/multifamily/custom construction and remodels \u2014 a plausible counterparty for Arizona Senate/House building repair and capital-improvement work."
+  },
+  {
+   "name": "WEIL GOTSHAL & MANGES LLP",
+   "kind": "elite outside legal counsel (AmLaw-100)",
+   "exposure": "$1.5M across two FY2018 WARRANTs ($1M Tier-1 + $500K Tier-2) from ADOA RISK MANAGEMENT LOSSES AND PREMIUMS; vendor's only activity in the data",
+   "tier": "Tier-1 / genuine_review (KEEP)",
+   "why_interesting": "A large, round, one-time, off-contract June disbursement from the state self-insurance fund to top-tier outside litigation counsel \u2014 discretionary, concentrated, and unusual. No specific public record of the engagement surfaced, so a bondholder would legitimately want it explained.",
+   "public_context": "Weil, Gotshal & Manges LLP is a top-tier international (AmLaw-100) law firm known for high-stakes M&A, restructuring, and complex/class-action litigation; retained as elite outside counsel by Arizona's Dept of Administration in 2018 with no specific public record of the matter."
+  },
+  {
+   "name": "ADOT highway design-build joint ventures (Connect 202 Partners, Kiewit-Fann JV, Pulice-FNF-Flatiron JV, Coffman Ames JV, Sundt CS A JV)",
+   "kind": "heavy-civil freeway capital contractors",
+   "exposure": "Hundreds of millions each \u2014 e.g. Connect 202 ~$1.66B Loop 202; Kiewit-Fann I-17 (~$315M Tier-1); Pulice-FNF-Flatiron ~$523M FY2021-25; all CAPITAL OUTLAY at ADOT",
+   "tier": "Tier-2/3 / explained_benign (annotate)",
+   "why_interesting": "Not flagged for concern (vendor_share is low single-digit %; markers are offcontract/new-vendor structural artifacts), but these are the State's largest discretionary public-works capital commitments and the recognizable face of ADOT megaproject spend \u2014 useful high-level context for a bondholder even though each is routine, documented, federally/RARF-funded construction.",
+   "public_context": "These JVs deliver Arizona's largest freeway projects under ADOT design-build/P3 contracts \u2014 the Loop 202 South Mountain Freeway (Connect 202, ~$1.66B, the state's first freeway P3), the I-17 Anthem-to-Sunset Point widening (Kiewit-Fann), and the Loop 101/Loop 202 corridors (Coffman Ames, Pulice-FNF-Flatiron)."
+  },
+  {
+   "name": "Redacted / individual / one-shot settlement payees (NAME REDACTED, MISCELLANEOUS CUSTOMER, plaintiff law firms in ADOA RISK MANAGEMENT)",
+   "kind": "masked individuals / litigation-settlement counterparties",
+   "exposure": "Many sub-$2M warrants from ADOA RISK MANAGEMENT LOSSES AND PREMIUMS and the AG Consumer Restitution fund (e.g. TruLaw PC $1.9M, NAME REDACTED $1.69M, MISCELLANEOUS CUSTOMER $15.1M aggregate)",
+   "tier": "Tier-1/2/3 / mostly explained_benign (downweight)",
+   "why_interesting": "Structurally benign (legal settlements, restitution, statutory-cap restitution payouts, masked individual claimants) but a recurring transparency texture: large dollars flow to redacted/individual payees the checkbook does not name. Worth a single agency-level disclosure note for a bondholder rather than per-item review.",
+   "public_context": "Arizona's self-insurance / Risk Management fund pays tort and workers-comp settlements (overwhelmingly to plaintiff law firms and named claimants); the AG's Consumer Restitution fund disburses settlement proceeds to counties and class-action administrators; 'NAME REDACTED' and 'MISCELLANEOUS CUSTOMER' are payee-masking placeholders, not real entities."
+  }
+ ],
+ "headlines": [
+  "The model's biggest dollar clusters are benign-by-structure, not red flags: the State's self-insured employee health-benefits program (BCBS-AZ, UnitedHealthcare at ADOA), AHCCCS Medicaid managed-care capitation, PSPRS/ASRS pension paydowns, Lottery prize-fund sweeps to Bank of America, ADOT highway-construction JVs, and university operating-lump-sum appropriations together account for most flagged value and resolve to routine entitlement, intergovernmental, pension, debt-service, or documented-contract flows.",
+  "A single FY2021 data artifact drives ~70% of the new-vendor leads: vendor_id is NULL system-wide in FY2019-2020 and the vid numbering scheme was re-minted in FY2021, so long-standing payees (MedImpact, BCBS, ASU, CoreCivic, Centurion, five major ADOT contractors) are mislabeled 'new.' A payee-name resurfacing guard removes ~80% of FY2021 new-vendor fires while preserving the genuinely new ones.",
+  "All 15 agency 'accountability-gap' clusters (~$5B+) are one systemic accounting convention, not missing accountability: ~99% are null/N-A payee on INTERNAL/JOURNAL-VOUCHER/COST-ALLOCATION rails \u2014 inter-fund transfers, debt service, benefits-trust legs, and Medicaid/pension postings that have no external payee by design. The triple_gap and placeholder_payee markers re-detect the internal-accounting rail and should be retired or gated to external rails only.",
+  "After guardrails, a small high-quality shortlist of genuine leads survives \u2014 discretionary, concentrated, often sole-source spend to named private parties: Fondomonte ($7M federal-recovery payment to a Saudi-owned ag lessee), AshBritt ($194.7M border-barrier emergency contract), Active Resource Management ($12.5M water-credit purchase), an Arizona Holocaust-center earmark ($7M), Kinella Construction at the Legislature, and Weil Gotshal outside counsel. These are the items a bondholder should actually see.",
+  "Prison-healthcare concentration carries a live external overlay: NaphCare's ~$1.4B statewide inmate-healthcare contract (and its predecessor Centurion) is structurally a single documented contract, but a Feb-2026 federal-court receivership over Arizona prison healthcare with power to renegotiate or terminate the contract makes it review-worthy beyond the data alone.",
+  "Several markers fire on structure rather than behavior and need fixes: person_name_payee misfires on corporate names (PITNEY BOWES, RR DONNELLEY) and government offices (STATE TREASURER); agency_benford fails 100% of an agency's rows purely from the $25K high-value floor and payroll banding; offcontract is near-worthless where contract_number is 0% populated (all universities, ASRS, courts, ADOT capital); and nonstd_rail wrongly flags plain WARRANT, the Treasurer's standard external check rail.",
+  "The duplicate-payment markers are ~95-97% line-split artifacts but retain a real residual: most 'duplicates' are one invoice decomposed into accounting lines sharing a single GAX/PRC document, but requiring genuinely distinct transaction_reference_ids isolates ~67 legitimate same-vendor, identical-amount, separate-document leads worth a double-payment look (e.g. Deloitte same-day warrant pairs).",
+  "A persistent transparency texture, not wrongdoing: large dollars routinely flow to redacted, masked, or individual payees (NAME REDACTED, MISCELLANEOUS CUSTOMER, settlement-fund law firms and claimants) that the published checkbook does not name. This is best handled as a single agency-level disclosure-completeness note rather than thousands of per-item leads."
+ ],
+ "reclass": [
+  {
+   "entity": "BLUE CROSS BLUE SHIELD OF AZ INC (IV0000002957)",
+   "from": "Tier-1 flagged (new_vendor_large/new_vendor_dominant/offcontract)",
+   "to": "false_positive_marker \u2014 suppress markers",
+   "reason": "FY2021 first_year_seen is the NULL-vendor_id blackout artifact; hv_base shows continuous ADOA self-insured employee-benefits payments back to FY2016 ($171M->$455M) under the same agency/appropriation. Not new, not discretionary."
+  },
+  {
+   "entity": "THE UNIVERSITY OF ARIZONA (PZ000004410) / ARIZONA STATE UNIVERSITY (11368201, IV0000000997) / NORTHERN ARIZONA UNIVERSITY (PZ000001572)",
+   "from": "Tier-1 peer_outlier (robust_z 30-153)",
+   "to": "false_positive_marker \u2014 suppress markers",
+   "reason": "Agency IS the university; rows are the State's OPERATING LUMP SUM appropriation disbursed to its own university (and CARES/ESSER pass-throughs for ASU). vendor_share_of_agency_year=1.0 and high z are structural self-payment artifacts, not procurement."
+  },
+  {
+   "entity": "MOTOROLA SOLUTIONS INC (IV0000016996) / GRANITE CONSTRUCTION CO (IV0000000009) / FNF CONSTRUCTION (IV0000002317) / MARICOPA COUNTY (PZ000010983) / DEPARTMENT OF HEALTH AND HUMAN SERVICES (VC0000006143)",
+   "from": "Tier-1 new_vendor_large / offcontract / peer_outlier",
+   "to": "false_positive_marker \u2014 suppress markers",
+   "reason": "All show pre-2021 hv_base history (vid-blackout resurfacing) and/or are on named statewide contracts (Motorola CTR046830) or are intergovernmental (county aid, federal HHS remittance). offcontract is non-probative at ~2-6% contract population."
+  },
+  {
+   "entity": "PITNEY BOWES (IV0000000660) / STATE TREASURER (VC0000022758)",
+   "from": "Tier flagged person_name_payee (+ round/offcontract stack)",
+   "to": "false_positive_marker \u2014 suppress markers",
+   "reason": "person_name regex misfire: PITNEY BOWES is a postage-meter company (category2 POSTAGE AND DELIVERY); STATE TREASURER is a government office (statutory community-college reimbursement). Neither is a person; round amounts are meter prefunding / formula distributions."
+  },
+  {
+   "entity": "15 agency accountability-gap clusters (DES, DOT, ADOA, Lottery, Corrections, Child Safety, Health Services, ASRS, AHCCCS, DPS, DEMA, Early Childhood, Revenue, Education)",
+   "from": "triple_gap / placeholder_payee accountability-gap leads (~$5B+)",
+   "to": "explained_benign \u2014 systemic convention, downweight/annotate",
+   "reason": "~99% are null/N-A payee on INTERNAL/JOURNAL-VOUCHER/COST-ALLOCATION rails \u2014 inter-fund moves, debt service, benefits-trust legs, Medicaid/pension accounting that have no external payee by design. Markers re-detect the internal-accounting rail, not missing accountability."
+  },
+  {
+   "entity": "SUPREME COURT (accountability-gap cluster)",
+   "from": "triple_gap/placeholder_payee leads (622 items)",
+   "to": "mixed \u2014 downweight ~600 internal-rail rows; KEEP the peer_outlier subset",
+   "reason": "Bulk is the same internal-rail null-payee convention, but ~15 items (robust_z 20-40, ~$30M of OPERATING LUMP SUM / JUDICIAL GRANTS / case-management) are review-worthy on MAGNITUDE regardless of blank payee."
+  },
+  {
+   "entity": "NAPHCARE INC (IV0000039519) / DELOITTE CONSULTING (IV0000000310)",
+   "from": "Tier-1 (sole_source / new_vendor / dup_sameday_ext stack)",
+   "to": "mixed \u2014 annotate, retain overlay",
+   "reason": "Both are single documented major contracts (NaphCare CTR060508 inmate healthcare; Deloitte CTR052815 ATLAS) so most markers downweight, but each carries a genuine residual: NaphCare's Feb-2026 federal receivership over AZ prison healthcare; Deloitte's dup_sameday_ext same-day exact-duplicate warrant pairs worth a double-payment eyeball."
+  }
+ ],
+ "marker_fixes": [
+  {
+   "marker": "new_vendor (new_vendor_large / new_vendor_dominant / short_tenure_vendor)",
+   "fix": "Add a payee-name resurfacing guard: do NOT fire when upper(trim(payee)) already received >=$25K in any prior fiscal year in hv_base (NOT EXISTS prior-year payee match). Treat FY2021 as a vid-reset boundary and recompute vendor_first_year/years_active on a stable key (payee + vendor_id_code), not the re-minted vid. Confirmed: FY2021 = 3,893 of 5,548 fires (70%); ~80% of FY2021 'new' vendors had prior-year history (MedImpact, BCBS, ASU $3.99B, CoreCivic, Centurion, 5 ADOT JVs). This is the single highest-severity structural false positive in the model.",
+   "severity": "critical"
+  },
+  {
+   "marker": "placeholder_payee",
+   "fix": "RETIRE as a standalone risk signal or gate strictly: only fire when payment_method IN ('ACH','WARRANT','PAYMENT') AND payee is genuinely blank AND payee NOT IN the aggregate convenience codes (PCARD%/FUEL VENDOR%/MISCELLANEOUS VENDOR/MISCELLANEOUS CUSTOMER). Verified 14,878/15,047 fires (99%) are on internal rails (INTERNAL/NULL/JV/COST-ALLOCATION) where a null payee is the mandated convention; after gating, effectively zero genuine masked-external-payment leads remain.",
+   "severity": "critical"
+  },
+  {
+   "marker": "triple_gap",
+   "fix": "RETIRE or demote to a non-scoring tag: it co-fires with placeholder_payee on 8,016/8,016 rows (100% redundant), fires only on INTERNAL/JOURNAL-VOUCHER rows with zero contract and no readable description (99.9% N/A/NULL), and violates the team's READ-don't-infer rule by firing on the ABSENCE of a description. Top fires are benign-by-structure (Lottery commissions, DDD Medicaid premium-tax LTC, ASRS pension subsidy, COP debt service). No independent signal.",
+   "severity": "critical"
+  },
+  {
+   "marker": "agency_benford",
+   "fix": "RETIRE as a transaction/row-level marker (never contribute to per-row risk_score): it tags ~100% of every row in 6 of 87 agencies, so it cannot localize a lead. The 'nonconformity' is a measurement artifact of the >=$25K high-value floor (left-censoring deletes the entire $10K-$20K leading-1 band; system-wide leading-1 = 15.5% vs Benford 30.1%) plus payroll/personal-services banding (70-79% of flagged rows). If kept, run only on the uncensored, non-payroll, real-vendor ledger against a censoring-aware expected distribution and require concentrated (not diffuse) distortion.",
+   "severity": "high"
+  },
+  {
+   "marker": "person_name_payee",
+   "fix": "Add (1) a trailing legal/entity-suffix exclusion (CO|CORP|INC|LLC|LP|LLP|PC|APC|PLC|PLLC|LTD|USA|JV|GROUP|PARTNERS|LABORATORIES|CONSTRUCTION|BANK|TRUST...); (2) a known no-suffix commercial allowlist (PITNEY BOWES, RR DONNELLEY, CALMAT, WW CLYDE, PARADIGM LABORATORIES...); (3) a government/IGA exclusion (TREASURER|TREASURY|UNIVERSITY|COUNTY|CITY OF|BOARD OF). Verified ~90% of rows are FP (PITNEY BOWES 170 + RR DONNELLEY 41 + STATE TREASURER 20 lead the list). Feed the postage allowlist into round-family suppression too (PITNEY BOWES double-misfires).",
+   "severity": "high"
+  },
+  {
+   "marker": "manual_rail / nonstd_rail",
+   "fix": "Drop plain WARRANT from nonstd_rail entirely \u2014 it is the AZ Treasurer's standard external paper-check rail (103,506 rows / $18B, 7,379 distinct vendors), not a manual/internal rail; restrict to manual/handwritten warrant overrides. Route manual_rail/manual_rail_disc INTERNAL/JV placeholder-payee rows to a cost-allocation track, not a vendor lead. Also suppress when a documented contract_name exists or payee is intergovernmental. The trigger list is currently backwards (flags external WARRANT, whitelists internal COST ALLOCATION).",
+   "severity": "high"
+  },
+  {
+   "marker": "offcontract / no_contract_named",
+   "fix": "Add a structural dark-switch: do NOT fire for any (agency, fiscal_year) that populates contract_number on 0% of its eligible high-value rows (all 3 universities, ASRS, Supreme Court, Governor's Office, Secretary of State, Commerce Authority) and for ADOT CAPITAL OUTLAY (0% on capital). Suppress the named benign blocks (ADOT federal-aid construction, ADOA benefits/risk pools, Lottery prize fund, IGAs). ~77% of fires are benign-by-structure; the >=$1M no_contract_named variant is 88% ADOT capital. Never treat as corroboration at ~2-6% population.",
+   "severity": "medium"
+  },
+  {
+   "marker": "round family (round_1m / round_100k / whole_dollar / june_round)",
+   "fix": "Suppress on POSTAGE replenishment (payee/appropriation LIKE postage), pension UNFUNDED-LIABILITY paydowns (PSPRS/ASRS), Lottery->bank prize fund, ADOA RISK MANAGEMENT/insurance settlements, and ADOT right-of-way title agencies. Stop using whole_dollar as a standalone/score-boosting marker (13.2% universal base rate) \u2014 require co-fire with >=1 independent strong marker. Add the agency=payee arms-length guard to june_round (currently misses the ~$1B PSPRS self-pay). Guardrails clear ~21% of fires ($2.6B) with no genuine loss.",
+   "severity": "medium"
+  },
+  {
+   "marker": "duplicate (dup_sameday_ext / dup_diffday_disc)",
+   "fix": "Require count(DISTINCT transaction_reference_id) > 1 within a dup group (only flag identical amounts paid under genuinely DIFFERENT GAX/PRC documents) \u2014 kills 97.8% of sameday and 93% of diffday groups, which are single-invoice accounting-line splits. Exclude AHCCCS from diffday (92% of rows = Medicaid capitation posting-window splits) and pension/trustee/IGA payees. Preserves ~67 genuine same-vendor exact-amount separate-document leads (PCG, Microsoft, Deloitte, NaphCare).",
+   "severity": "medium"
+  },
+  {
+   "marker": "peer_outlier",
+   "fix": "Fix MAD-collapse: require peer_n >= 8 AND peer_mad > 0 and an absolute-amount floor before trusting robust_z (top z-scores are anti-correlated with dollars \u2014 a $236K Secretary-of-State capital-equipment buy scores z=354,904). Exclude internal-transfer/no-external-payee rows and self-payee (payee=agency, university-pays-itself) rows. Down-weight named benign-by-structure flows (Lottery->bank, Medicaid capitation, debt service, federal aid). Preserves the ~45% genuine concentrated-third-party-contract signal.",
+   "severity": "medium"
+  },
+  {
+   "marker": "concentration (sole_source_discretionary_concentration / vendor_agency_dependency_exposure)",
+   "fix": "Suppress the self-insured employee-benefits program (appropriation LIKE '%BENEFITS PROGRAM%' \u2014 UnitedHealthcare @ ADOA, $1.1B, biggest single dollar FP); add Lottery/treasury bank prize-fund to the vendor_dependency bank guard (reuse marker-1 word-boundary regex; 414 BofA rows); broaden the IGA/self-payment guard so payee-name need not equal agency-name (catches universities paid by non-university agencies, state-agency-to-state-agency, federal HHS). Preserves the genuine core (NaphCare, AshBritt, Off Madison Ave tourism PR, redistricting law firms).",
+   "severity": "medium"
+  }
+ ],
+ "summary": "Verified 60 vendor leads, 15 accountability-gap (agency) leads, and 12 marker-family red-teams against mart/tier_detail.parquet and mart/hv_base.parquet. Spot-checks confirmed every load-bearing claim: AshBritt $194.7M on contract CTR060412 (share 0.358), Fondomonte $7M round sole-source WARRANT from SLFRF (share 0.24), Active Resource Management $12.5M single ACH (z=133.7, share 0.354); placeholder_payee fires 99% on internal accounting rails (14,878/15,047 INTERNAL/NULL/JV/COST-ALLOCATION); the new_vendor family is 3,893/5,548 FY2021 fires (the vid-renumbering/NULL-blackout artifact, FY2019-2020 absent); triple_gap co-fires with placeholder_payee on 8,016/8,016 rows (100% redundant); person_name_payee is led by PITNEY BOWES (170), RR DONNELLEY (41), CALMAT, STATE TREASURER \u2014 all corporate/IGA misfires.\n\nHeadline distribution: of 60 vendor leads, ~45 resolve to explained_benign or false_positive_marker (self-insured employee health benefits at ADOA \u2014 BCBS/UnitedHealthcare; AHCCCS Medicaid managed care; PSPRS/ASRS pension paydowns; Lottery->Bank of America prize fund; ADOT highway-construction JVs and right-of-way title/escrow agencies; university operating lump-sum appropriations; HHS/county/university IGAs), 8 are mixed (single documented major contracts with a real overlay \u2014 NaphCare, Deloitte, GBC/Sundt/CRE-WPL ROW), and 7 are genuine_review with real public salience (AshBritt border barrier, Fondomonte, Active Resource Management water credits, Arizona Jewish Historical Society Holocaust-center earmark, Kinella Construction at the Legislature, Weil Gotshal outside counsel, IRCS microbusiness grant). All 15 agency \"accountability gap\" clusters resolve to a single systemic data-transparency convention \u2014 null/N-A payee on INTERNAL/JOURNAL-VOUCHER/COST-ALLOCATION rails for inter-fund moves, debt service, benefits-trust legs, and Medicaid/pension accounting \u2014 i.e. marker misfire, not missing accountability (one exception, Supreme Court, is mixed on an embedded peer_outlier large-lump-sum subset). Three markers (triple_gap, placeholder_payee, agency_benford) are recommended for retirement or demotion to non-scoring; the rest are KEEP-with-guardrails. Throughout, these remain leads-to-confirm, not findings of wrongdoing.",
+ "agency_verdicts": [
+  {
+   "agency": "DEPT OF ECONOMIC SECURITY",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Recommend marker fixes for overtaker.ai: (a) gate placeholder_payee/triple_gap to EXTERNAL rails only \u2014 exclude payment_method IN (NULL,'INTERNAL','COST ALLOCATION','JOURNAL VOUCHER'), which would clear ~99.96% of this cluster's dollars; (b) treat appropriation names containing 'CLR'/'CLEARING'/'NON",
+   "interest": 0.1
+  },
+  {
+   "agency": "DEPT OF TRANSPORTATION",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "DOWNWEIGHT/annotate as a systemic accounting convention, do not surface as per-item leads. The blank payee on JOURNAL VOUCHER / INTERNAL / COST ALLOCATION / NULL rails is structural (a 'payee' is inapplicable to inter-fund and cost-allocation postings), confirmed dataset-wide (named-payee rate ~0% o",
+   "interest": 0.2
+  },
+  {
+   "agency": "DEPT OF ADMINISTRATION",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "DOWNWEIGHT/annotate the cluster. The triple_gap and placeholder_payee markers are firing structurally on an internal-service-fund agency: 813/818 flagged items ($974.8M, 99.94%) are non-external book entries (INTERNAL/COST ALLOCATION/JOURNAL VOUCHER/NULL rail) \u2014 inter-fund moves, debt service, and b",
+   "interest": 0.15
+  },
+  {
+   "agency": "LOTTERY COMMISSION",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Recommend downweight/annotate, not per-item review. One marker-quality fix worth surfacing to the modeling team: triple_gap/placeholder_payee fire system-wide on the Lottery's aggregate-commission control account, where a null payee, INTERNAL rail, and uncomputable vendor share are by-design (no per",
+   "interest": 0.1
+  },
+  {
+   "agency": "DEPT OF CORRECTIONS",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Data-transparency/publication-convention artifact, not missing-accountability. Recommended action: fix the markers, not escalate the transactions \u2014 suppress placeholder_payee/triple_gap where an entire agency runs on placeholder payees (DOC at 76.6%), and drop the null-vid leg given the system-wide ",
+   "interest": 0.2
+  },
+  {
+   "agency": "DEPT OF CHILD SAFETY",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "DOWNWEIGHT/annotate as a marker artifact. The placeholder_payee marker should be suppressed (or treated as a structural label) whenever payment_method is in {INTERNAL, COST ALLOCATION, PAYMENT, JOURNAL VOUCHER}, since those rails are 100%/70% null-payee state-wide by design; firing it on every inter",
+   "interest": 0.15
+  },
+  {
+   "agency": "DEPT OF HEALTH SERVICES",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Recommend DOWNWEIGHT/annotate, not per-item KEEP. The triple_gap and placeholder_payee markers should be collapsed: on the INTERNAL rail, null payee is the systemic convention (99.98% statewide), so both markers are essentially proxies for payment_method='INTERNAL' and should not independently infla",
+   "interest": 0.2
+  },
+  {
+   "agency": "ARIZONA STATE RETIREMENT SYSTEM (ASRS)",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Routine internal-accounting / redacted-payee convention, not missing accountability. This is a single homogeneous block (one rail, one redaction pattern) covering a statutory ASRS retiree health-insurance benefit whose named-payee equivalent resolves to United Healthcare Services Inc, plus minor ope",
+   "interest": 0.1
+  },
+  {
+   "agency": "AHCCCS",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Verdict: explained_benign, with a marker-fix recommendation. The placeholder_payee and triple_gap markers should be suppressed (or heavily downweighted) for payment_method in (INTERNAL, COST ALLOCATION, PAYMENT, JOURNAL VOUCHER), where null payee is 100% structural \u2014 these rails are inter-fund/cost-",
+   "interest": 0.2
+  },
+  {
+   "agency": "DEPT OF PUBLIC SAFETY",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Verdict: explained_benign / systemic convention. The 510 triple_gap + 690 placeholder_payee items are a single Arizona-checkbook publishing artifact: 100% have N/A/NULL transaction_description, ~84% are N/A/NULL payee on the INTERNAL rail, and the small ACH remainder is synthetic card-aggregation ve",
+   "interest": 0.2
+  },
+  {
+   "agency": "SUPREME COURT",
+   "verdict": "mixed",
+   "systemic": true,
+   "note": "VERDICT: mixed. The placeholder_payee/triple_gap/period13 markers are a systemic accounting convention \u2014 the SUPREME COURT checkbook only populates payee/description on ACH and WARRANT rails; INTERNAL/PAYMENT/NULL-method distribution, cost-allocation and grant-pass-through rows are structurally blan",
+   "interest": 0.3
+  },
+  {
+   "agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Recommend annotating/downweighting both markers for this agency rather than treating items individually. Files: /Users/moeasnani/Documents/Openbooks/mart/tier_detail.parquet (flagged 84 items, all vid=NULL/payee=N/A/desc=N/A on INTERNAL rail) and /Users/moeasnani/Documents/Openbooks/mart/hv_base.par",
+   "interest": 0.25
+  },
+  {
+   "agency": "EARLY CHILDHOOD DEVELOP AND HEALTH BOARD",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Agency = First Things First (AZ Early Childhood Development and Health Board). Caveat: the benign read rests on the INTERNAL-rail convention; the underlying internal entries (cost allocations vs. fund administration) cannot be distinguished from this dataset because description/payee/contract are al",
+   "interest": 0.15
+  },
+  {
+   "agency": "DEPT OF REVENUE",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "True verdict is FALSE_POSITIVE_MARKER (not offered in the enum, so coded as explained_benign): fix the markers rather than escalate items. placeholder_payee/triple_gap fire on ~half of DOR's high-value checkbook (~$323M / 2,321 rows) because the agency systemically omits the checkbook payee/descript",
+   "interest": 0.15
+  },
+  {
+   "agency": "DEPT OF EDUCATION",
+   "verdict": "explained_benign",
+   "systemic": true,
+   "note": "Downweight/annotate, not a DOE accountability finding. The placeholder_payee + triple_gap markers are essentially structural texture here (suppressed-payee INTERNAL rail), systemic across 70 agencies and $8.9B statewide. Recommend the marker team treat null-payee + all-zeros vendor_id_code + INTERNA",
+   "interest": 0.2
+  }
+ ]
+}
