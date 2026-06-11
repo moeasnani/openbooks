@@ -251,7 +251,8 @@ class OpenBooks:
         )
         result["top_flagged_vendors"] = self._query(
             """
-            SELECT entity_key, mode(payee) AS entity_name,
+            SELECT entity_key,
+                   mode() WITHIN GROUP (ORDER BY payee) AS entity_name,
                    count(*) FILTER (WHERE tier = 1) AS n_tier1,
                    round(sum(amount) FILTER (WHERE tier = 1), 0) AS usd_tier1,
                    round(max(risk_score), 2) AS max_score
@@ -266,7 +267,12 @@ class OpenBooks:
         return result
 
     def explain(self, transaction_id: str) -> dict | None:
-        """"Why this tier?" — marker-family breakdown + score calculation."""
+        """"Why this tier?" — marker-family breakdown + score calculation.
+
+        Reads from ``tx_with_verdict`` so the verification overlay
+        (verify_status) travels with the explanation — a flag is never
+        surfaced without its verdict (data contract §6.2).
+        """
         rows = self._query(
             """
             SELECT transaction_id, fiscal_year, agency, payee, category1,
@@ -274,8 +280,9 @@ class OpenBooks:
                    f_round, f_dup, f_conc, f_newvendor, f_yearend,
                    f_peer, f_account, f_rail, f_entity,
                    marker_sum, category_multiplier,
-                   fired_markers, n_markers
-            FROM tx_tiered
+                   fired_markers, n_markers,
+                   verify_status, overtaker_interest, public_context
+            FROM tx_with_verdict
             WHERE transaction_id = ?
             """,
             (transaction_id,),

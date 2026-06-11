@@ -129,8 +129,18 @@ class PostgresBackend:
 
     @staticmethod
     def translate(sql: str) -> str:
-        """``?`` → ``%s``. Query-layer SQL contains no literal ``?``."""
-        return sql.replace("?", "%s")
+        """Adapt query-layer SQL for psycopg.
+
+        Two rewrites, order matters:
+          1. ``%`` → ``%%`` — psycopg scans the *whole* SQL string for
+             ``%``-style placeholders, so literal percents (e.g. the
+             ``'%'`` pieces of a LIKE pattern) must be escaped.
+          2. ``?`` → ``%s`` — positional placeholder style.
+
+        Safe because query-layer SQL never contains a literal ``?``
+        (enforced by tests/test_backends.py).
+        """
+        return sql.replace("%", "%%").replace("?", "%s")
 
     def query(self, sql: str, params: Sequence[Any] = ()) -> list[dict]:
         with self._conn.cursor() as cur:

@@ -17,6 +17,14 @@ def test_placeholder_translation():
     )
 
 
+def test_percent_literals_escaped_for_psycopg():
+    """LIKE-pattern percents must become %% so psycopg doesn't read them
+    as placeholders (found live against Postgres 16)."""
+    assert PostgresBackend.translate("WHERE x LIKE '%' || ? || '%'") == (
+        "WHERE x LIKE '%%' || %s || '%%'"
+    )
+
+
 def test_no_question_mark_inside_sql_string_literals():
     """The blanket `?`→`%s` translation in PostgresBackend is only safe if
     no SQL emitted by the query layer carries a literal question mark
