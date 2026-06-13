@@ -13,7 +13,8 @@
   "agency_overrides": [
     {"report_id": "21-109", "agency_raw": "Arizona Department of Veterans' Services", "checkbook_agency": "DEPT OF VETERANS SERVICES", "note": "Title-page concatenated two entities ('...and the Arizona Veterans' Service Advisory Commission'); primary audited agency is DVS."},
     {"report_id": "23-109", "agency_raw": "Public Safety Personnel Retirement System", "checkbook_agency": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM", "note": "No agency-lead keyword on title page; recovered from 'Report 23-109' next line."},
-    {"report_id": "18-103", "agency_raw": "Arizona Department of Child Safety", "checkbook_agency": "DEPT OF CHILD SAFETY", "note": "Truncated 'Arizona Families F.I.R.S.T.' program suffix; parent agency is DCS."}
+    {"report_id": "18-103", "agency_raw": "Arizona Department of Child Safety", "checkbook_agency": "DEPT OF CHILD SAFETY", "note": "Truncated 'Arizona Families F.I.R.S.T.' program suffix; parent agency is DCS."},
+    {"report_id": "19-115", "agency_raw": "Arizona Board of Regents", "checkbook_agency": "BOARD OF REGENTS", "note": "Parser joined topic 'Commercial Real Estate' onto agency name, causing a spurious REAL ESTATE DEPARTMENT bridge. True agency is ABOR; audit is about ABOR-held commercial real estate."}
   ],
 
   "xref_bridge": [
@@ -68,12 +69,18 @@
     {"report_id": "22-112", "questioned_cost_usd": 1770000000, "basis": "CMS-projected ~$1.77B (16%) of AHCCCS payments FY2020 potentially improper due to eligibility-determination noncompliance.", "confidence": "high", "note": "Projection, not confirmed loss; flag as estimate."},
     {"report_id": "22-113", "questioned_cost_usd": 330000, "basis": "At least $330,000 administrative/technical costs allocated to federal programs FY2020-2022 may be unallowable.", "confidence": "high"},
     {"report_id": "23-110", "questioned_cost_usd": 382408, "basis": "$382,408 fraud across 177 customer accounts; $216,412 recovered, $165,996 unrecovered as of audit.", "confidence": "high"},
-    {"report_id": "23-116", "questioned_cost_usd": 7500000, "basis": "$7.5M in Quality Jobs tax credits approved without documented verification of job-creation requirements (plus $3.4M A1 grant distributions lacking documentation).", "confidence": "high"},
+    {"report_id": "23-116", "questioned_cost_usd": 11000000, "basis": "ACA lacked documentation verifying business-reported job-creation/capital targets before approving nearly $11M in incentives (Quality Jobs tax credits + A1 grants). Separately, $2.4M spent on private CEO Forums flagged as questionable marketing spend. (v2 sweep refined this up from the v1 $7.5M Quality-Jobs-only figure.)", "confidence": "high"},
     {"report_id": "24-113", "questioned_cost_usd": 8100000, "basis": "$8.1M in grantee expenses approved/paid that were unsupported or unallowable.", "confidence": "high"},
     {"report_id": "24-114", "questioned_cost_usd": 2000000, "basis": "$2M fraudulent wire transfer from State Housing Trust Fund (2023); insurance later covered loss.", "confidence": "high"},
     {"report_id": "25-101", "questioned_cost_usd": 231100000, "basis": "State may owe ~$231.1M to federal govt if unreconciled cash consisted of recovered overpayments/fraudulent federal UI monies.", "confidence": "medium", "note": "Contingent liability."},
     {"report_id": "25-103", "questioned_cost_usd": 3000, "basis": "~$3,000 spent from funds prohibited for employee-recognition purposes, lacked public-purpose documentation.", "confidence": "low"},
-    {"report_id": "25-116", "questioned_cost_usd": 2400000, "basis": "$2.4M in UI overpayments to 925 ineligible claimants from un-updated IT system; waived, not recovered.", "confidence": "high"}
+    {"report_id": "25-116", "questioned_cost_usd": 2400000, "basis": "$2.4M in UI overpayments to 925 ineligible claimants from un-updated IT system; waived, not recovered.", "confidence": "high"},
+    {"report_id": "19-115", "questioned_cost_usd": 3900000, "basis": "ABOR/UA did not adhere to master lease requirements, resulting in the inappropriate use of $3.9M and inadequate oversight of master lease agreements. (v2 sweep)", "confidence": "high"},
+    {"report_id": "21-109", "questioned_cost_usd": 347000, "basis": "DVS could not provide completed approval forms for a $221K software-support payment and an $81K temp-staffing payment (~$302K unsupported), plus $45K uncollected from Arizona American Legion contract. (v2 sweep)", "confidence": "high"},
+    {"report_id": "21-111", "questioned_cost_usd": 348000, "basis": "Board of Nursing accounting error (FY2018) led to ~$348K owed to the State General Fund as of July 2021. (v2 sweep)", "confidence": "medium", "note": "Under-remittance owed, not a loss."},
+    {"report_id": "21-114", "questioned_cost_usd": 15076, "basis": "Office of Tourism: $15,076 journalist-tour expenses did not comply with SAAM nonemployee-travel/receipt requirements; separately exceeded $100K delegated procurement authority on ~$500K in services (procurement noncompliance, not recorded as QC). (v2 sweep)", "confidence": "medium"},
+    {"report_id": "25-104", "questioned_cost_usd": 43200, "basis": "Dept of Education School Safety Program reimbursed 1 school $43,200 across 6 requests for a counselor without receiving supporting expenditure reports. (v2 sweep)", "confidence": "medium"},
+    {"report_id": "17-111", "questioned_cost_usd": 699000, "basis": "DCS reported ~$699K still owed since 2010 from participants who did not fulfill obligations; collected only ~$82K Feb-Jul 2017. (v2 sweep)", "confidence": "medium", "note": "Uncollected receivable."}
   ],
 
   "no_questioned_cost": [

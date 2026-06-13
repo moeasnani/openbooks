@@ -39,9 +39,11 @@ extracted/*.json                      # pymupdf text extraction (122 reports)
 - **ag_reports** (122) — one row per report. `agency_checkbook` is the bridge
   key into `agency_summary.agency` / `tier_agency_scorecard.agency`.
 - **ag_findings** (231) — one row per finding. `questioned_cost_usd` populated
-  for 15 findings (~$2.04B total, dominated by the AHCCCS $1.77B FY2020 CMS
-  improper-payment projection). `has_adverse_findings` distinguishes real
-  findings from clean reports. `questioned_cost_confidence` flags estimates.
+  for 21 findings (~$2.05B total; ~$283M excluding the AHCCCS $1.77B FY2020 CMS
+  improper-payment projection). Recall expanded via a v2 wide-net Grok sweep
+  (`make_qc_candidates_v2.py`): 103 candidate sentences across 44 reports vs the
+  v1 narrow harvest's 46. `has_adverse_findings` distinguishes real findings
+  from clean reports. `questioned_cost_confidence` flags estimates.
 - **ag_report_agency_xref** (94) — agency-key → checkbook-agency map, token /
   word-boundary matched (never substring, per INTEGRATION_BRIEF §6.7).
 
@@ -61,6 +63,7 @@ To rebuild after adding new report PDFs + re-running extraction:
 cd /Users/moeasnani/Openbooks
 .venv/bin/python agency/build_ag_findings.py
 .venv/bin/python agency/make_grok_candidates.py    # review new residuals
+.venv/bin/python agency/make_qc_candidates_v2.py   # wide-net questioned-cost sweep
 # (hand-adjudicate any NEW residual cases into ag_build/grok_enrichment.json)
 .venv/bin/python agency/load_ag_to_warehouse.py
 ```

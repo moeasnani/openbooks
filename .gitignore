@@ -14,6 +14,7 @@ overtaker_handoff.zip
 agency/extracted/
 agency/ag_build/*.csv
 agency/ag_build/grok_candidates.json
+agency/ag_build/qc_candidates_v2.json
 # Raw source PDFs (downloaded from azauditor.gov; large binaries, re-fetchable)
 agency/**/*.pdf
 agency/*.pdf
