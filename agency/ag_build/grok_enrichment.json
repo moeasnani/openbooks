@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "description": "Cached LLM (Grok-4.3) enrichment for the targeted hybrid pass. Adjudications over agency/ag_build/grok_candidates.json. Committed so warehouse refreshes stay deterministic (INTEGRATION_BRIEF s7). Regenerate ONLY if the underlying extracted JSON changes.",
+    "model": "grok-4.3",
+    "pass": "targeted",
+    "adjudication_rules": {
+      "questioned_cost_usd": "Only the audit's OWN identified misspent/unsupported/improper/unrecovered dollars tied to a finding. Excludes: national stats, program funding levels, penalty schedules, restitution already recovered by others, contextual figures.",
+      "agency_bridge": "Token/word-boundary match to checkbook agency_summary.agency; subprogram audits map to parent dept; non-state entities (regional COGs) marked no_checkbook_equivalent.",
+      "finding_gap": "clean = report genuinely has no adverse findings; chaptered = findings exist under Chapter/Conclusion structure not the modern 'Finding N:' template."
+    }
+  },
+
+  "agency_overrides": [
+    {"report_id": "21-109", "agency_raw": "Arizona Department of Veterans' Services", "checkbook_agency": "DEPT OF VETERANS SERVICES", "note": "Title-page concatenated two entities ('...and the Arizona Veterans' Service Advisory Commission'); primary audited agency is DVS."},
+    {"report_id": "23-109", "agency_raw": "Public Safety Personnel Retirement System", "checkbook_agency": "PUBLIC SAFETY PERSONNEL RETIREMENT SYSTEM", "note": "No agency-lead keyword on title page; recovered from 'Report 23-109' next line."},
+    {"report_id": "18-103", "agency_raw": "Arizona Department of Child Safety", "checkbook_agency": "DEPT OF CHILD SAFETY", "note": "Truncated 'Arizona Families F.I.R.S.T.' program suffix; parent agency is DCS."}
+  ],
+
+  "xref_bridge": [
+    {"agency_key_contains": "Child Safety Administrative", "checkbook_agency": "DEPT OF CHILD SAFETY", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Economic Security Child Care", "checkbook_agency": "DEPT OF ECONOMIC SECURITY", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Economic Security Unemployment", "checkbook_agency": "DEPT OF ECONOMIC SECURITY", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Economic Security Vocational", "checkbook_agency": "DEPT OF ECONOMIC SECURITY", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Health Services Procurement", "checkbook_agency": "DEPT OF HEALTH SERVICES", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Health Services Medical Marijuana", "checkbook_agency": "DEPT OF HEALTH SERVICES", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Environmental Quality Water", "checkbook_agency": "DEPT OF ENVIRONMENTAL QUALITY", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Corrections Rehabilitation", "checkbook_agency": "DEPT OF CORRECTIONS", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Veterans", "checkbook_agency": "DEPT OF VETERANS SERVICES", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Regulatory Board of Physician Assistants", "checkbook_agency": null, "confidence": "high", "relation": "no_checkbook_equivalent", "note": "Regulatory Board of Physician Assistants not a separate line in agency_summary checkbook."},
+    {"agency_key_contains": "Universities", "checkbook_agency": "BOARD OF REGENTS", "confidence": "high", "relation": "subprogram_of_parent", "note": "ASU/NAU/UA roll up to Board of Regents."},
+    {"agency_key_contains": "Power Authority", "checkbook_agency": null, "confidence": "medium", "relation": "verify", "note": "Arizona Power Authority — verify checkbook presence."},
+    {"agency_key_contains": "Osteopathic Examiners", "checkbook_agency": "BOARD OF OSTEOPATHIC EXAMINERS", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Agriculture State Agricultural Laborat", "checkbook_agency": "DEPT OF AGRICULTURE", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Agriculture Key Regulatory", "checkbook_agency": "DEPT OF AGRICULTURE", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Regents University-Affiliated", "checkbook_agency": "BOARD OF REGENTS", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Juvenile Corrections Youth Treatment", "checkbook_agency": "DEPT OF JUVENILE CORRECTIONS", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Corrections Rehabilitation Reentry", "checkbook_agency": "DEPT OF CORRECTIONS", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Economic Security Vocational Rehabilit", "checkbook_agency": "DEPT OF ECONOMIC SECURITY", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Education School Safety", "checkbook_agency": "DEPT OF EDUCATION", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Veterans Services Military Family", "checkbook_agency": "DEPT OF VETERANS SERVICES", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Health Care Cost Containment", "checkbook_agency": "AHCCCS", "confidence": "high", "relation": "acronym", "note": "AHCCCS may render differently in checkbook; verify against agency list."},
+    {"agency_key_contains": "Revenue Sunset", "checkbook_agency": "DEPT OF REVENUE", "confidence": "high", "relation": "subprogram_of_parent"},
+    {"agency_key_contains": "Gaming Racing Commission", "checkbook_agency": "DEPT OF GAMING", "confidence": "medium", "relation": "subprogram_of_parent", "note": "Racing Commission consolidated under Dept of Gaming."},
+    {"agency_key_contains": "Naturopathic Physicians", "checkbook_agency": "NATUROPATHIC PHYSICIANS MEDICAL BOARD", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Office Economic Opportunity", "checkbook_agency": "OFFICE OF ECONOMIC OPPORTUNITY", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Commerce Authority", "checkbook_agency": "ARIZONA COMMERCE AUTHORITY", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Insurance Financial Institutions", "checkbook_agency": "DEPT OF INSURANCE AND FINANCIAL INSTITUTIONS", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Emergency Military", "checkbook_agency": "DEPT OF EMERGENCY AND MILITARY AFFAIRS", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Housing", "checkbook_agency": "DEPT OF HOUSING", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Land Department", "checkbook_agency": "LAND DEPARTMENT", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Postsecondary", "checkbook_agency": "COMMISSION FOR POSTSECONDARY EDUCATION", "confidence": "high", "relation": "exact"},
+    {"agency_key_contains": "Anti-racketeering", "checkbook_agency": "ATTORNEY GENERAL (DEPT OF LAW)", "confidence": "medium", "relation": "fund_within_agency", "note": "Anti-racketeering Revolving Fund administered by AG Office."},
+    {"agency_raw": "Pima Association of Governments— Regional Transportation Authority Plan", "checkbook_agency": null, "confidence": "high", "relation": "no_checkbook_equivalent", "note": "Regional council of governments, not a state agency. Excluded from checkbook by scope (INTEGRATION_BRIEF s6.6)."},
+    {"agency_raw": "Maricopa Association of Governments Regional Transportation Plan", "checkbook_agency": null, "confidence": "high", "relation": "no_checkbook_equivalent", "note": "Regional COG, not a state agency."},
+    {"agency_raw": "Arizona Sports and Tourism Authority", "checkbook_agency": null, "confidence": "medium", "relation": "no_checkbook_equivalent", "note": "Independent authority; verify — may not appear in agency_summary."},
+    {"agency_raw": "Arizona Foster Care Review Board", "checkbook_agency": null, "confidence": "low", "relation": "verify", "note": "Small board; may fall under Supreme Court/Judiciary, not in agency_summary."},
+    {"agency_raw": "Arizona Psychiatric Security Review Board", "checkbook_agency": null, "confidence": "low", "relation": "verify"},
+    {"agency_raw": "Arizona's Universities Information Technology Security", "checkbook_agency": "BOARD OF REGENTS", "confidence": "medium", "relation": "subprogram_of_parent", "note": "ASU/NAU/UA roll up to Board of Regents in state checkbook."}
+  ],
+
+  "questioned_costs": [
+    {"report_id": "16-107", "questioned_cost_usd": 102602, "basis": "Department staff identified $102,602 misspent program monies Aug 2015-Jan 2016 (Table 2); only ~$14,500 recovered as of Jan 2016.", "confidence": "high"},
+    {"report_id": "17-101", "questioned_cost_usd": 167000, "basis": "~$167,000 spent on services for a client with private insurance, file lacked documentation of comparable-benefit search.", "confidence": "medium", "note": "Single illustrative case, not a total."},
+    {"report_id": "17-110", "questioned_cost_usd": 19700000, "basis": "~$19.7M reduction in misspent federal SNAP monies from payment-processing errors.", "confidence": "medium"},
+    {"report_id": "19-109", "questioned_cost_usd": 950104, "basis": "$950,104 in contract spending across 309 contracts lacked procurement-type documentation.", "confidence": "high"},
+    {"report_id": "20-101", "questioned_cost_usd": 1500, "basis": "$1,500 investigative cost reimbursement lacked supporting documentation.", "confidence": "low", "note": "De minimis single item."},
+    {"report_id": "20-109", "questioned_cost_usd": 992400, "basis": "Unreconciled ITA items totaling ~$992,400 absolute dollar value; documentation could not be located for a sample.", "confidence": "medium"},
+    {"report_id": "22-112", "questioned_cost_usd": 1770000000, "basis": "CMS-projected ~$1.77B (16%) of AHCCCS payments FY2020 potentially improper due to eligibility-determination noncompliance.", "confidence": "high", "note": "Projection, not confirmed loss; flag as estimate."},
+    {"report_id": "22-113", "questioned_cost_usd": 330000, "basis": "At least $330,000 administrative/technical costs allocated to federal programs FY2020-2022 may be unallowable.", "confidence": "high"},
+    {"report_id": "23-110", "questioned_cost_usd": 382408, "basis": "$382,408 fraud across 177 customer accounts; $216,412 recovered, $165,996 unrecovered as of audit.", "confidence": "high"},
+    {"report_id": "23-116", "questioned_cost_usd": 7500000, "basis": "$7.5M in Quality Jobs tax credits approved without documented verification of job-creation requirements (plus $3.4M A1 grant distributions lacking documentation).", "confidence": "high"},
+    {"report_id": "24-113", "questioned_cost_usd": 8100000, "basis": "$8.1M in grantee expenses approved/paid that were unsupported or unallowable.", "confidence": "high"},
+    {"report_id": "24-114", "questioned_cost_usd": 2000000, "basis": "$2M fraudulent wire transfer from State Housing Trust Fund (2023); insurance later covered loss.", "confidence": "high"},
+    {"report_id": "25-101", "questioned_cost_usd": 231100000, "basis": "State may owe ~$231.1M to federal govt if unreconciled cash consisted of recovered overpayments/fraudulent federal UI monies.", "confidence": "medium", "note": "Contingent liability."},
+    {"report_id": "25-103", "questioned_cost_usd": 3000, "basis": "~$3,000 spent from funds prohibited for employee-recognition purposes, lacked public-purpose documentation.", "confidence": "low"},
+    {"report_id": "25-116", "questioned_cost_usd": 2400000, "basis": "$2.4M in UI overpayments to 925 ineligible claimants from un-updated IT system; waived, not recovered.", "confidence": "high"}
+  ],
+
+  "no_questioned_cost": [
+    "16-102", "16-103", "16-104", "16-109", "16-110", "16-111",
+    "17-107", "17-111", "18-102", "18-103", "19-110", "19-114",
+    "20-112", "21-101", "21-105", "21-108", "21-109", "21-115",
+    "21-122", "23-107", "24-101", "24-103", "24-107", "24-109",
+    "25-107", "25-301"
+  ],
+
+  "finding_gap_adjudications": [
+    {"report_id": "16-102", "structure": "chaptered", "has_adverse_findings": true, "note": "Chapter 1 + recommendations; findings under chapter headers."},
+    {"report_id": "16-103", "structure": "chaptered", "has_adverse_findings": true, "note": "Board complaint-handling + public-info findings under 'The Board should' recs."},
+    {"report_id": "16-104", "structure": "chaptered", "has_adverse_findings": true, "note": "Complaint-resolution timeliness; sunset factor analysis."},
+    {"report_id": "16-109", "structure": "chaptered", "has_adverse_findings": true, "note": "Acupuncture Board complaint investigation delays."},
+    {"report_id": "16-110", "structure": "chaptered", "has_adverse_findings": true, "note": "DCS permanency practices."},
+    {"report_id": "16-111", "structure": "chaptered", "has_adverse_findings": true, "note": "Conflicts of interest (Ch.3)."},
+    {"report_id": "16-CR1", "structure": "chaptered", "has_adverse_findings": false, "note": "MAG RTA compliance review; multi-chapter performance review, largely on-track."},
+    {"report_id": "17-102", "structure": "chaptered", "has_adverse_findings": false, "note": "DCS staffing 'appears reasonable' - largely clean."},
+    {"report_id": "17-107", "structure": "chaptered", "has_adverse_findings": true, "note": "Medical Board investigation/training delays."},
+    {"report_id": "17-110", "structure": "chaptered", "has_adverse_findings": true, "note": "DES child-care/SNAP; $19.7M misspent federal monies."},
+    {"report_id": "17-111", "structure": "chaptered", "has_adverse_findings": true, "note": "DCS."},
+    {"report_id": "17-CR1", "structure": "chaptered", "has_adverse_findings": false, "note": "Pima RTA compliance review; performance mostly met targets."},
+    {"report_id": "18-102", "structure": "chaptered", "has_adverse_findings": true, "note": "Universities (ASU/NAU/UA), multi-chapter."},
+    {"report_id": "18-103", "structure": "chaptered", "has_adverse_findings": false, "note": "DCS AFF contract controls largely established."},
+    {"report_id": "19-114", "structure": "conclusion", "has_adverse_findings": true, "note": "Board of Fingerprinting checklist/processing recs."},
+    {"report_id": "20-109", "structure": "chaptered", "has_adverse_findings": true, "note": "ADCRR capital funding 2-4% of requests; ITA reconciliation gaps."},
+    {"report_id": "20-112", "structure": "conclusion", "has_adverse_findings": true, "note": "Dispensing Opticians notice/rulemaking gaps."},
+    {"report_id": "21-101", "structure": "chaptered", "has_adverse_findings": true, "note": "DVS State Veterans' Homes contracted-nurse/overtime."},
+    {"report_id": "21-105", "structure": "sunset_factors", "has_adverse_findings": true, "note": "ABOR sunset review."},
+    {"report_id": "21-108", "structure": "sunset_factors", "has_adverse_findings": true, "note": "Board of Barbers conflict-of-interest statutory noncompliance."},
+    {"report_id": "21-109", "structure": "conclusion", "has_adverse_findings": true, "note": "DVS contract-monitoring noncompliance (Arizona American Legion)."},
+    {"report_id": "21-115", "structure": "sunset_factors", "has_adverse_findings": false, "note": "WIFA 'has established processes' - clean sunset review."},
+    {"report_id": "21-122", "structure": "sunset_factors", "has_adverse_findings": true, "note": "DJC inadequate suicide prevention findings."},
+    {"report_id": "23-107", "structure": "sunset_factors", "has_adverse_findings": true, "note": "ADOA school-facility safety recs."},
+    {"report_id": "24-101", "structure": "chaptered", "has_adverse_findings": true, "note": "State Land Dept agricultural rental-rate appraisal failures."},
+    {"report_id": "24-103", "structure": "sunset_factors", "has_adverse_findings": true, "note": "School Facilities Oversight Board; implements all but 1 rec."},
+    {"report_id": "24-107", "structure": "sunset_factors", "has_adverse_findings": true, "note": "GRRC sunset factors."},
+    {"report_id": "25-301", "structure": "biennial_review", "has_adverse_findings": false, "note": "AG Anti-racketeering fund biennial review; all 3 prior recs implemented - clean."}
+  ]
+}
