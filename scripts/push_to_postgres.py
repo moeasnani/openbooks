@@ -14,7 +14,10 @@ verifies golden row counts on the Postgres side.
 The five read-path tables (everything openbooks.queries touches):
     tx_tiered, tier_entities, tier_agency_summary,
     tier_agency_year, tier_program_summary
-plus vendor_verdicts (copied if present, so curation survives the move).
+plus vendor_verdicts (copied if present, so curation survives the move)
+and the Arizona Auditor-General overlay — ag_reports, ag_findings,
+ag_report_agency_xref — copied when present (newer DBs only), so the
+agency card's AG-corroboration layer travels to Postgres too.
 """
 
 from __future__ import annotations
@@ -31,6 +34,17 @@ TABLES = [
     "tier_program_summary",
 ]
 
+# Optional tables: copied only when present in the source warehouse, so the
+# script still runs against an older DB built before the layer existed.
+# (vendor_verdicts is handled separately because it carries curation.)
+#   ag_reports / ag_findings / ag_report_agency_xref — the Arizona
+#   Auditor-General findings overlay (see openbooks.queries._ag_audit).
+AG_TABLES = [
+    "ag_reports",
+    "ag_findings",
+    "ag_report_agency_xref",
+]
+
 # Indexes matching the query layer's access paths.
 INDEXES = [
     "CREATE INDEX IF NOT EXISTS ix_txt_tier ON tx_tiered (tier)",
@@ -38,6 +52,15 @@ INDEXES = [
     "CREATE INDEX IF NOT EXISTS ix_txt_agency ON tx_tiered (agency)",
     "CREATE INDEX IF NOT EXISTS ix_te_key ON tier_entities (entity_key)",
     "CREATE INDEX IF NOT EXISTS ix_tay_agency ON tier_agency_year (agency)",
+]
+
+# AG-overlay indexes — applied only when the AG tables were copied.
+# Read path: ag_reports filtered by agency_checkbook, joined to
+# ag_findings on report_id.
+AG_INDEXES = [
+    "CREATE INDEX IF NOT EXISTS ix_agr_agency ON ag_reports (agency_checkbook)",
+    "CREATE INDEX IF NOT EXISTS ix_agr_report ON ag_reports (report_id)",
+    "CREATE INDEX IF NOT EXISTS ix_agf_report ON ag_findings (report_id)",
 ]
 
 
@@ -81,6 +104,21 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
             con.execute("CREATE TABLE pg.vendor_verdicts AS SELECT * FROM vendor_verdicts")
             print("done")
 
+        # Carry the AG findings overlay forward when present (newer DBs only).
+        for table in AG_TABLES:
+            present = _scalar(
+                con,
+                "SELECT count(*) FROM information_schema.tables "
+                f"WHERE table_name = '{table}'",
+            )
+            if not present:
+                continue
+            n = _scalar(con, f"SELECT count(*) FROM {table}")
+            print(f"  pushing {table:24} {n:>9,} rows … ", end="", flush=True)
+            con.execute(f"DROP TABLE IF EXISTS pg.{table} CASCADE")
+            con.execute(f"CREATE TABLE pg.{table} AS SELECT * FROM {table}")
+            print("done")
+
     # ── verify: row counts must match exactly, source vs Postgres ──────
     print("\nverifying row counts (duckdb == postgres):")
     failures = 0
@@ -90,6 +128,28 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
         ok = n_src == n_pg
         failures += 0 if ok else 1
         print(f"  {'OK  ' if ok else 'FAIL'} {table:24} {n_src:>9,} == {n_pg:,}")
+    # AG tables: verify when the source carries them. If the source has an
+    # AG table but Postgres doesn't (e.g. --verify-only against an older
+    # push), report a FAIL rather than crashing on the missing pg table.
+    for table in AG_TABLES:
+        in_src = _scalar(
+            con,
+            "SELECT count(*) FROM information_schema.tables "
+            f"WHERE table_name = '{table}'",
+        )
+        if not in_src:
+            continue
+        n_src = _scalar(con, f"SELECT count(*) FROM {table}")
+        in_pg = _scalar(
+            con,
+            "SELECT count(*) FROM information_schema.tables "
+            f"WHERE table_catalog = 'pg' AND table_name = '{table}'",
+        )
+        n_pg = _scalar(con, f"SELECT count(*) FROM pg.{table}") if in_pg else -1
+        ok = in_pg and n_src == n_pg
+        failures += 0 if ok else 1
+        shown = f"{n_pg:,}" if in_pg else "MISSING"
+        print(f"  {'OK  ' if ok else 'FAIL'} {table:24} {n_src:>9,} == {shown}")
     con.close()
 
     if failures:
@@ -105,11 +165,29 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
     bootstrap(backend)
     for ddl in INDEXES:
         backend.execute(ddl)
+    # AG-overlay indexes — only if the tables made it across to Postgres.
+    ag_rows = backend.query(
+        "SELECT count(*) AS n FROM information_schema.tables "
+        "WHERE table_name = 'ag_reports'"
+    )
+    if ag_rows and ag_rows[0]["n"]:
+        for ddl in AG_INDEXES:
+            backend.execute(ddl)
     print("\nbootstrap + indexes applied on postgres")
 
     ob = OpenBooks(backend=backend)
     w = ob.waterfall()
     print(f"smoke query via OpenBooks->Postgres: {w['total_txns']:,} txns / {w['total_exposure']:,.0f} exposure")
+    # AG overlay smoke: exercise the real read path through Postgres.
+    if ag_rows and ag_rows[0]["n"]:
+        n_reports = backend.query("SELECT count(*) AS n FROM ag_reports")[0]["n"]
+        n_findings = backend.query("SELECT count(*) AS n FROM ag_findings")[0]["n"]
+        audit = ob._ag_audit("DEPT OF ECONOMIC SECURITY")
+        n_audits = audit["n_reports"] if audit else 0
+        print(
+            f"AG overlay via OpenBooks->Postgres: {n_reports} reports / "
+            f"{n_findings} findings (DES sample: {n_audits} audits)"
+        )
     ob.close()
     print("\npush complete — point the server at it with:")
     print("  openbooks-server --postgres <dsn>")
