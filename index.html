@@ -71,6 +71,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .framing{font-size:11px;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:7px;padding:6px 10px;margin:10px 0 2px}
 footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px solid var(--warn-line);color:var(--warn-ink);font-size:10.5px;line-height:1.45;padding:7px 16px;backdrop-filter:blur(8px)}
 .merged{margin:8px 0;padding:8px 10px;background:var(--card-hi);border-radius:7px;font-size:11.5px}
+.agctx{margin:8px 0;padding:7px 10px;background:#0d1828;border:1px solid #1d3a5c;border-left:3px solid var(--acc);border-radius:7px;font-size:11px;color:#9fc0e8;line-height:1.5}
 .merged b{color:var(--acc)}
 .xrow{display:flex;gap:8px;color:var(--mut);flex-wrap:wrap;margin:2px 0}
 .explain-box{background:var(--card-hi);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:6px 0;font-size:12px}
@@ -198,6 +199,20 @@ function txnTable(txns, withExplain) {
     '<th class=n>Score</th><th>Tier</th><th>Markers</th></tr></thead><tbody>' + rows + "</tbody></table>";
 }
 
+function agContextNote(pa) {
+  if (!pa) return "";
+  const est = pa.questioned_cost_has_estimate ? "*" : "";
+  const qc = pa.n_findings_with_cost > 0
+    ? " · " + fmt(pa.total_questioned_cost) + " questioned" + est : "";
+  return '<div class="agctx">🔍 <b>Agency context</b> (not a finding about this vendor): ' +
+    "this vendor's primary agency <b>" + esc(pa.agency) + "</b> has <b>" +
+    pa.n_reports + " Auditor General audit" + (pa.n_reports === 1 ? "" : "s") +
+    "</b> FY" + pa.first_fy + "–" + pa.last_fy + qc +
+    ". AG findings concern the agency's operations, not " +
+    "this vendor — see the Agency Card." +
+    (est ? " * includes estimates/projections." : "") + "</div>";
+}
+
 function renderVendor(d) {
   const mk = (d.top_markers || []).slice(0, 5).map(m => '<span class="chip">' + esc(m) + "</span>").join("");
   const merged = d.n_names_merged > 0
@@ -213,6 +228,7 @@ function renderVendor(d) {
     '<div class="right"><div class="usd">' + fmt(d.usd_tier1 || d.hv_exposure) + "</div></div></div>" +
     '<div class="cbody">' +
     (d.public_context ? '<div class="ctx">' + esc(d.public_context) + "</div>" : "") + merged +
+    agContextNote(d.primary_agency_ag) +
     txnTable(d.transactions) +
     (d.n_txn_displayed >= 30 ? '<div class="meta">Showing top 30 of ' + d.hv_txn + " transactions by risk score</div>" : "") +
     "</div></div>";

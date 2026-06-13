@@ -189,6 +189,31 @@ class OpenBooks:
         crosswalk = self._crosswalk_rows(ek)
         s["names_merged"] = crosswalk
         s["n_names_merged"] = len(crosswalk)
+
+        # Indirect AG context: the vendor's primary agency (most Tier-1+2
+        # dollars) and that AGENCY's AG-audit rollup. This is agency-level
+        # corroboration, NOT a finding about the vendor — the data contract
+        # forbids accusing any entity. Labeled accordingly in the payload and
+        # UI. None when no tx, no primary agency, or agency has no AG coverage.
+        s["primary_agency_ag"] = None
+        primary = self._query(
+            """
+            SELECT agency, round(sum(amount), 0) AS usd
+            FROM tx_with_verdict
+            WHERE entity_key = ? AND tier IN (1, 2) AND agency IS NOT NULL
+            GROUP BY agency
+            ORDER BY usd DESC
+            LIMIT 1
+            """,
+            (ek,),
+        )
+        if primary:
+            agency_name = primary[0]["agency"]
+            summary = self._ag_audit_summary(agency_name)
+            if summary:
+                summary["agency"] = agency_name
+                summary["relation"] = "primary_agency"
+                s["primary_agency_ag"] = summary
         return s
 
     def leads(
@@ -232,6 +257,49 @@ class OpenBooks:
             LIMIT ?
         """
         return self._query(sql, tuple(params))
+
+    def _ag_audit_summary(self, agency: str) -> dict | None:
+        """Lightweight AG-audit rollup for an agency — counts only, no
+        findings list. Used for search-result badges and as the core of the
+        fuller :meth:`_ag_audit`. Returns ``None`` if the ag_* tables are
+        absent or the agency has no AG coverage.
+
+        One round-trip: a single aggregate query over the joined layer.
+        """
+        if not (self._table_exists("ag_reports")
+                and self._table_exists("ag_findings")):
+            return None
+        rows = self._query(
+            """
+            SELECT count(DISTINCT r.report_id) AS n_reports,
+                   min(r.fiscal_year) AS first_fy,
+                   max(r.fiscal_year) AS last_fy,
+                   coalesce(sum(f.questioned_cost_usd), 0) AS total_qc,
+                   count(f.questioned_cost_usd) AS n_findings_with_cost,
+                   bool_or(
+                       lower(coalesce(f.questioned_cost_confidence, '')) IN ('medium', 'low')
+                       OR lower(coalesce(f.questioned_cost_basis, '')) LIKE '%projection%'
+                       OR lower(coalesce(f.questioned_cost_basis, '')) LIKE '%projected%'
+                       OR lower(coalesce(f.questioned_cost_basis, '')) LIKE '%estimate%'
+                       OR lower(coalesce(f.questioned_cost_basis, '')) LIKE '%contingent%'
+                   ) AS has_estimate
+            FROM ag_reports r
+            LEFT JOIN ag_findings f ON f.report_id = r.report_id
+            WHERE r.agency_checkbook = ?
+            """,
+            (agency,),
+        )
+        if not rows or not rows[0]["n_reports"]:
+            return None
+        r = rows[0]
+        return {
+            "n_reports": r["n_reports"],
+            "first_fy": r["first_fy"],
+            "last_fy": r["last_fy"],
+            "total_questioned_cost": r["total_qc"],
+            "n_findings_with_cost": r["n_findings_with_cost"],
+            "questioned_cost_has_estimate": bool(r["has_estimate"]),
+        }
 
     def _ag_audit(self, agency: str) -> dict | None:
         """Arizona Auditor-General audit overlay for an agency (optional).
@@ -422,6 +490,10 @@ class OpenBooks:
             """,
             (q, limit),
         )
+        # AG-corroboration badge: attach the lightweight audit rollup to each
+        # agency hit (None when uncovered or the ag_* layer isn't loaded).
+        for a in agencies:
+            a["ag_audit"] = self._ag_audit_summary(a["agency"])
         programs = self._query(
             """
             SELECT appropriation, lead_agency, tier12_exposure, n_tier1

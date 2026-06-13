@@ -109,6 +109,37 @@ def test_agency_card_ag_audit_overlay(ob):
     assert no_ag["ag_audit"] is None
 
 
+def test_search_agency_ag_badge(ob):
+    """Agency search rows carry the lightweight ag_audit badge (or None)."""
+    out = ob.search("economic")
+    assert out["agencies"], "expected at least one agency hit for 'economic'"
+    for a in out["agencies"]:
+        assert "ag_audit" in a
+        ag = a["ag_audit"]
+        if ag is not None:
+            assert ag["n_reports"] >= 1
+            assert ag["first_fy"] <= ag["last_fy"]
+            assert isinstance(ag["questioned_cost_has_estimate"], bool)
+            # the lightweight badge must NOT carry the heavy findings list
+            assert "findings_with_cost" not in ag
+
+
+def test_entity_primary_agency_ag_context(ob):
+    """entity() attaches indirect primary-agency AG context (agency-keyed,
+    never a finding about the vendor)."""
+    e = ob.entity("FONDOMONTE")
+    assert "primary_agency_ag" in e
+    pa = e["primary_agency_ag"]
+    if not ob._table_exists("ag_reports"):
+        assert pa is None
+        return
+    # FONDOMONTE's primary agency is LAND DEPARTMENT, which has AG audits
+    if pa is not None:
+        assert pa["relation"] == "primary_agency"
+        assert pa["agency"]
+        assert pa["n_reports"] >= 1
+
+
 def test_explain_roundtrip(ob):
     """explain() on a real Tier-1 txn: breakdown only includes fired families."""
     lead = ob.leads(tier=1, limit=1)[0]
