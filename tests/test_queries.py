@@ -80,6 +80,35 @@ def test_agency_card(ob):
     assert ob.agency_card("NO SUCH AGENCY") is None
 
 
+def test_agency_card_ag_audit_overlay(ob):
+    """The optional Auditor-General overlay is present and well-formed.
+
+    Skips cleanly if the ag_* tables haven't been loaded into this warehouse.
+    When present, the questioned-cost rollup must equal the sum of its parts
+    and carry the estimate flag honestly.
+    """
+    card = ob.agency_card("DEPT OF TRANSPORTATION")
+    assert "ag_audit" in card, "agency_card must always carry the ag_audit key"
+
+    if not ob._table_exists("ag_reports"):
+        assert card["ag_audit"] is None
+        return
+
+    # DEPT OF ECONOMIC SECURITY is the densest AG-audited agency in the corpus
+    ag = ob.agency_card("DEPT OF ECONOMIC SECURITY")["ag_audit"]
+    assert ag is not None
+    assert ag["n_reports"] >= 1
+    assert ag["first_fy"] <= ag["last_fy"]
+    rollup = sum(f["questioned_cost_usd"] for f in ag["findings_with_cost"])
+    assert rollup == ag["total_questioned_cost"]
+    assert ag["n_findings_with_cost"] == len(ag["findings_with_cost"])
+    # an agency in the scorecard but with no AG coverage must yield
+    # ag_audit = None, not an error
+    no_ag = ob.agency_card("ARIZONA HISTORICAL SOCIETY")
+    assert no_ag is not None
+    assert no_ag["ag_audit"] is None
+
+
 def test_explain_roundtrip(ob):
     """explain() on a real Tier-1 txn: breakdown only includes fired families."""
     lead = ob.leads(tier=1, limit=1)[0]

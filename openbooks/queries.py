@@ -107,6 +107,22 @@ class OpenBooks:
     def _query(self, sql: str, params: tuple = ()) -> list[dict]:
         return self.db.query(sql, params)
 
+    def _table_exists(self, name: str) -> bool:
+        """True if a base table/view ``name`` is present in the warehouse.
+
+        Used to make the optional Auditor-General overlay degrade gracefully
+        on databases built before the ``ag_*`` tables were loaded.
+        """
+        try:
+            rows = self._query(
+                "SELECT 1 FROM information_schema.tables "
+                "WHERE table_name = ? LIMIT 1",
+                (name,),
+            )
+            return bool(rows)
+        except Exception:
+            return False
+
     def _crosswalk_rows(self, parent_key: str) -> list[dict]:
         """Names merged into ``parent_key`` per the entity crosswalk CSV.
 
@@ -217,6 +233,80 @@ class OpenBooks:
         """
         return self._query(sql, tuple(params))
 
+    def _ag_audit(self, agency: str) -> dict | None:
+        """Arizona Auditor-General audit overlay for an agency (optional).
+
+        Joins the ``ag_reports`` / ``ag_findings`` layer (extracted from AG
+        performance-audit PDFs) by ``agency_checkbook`` to the checkbook
+        agency name. Returns audit count, FY span, questioned-cost rollup,
+        and a per-report findings list — the external-corroboration surface
+        for the agency card (INTEGRATION_BRIEF §1, the AG cross-reference as
+        a "credibility multiplier").
+
+        Degrades to ``None`` when the ``ag_*`` tables are absent (DBs built
+        before this layer was loaded), so the agency card never breaks.
+
+        Note: AG findings are *audited findings*, distinct from the
+        warehouse's tier "leads". Questioned costs are cash-basis figures and
+        some are estimates/projections — ``questioned_cost_confidence``
+        travels with each so the UI can label them, never present a
+        projection as a confirmed loss.
+        """
+        if not (self._table_exists("ag_reports")
+                and self._table_exists("ag_findings")):
+            return None
+
+        reports = self._query(
+            """
+            SELECT report_id, fiscal_year, report_type, title, report_date
+            FROM ag_reports
+            WHERE agency_checkbook = ?
+            ORDER BY fiscal_year DESC, report_id DESC
+            """,
+            (agency,),
+        )
+        if not reports:
+            return None
+
+        findings = self._query(
+            """
+            SELECT f.report_id, f.finding_no, f.finding_text,
+                   f.questioned_cost_usd, f.questioned_cost_confidence,
+                   f.questioned_cost_basis, f.has_adverse_findings
+            FROM ag_findings f
+            JOIN ag_reports r ON r.report_id = f.report_id
+            WHERE r.agency_checkbook = ?
+            ORDER BY f.questioned_cost_usd DESC NULLS LAST,
+                     f.report_id DESC, f.finding_no
+            """,
+            (agency,),
+        )
+
+        qc_rows = [f for f in findings if f.get("questioned_cost_usd")]
+        total_qc = sum(f["questioned_cost_usd"] for f in qc_rows)
+        # surface whether any QC figure is an estimate/projection/contingent
+        # so the UI can disclaim the headline number rather than imply a
+        # confirmed loss. Checked via both confidence AND basis wording.
+        def _is_soft(f):
+            conf = (f.get("questioned_cost_confidence") or "")
+            basis = (f.get("questioned_cost_basis") or "").lower()
+            return (conf in ("medium", "low")
+                    or "projection" in basis or "projected" in basis
+                    or "estimate" in basis or "contingent" in basis)
+        has_estimate = any(_is_soft(f) for f in qc_rows)
+        years = [r["fiscal_year"] for r in reports if r.get("fiscal_year")]
+
+        return {
+            "n_reports": len(reports),
+            "first_fy": min(years) if years else None,
+            "last_fy": max(years) if years else None,
+            "total_questioned_cost": total_qc,
+            "n_findings_with_cost": len(qc_rows),
+            "questioned_cost_has_estimate": has_estimate,
+            "reports": reports,
+            "findings_with_cost": qc_rows,
+        }
+
     def agency_card(self, agency: str) -> dict | None:
         """Agency scorecard + FY trend + top flagged vendors.
 
@@ -264,6 +354,7 @@ class OpenBooks:
             """,
             (agency,),
         )
+        result["ag_audit"] = self._ag_audit(agency)
         return result
 
     def explain(self, transaction_id: str) -> dict | None:

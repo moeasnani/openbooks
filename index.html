@@ -43,6 +43,12 @@ select{color:var(--ink)}
 .v-explained_benign{background:#0a2018;color:var(--grn)}
 .v-false_positive_marker{background:#181f28;color:#9fb6cc}
 .v-screened_unreviewed{background:#171b22;color:#8a93a6;border:1px dashed #3a4654}
+.qc-high,.qc-medium,.qc-low,.qc-na{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap}
+.qc-high{background:#2a1010;color:#f08080}
+.qc-medium{background:#2a2010;color:#e0c060}
+.qc-low{background:#171b22;color:#8a93a6;border:1px dashed #3a4654}
+.qc-na{background:#171b22;color:#8a93a6}
+.agrep{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin:2px 3px 0 0;font-size:10.5px;white-space:nowrap}
 .right{text-align:right}
 .usd{font-variant-numeric:tabular-nums;font-weight:650;font-size:14px}
 table{width:100%;border-collapse:collapse;font-size:12px;margin-top:5px}
@@ -227,6 +233,51 @@ function renderLeads(data) {
   ).join("");
 }
 
+function agReportType(t) {
+  return ({performance_audit: "Perf. Audit", sunset: "Sunset",
+    compliance_review: "Compliance", biennial_special: "Biennial/Special",
+    followup: "Follow-up", unknown: "Report"})[t] || "Report";
+}
+
+function renderAgAudit(ag) {
+  if (!ag) return "";
+  const qcChip = c => '<span class="qc-' + esc(c || "na") + '">' +
+    esc((c || "—")) + "</span>";
+  const findings = (ag.findings_with_cost || []).map(f =>
+    "<tr><td>" + esc(f.report_id) + "</td>" +
+    '<td class="n">' + fmt(f.questioned_cost_usd) + "</td>" +
+    "<td>" + qcChip(f.questioned_cost_confidence) + "</td>" +
+    '<td class="mut" style="font-size:10.5px">' +
+    esc(f.questioned_cost_basis || f.finding_text || "") + "</td></tr>"
+  ).join("");
+  const reports = (ag.reports || []).map(r =>
+    '<span class="agrep" title="' + esc(r.title || "") + '">' +
+    esc(r.report_id) + " <span class=\"mut\">" + agReportType(r.report_type) +
+    "</span></span>").join("");
+  const qcLine = ag.n_findings_with_cost > 0
+    ? '<div class="stat"><div class="slbl">Questioned Costs' +
+      (ag.questioned_cost_has_estimate ? " *" : "") + '</div><div class="sval">' +
+      fmt(ag.total_questioned_cost) + "</div></div>"
+    : "";
+  const estNote = ag.questioned_cost_has_estimate
+    ? " * Includes estimates/projections/contingent amounts (see basis); not all are confirmed losses."
+    : "";
+  return '<h3 style="margin:18px 0 6px;font-size:13px">Auditor General Findings ' +
+    '<span class="subtitle">(official audited findings — external corroboration)</span></h3>' +
+    '<div class="panel">' +
+    '<div class="stat"><div class="slbl">AG Audits</div><div class="sval">' + ag.n_reports + "</div></div>" +
+    '<div class="stat"><div class="slbl">FY Span</div><div class="sval">' +
+    (ag.first_fy ? ag.first_fy + "–" + ag.last_fy : "—") + "</div></div>" +
+    qcLine +
+    '<div class="stat"><div class="slbl">Findings w/ $</div><div class="sval">' +
+    ag.n_findings_with_cost + "</div></div></div>" +
+    '<div class="framing">AG performance-audit findings are <b>audited findings</b>, distinct from this product\u2019s tier "leads." Questioned costs are cash-basis figures drawn from AG reports.' + estNote + "</div>" +
+    (findings
+      ? '<table style="margin-top:8px"><thead><tr><th>Report</th><th class=n>Questioned $</th><th>Conf.</th><th>Basis</th></tr></thead><tbody>' + findings + "</tbody></table>"
+      : '<div class="mut" style="font-size:11px;margin-top:6px">No questioned-cost findings recorded for this agency.</div>') +
+    '<div class="mut" style="font-size:10.5px;margin-top:8px">Reports: ' + reports + "</div>";
+}
+
 function renderAgency(d) {
   const tr = trendRows(d.trend || [], 5);
   const vn = (d.top_flagged_vendors || []).map(v =>
@@ -245,7 +296,8 @@ function renderAgency(d) {
     '<th class=n>T1+2%</th><th class=n>Avg Score</th></tr></thead><tbody>' + tr + "</tbody></table>" +
     '<h3 style="margin:14px 0 6px;font-size:13px">Top Flagged Vendors <span class="subtitle">(leads, not findings)</span></h3>' +
     '<table><thead><tr><th>Vendor</th><th class=n>T1 Txns</th><th class=n>Tier-1 $</th><th class=n>Max Score</th></tr></thead><tbody>' +
-    vn + "</tbody></table></div>";
+    vn + "</tbody></table>" +
+    renderAgAudit(d.ag_audit) + "</div>";
 }
 
 function renderPending(data) {
