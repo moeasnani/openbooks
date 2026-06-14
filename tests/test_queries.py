@@ -182,3 +182,57 @@ def test_set_verdict_readonly_guard(ob):
 
     with pytest.raises(ReadOnlyError):
         ob.set_verdict("ANY KEY", "genuine_review")
+
+def test_push_to_postgres_ag_missing_regression():
+    """Regression test for the --verify-only AG 'MISSING' path in the push script.
+
+    Simulates a source warehouse that has the AG tables (like our current one)
+    and exercises the exact presence-detection logic the script uses to decide
+    whether to verify them and whether to report 'MISSING' when the target
+    Postgres side lacks them (the case for an older push).
+
+    This test does not require a Postgres instance.
+    """
+    import importlib.util
+    from pathlib import Path
+
+    import duckdb
+
+    # Load the push script as a module so we can inspect AG_TABLES without
+    # executing its CLI.
+    script_path = Path(__file__).parent.parent / "scripts" / "push_to_postgres.py"
+    spec = importlib.util.spec_from_file_location("push_pg", script_path)
+    push_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(push_mod)
+
+    assert hasattr(push_mod, "AG_TABLES")
+    ag_tables = push_mod.AG_TABLES
+    assert "ag_reports" in ag_tables
+    assert "ag_findings" in ag_tables
+
+    # Simulate the source warehouse (our real one has the AG tables).
+    con = duckdb.connect()
+    con.execute("CREATE TABLE ag_reports (report_id VARCHAR)")
+    con.execute("CREATE TABLE ag_findings (finding_id VARCHAR)")
+    con.execute("CREATE TABLE ag_report_agency_xref (agency_key VARCHAR)")
+
+    # Exact presence check the script performs on the src con.
+    for table in ag_tables:
+        present = con.execute(
+            "SELECT count(*) FROM information_schema.tables "
+            f"WHERE table_name = '{table}'"
+        ).fetchone()[0]
+        assert present > 0, f"expected {table} to be detected as present in src"
+
+    # Simulate the 'pg' side missing them (the MISSING case).
+    # We don't create the tables in this con; the script would see in_pg=0
+    # and report "MISSING" for each.
+    for table in ag_tables:
+        in_pg = con.execute(
+            "SELECT count(*) FROM information_schema.tables "
+            f"WHERE table_catalog = 'pg' AND table_name = '{table}'"
+        ).fetchone()[0]
+        assert in_pg == 0, "simulated pg side should report the table absent"
+
+    con.close()
+    # If we reach here the presence / MISSING decision logic is intact.

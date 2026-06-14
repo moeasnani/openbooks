@@ -120,6 +120,17 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
             print("done")
 
     # ── verify: row counts must match exactly, source vs Postgres ──────
+    # The core TABLES are always present. AG tables are optional (newer
+    # warehouses only). For AG we must gracefully handle the case where the
+    # *source* DuckDB has the tables but the target Postgres does not
+    # (typical for --verify-only against an older push that predates the AG
+    # layer).
+    #
+    # We detect presence on the attached "src" warehouse. For the pg side we
+    # use information_schema with table_catalog = 'pg'. This works because
+    # of the ATTACH '{dsn}' AS pg (TYPE postgres) line earlier in push().
+    # If the table is missing on the pg side we report "MISSING" instead of
+    # crashing the count(*) query.
     print("\nverifying row counts (duckdb == postgres):")
     failures = 0
     for table in TABLES:
@@ -128,9 +139,7 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
         ok = n_src == n_pg
         failures += 0 if ok else 1
         print(f"  {'OK  ' if ok else 'FAIL'} {table:24} {n_src:>9,} == {n_pg:,}")
-    # AG tables: verify when the source carries them. If the source has an
-    # AG table but Postgres doesn't (e.g. --verify-only against an older
-    # push), report a FAIL rather than crashing on the missing pg table.
+    # AG tables: verify only when the source warehouse carries them.
     for table in AG_TABLES:
         in_src = _scalar(
             con,
