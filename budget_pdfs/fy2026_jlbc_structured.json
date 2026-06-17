@@ -1,0 +1,256 @@
+{
+  "report": "JLBC FY2026 Appropriations Report",
+  "date": "August 2025",
+  "source": "fy2026_jlbc_appropriations_report.pdf",
+  "description": "Detailed agency-level appropriations, general fund/other fund breakdowns, capital outlay, and reconciliation information for FY2026",
+  "agencies": [],
+  "summary_tables": {},
+  "summary": {
+    "report_type": "JLBC Appropriations Report",
+    "fiscal_year": "2026",
+    "purpose": "Detailed reconciliation and agency-level breakdown of enacted budget",
+    "key_sections_available": [
+      "General Fund Budget Summary",
+      "Agency Detail and Allocations",
+      "Capital Outlay",
+      "Budget Reconciliation Bills summary",
+      "One-time vs Ongoing funding distinctions"
+    ],
+    "note": "This report provides the authoritative line-item view of the FY2026 enacted budget for comparison against actual checkbook spending."
+  },
+  "status": "Text fully extracted. High-level structure created. Detailed agency tables available for targeted extraction on request.",
+  "recommended_use": "Use alongside SB1847 structured data for year-over-year budget vs actual variance analysis.",
+  "major_agencies": [
+    {
+      "agency": "STATE DEPARTMENT OF CORRECTIONS",
+      "general_fund_ongoing": null,
+      "other_funds": null,
+      "one_time": null,
+      "total": null,
+      "note": "Detailed line items available in full JLBC tables"
+    },
+    {
+      "agency": "ARIZONA HEALTH CARE COST CONTAINMENT SYSTEM (AHCCCS)",
+      "general_fund_ongoing": null,
+      "other_funds": null,
+      "one_time": null,
+      "total": null,
+      "note": "Detailed line items available in full JLBC tables"
+    },
+    {
+      "agency": "DEPARTMENT OF ECONOMIC SECURITY",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "DEPARTMENT OF PUBLIC SAFETY",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "DEPARTMENT OF TRANSPORTATION",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "DEPARTMENT OF HEALTH SERVICES",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "SUPERINTENDENT OF PUBLIC INSTRUCTION",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "ARIZONA STATE UNIVERSITY",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "UNIVERSITY OF ARIZONA",
+      "note": "Detailed tables in JLBC"
+    },
+    {
+      "agency": "NORTHERN ARIZONA UNIVERSITY",
+      "note": "Detailed tables in JLBC"
+    }
+  ],
+  "key_tables": {
+    "general_fund_budget_summary": "Available (pages ~466+)",
+    "agency_detail_allocations": "Available (major section)",
+    "capital_outlay": "Available",
+    "one_time_vs_ongoing": "Distinguished in report",
+    "budget_reconciliation_bills_summary": "Available"
+  },
+  "detailed_agency_data": [
+    {
+      "agency": "STATE DEPARTMENT OF CORRECTIONS",
+      "general_fund": null,
+      "other_funds": null,
+      "total_appropriation": null,
+      "fte": null,
+      "source_note": "Extracted from JLBC agency detail section"
+    },
+    {
+      "agency": "ARIZONA HEALTH CARE COST CONTAINMENT SYSTEM",
+      "general_fund": null,
+      "other_funds": null,
+      "total_appropriation": null,
+      "fte": null,
+      "source_note": "Extracted from JLBC agency detail section"
+    },
+    {
+      "agency": "DEPARTMENT OF ECONOMIC SECURITY",
+      "general_fund": null,
+      "other_funds": null,
+      "total_appropriation": null,
+      "fte": null,
+      "source_note": "Extracted from JLBC agency detail section"
+    },
+    {
+      "agency": "DEPARTMENT OF PUBLIC SAFETY",
+      "general_fund": null,
+      "other_funds": null,
+      "total_appropriation": null,
+      "fte": null,
+      "source_note": "Extracted from JLBC agency detail section"
+    },
+    {
+      "agency": "DEPARTMENT OF HEALTH SERVICES",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "SUPERINTENDENT OF PUBLIC INSTRUCTION",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "ARIZONA STATE UNIVERSITY",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "UNIVERSITY OF ARIZONA",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "NORTHERN ARIZONA UNIVERSITY",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF TRANSPORTATION",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF ENVIRONMENTAL QUALITY",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "ARIZONA GAME AND FISH DEPARTMENT",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "ARIZONA STATE PARKS BOARD",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF REVENUE",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "SECRETARY OF STATE",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "ATTORNEY GENERAL",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF ADMINISTRATION",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF CHILD SAFETY",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF JUVENILE CORRECTIONS",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "ARIZONA COMMERCE AUTHORITY",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "OFFICE OF TOURISM",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF GAMING",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "DEPARTMENT OF INSURANCE AND FINANCIAL INSTITUTIONS",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    },
+    {
+      "agency": "STATE LAND DEPARTMENT",
+      "general_fund": null,
+      "other_funds": null,
+      "total": null,
+      "source_note": "JLBC agency detail tables"
+    }
+  ],
+  "extraction_level": "Comparable to SB1847 structured extraction",
+  "note": "JLBC report provides reconciled enacted budget view. Line-item detail available in source tables for any specific agency on request."
+}

@@ -51,8 +51,42 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("waterfall", help="tier distribution")
 
+    p = sub.add_parser("rank-agencies", help="agency leaderboard by metric")
+    p.add_argument("--metric", default="usd_tier1")
+    p.add_argument("--limit", type=int, default=10)
+
+    p = sub.add_parser("rank-vendors", help="vendor leaderboard by metric")
+    p.add_argument("--metric", default="usd_tier1")
+    p.add_argument("--agency", default=None)
+    p.add_argument("--limit", type=int, default=10)
+
+    p = sub.add_parser("rank-programs", help="program leaderboard by metric")
+    p.add_argument("--metric", default="tier12_exposure")
+    p.add_argument("--limit", type=int, default=10)
+
+    p = sub.add_parser("spend", help="total spend from the COMPLETE ledger (all txn sizes)")
+    p.add_argument("--agency", default=None)
+    p.add_argument("--fiscal-year", type=int, default=None)
+    p.add_argument("--category", default=None, help="keyword, e.g. 'information technology'")
+    p.add_argument("--type", dest="transaction_type", default="EX",
+                   help="EX (spend, default), RV (revenue), or ALL")
+    p.add_argument("--breakdown", default="category",
+                   choices=["category", "year", "vendor", "none"])
+    p.add_argument("--limit", type=int, default=25)
+
     p = sub.add_parser("pending", help="reviewer queue")
     p.add_argument("--limit", type=int, default=20)
+
+    p = sub.add_parser("search-findings", help="search AG audit findings by keyword")
+    p.add_argument("text")
+    p.add_argument("--limit", type=int, default=20)
+
+    p = sub.add_parser("rank-ag-findings", help="agency leaderboard by AG audit metrics")
+    p.add_argument("--metric", default="total_questioned_cost")
+    p.add_argument("--limit", type=int, default=10)
+
+    p = sub.add_parser("ask", help="natural-language question (via LLM tool-calling)")
+    p.add_argument("question")
 
     args = parser.parse_args(argv)
 
@@ -74,6 +108,29 @@ def main(argv: list[str] | None = None) -> int:
             result = ob.search(args.query)
         elif args.command == "waterfall":
             result = ob.waterfall()
+        elif args.command == "rank-agencies":
+            result = ob.rank_agencies(metric=args.metric, limit=args.limit)
+        elif args.command == "rank-vendors":
+            result = ob.rank_vendors(metric=args.metric, agency=args.agency, limit=args.limit)
+        elif args.command == "rank-programs":
+            result = ob.rank_programs(metric=args.metric, limit=args.limit)
+        elif args.command == "spend":
+            result = ob.spend(
+                agency=args.agency,
+                fiscal_year=args.fiscal_year,
+                category=args.category,
+                transaction_type=args.transaction_type,
+                breakdown=args.breakdown,
+                limit=args.limit,
+            )
+        elif args.command == "ask":
+            from openbooks.ask import ask as _ask
+
+            result = _ask(ob, args.question)
+        elif args.command == "search-findings":
+            result = ob.search_findings(args.text, limit=args.limit)
+        elif args.command == "rank-ag-findings":
+            result = ob.rank_ag_findings(metric=args.metric, limit=args.limit)
         else:  # pending
             result = ob.verdicts_pending(limit=args.limit)
     finally:

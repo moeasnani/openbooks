@@ -1,0 +1,121 @@
+{
+  "bill_type": "Budget Reconciliation Bills FY2026-27",
+  "bills": [
+    {
+      "bill": "HB4163",
+      "title": "K-12 Education",
+      "key_provisions": [
+        {
+          "section": "Charter school financing",
+          "description": "Updates base support level and charter additional assistance rates"
+        },
+        {
+          "section": "Equalization assistance",
+          "description": "Charter school funding formulas updated"
+        },
+        {
+          "section": "Student count methodology",
+          "description": "Revised student count calculation rules"
+        }
+      ],
+      "status": "Structured extraction complete",
+      "key_appropriations": {
+        "charter_additional_assistance": {
+          "grades_k8": 2174.54,
+          "grades_9_12": 2534.38,
+          "note": "Per student count rates updated"
+        }
+      }
+    },
+    {
+      "bill": "HB4161",
+      "title": "Higher Education",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4160",
+      "title": "Health Care",
+      "status": "Structured extraction complete",
+      "key_provisions": [
+        "AHCCCS-related reconciliation",
+        "Health care funding adjustments"
+      ]
+    },
+    {
+      "bill": "HB4162",
+      "title": "Human Services",
+      "status": "Structured extraction complete",
+      "key_provisions": [
+        "DES reconciliation items",
+        "Human services funding"
+      ]
+    },
+    {
+      "bill": "HB4168",
+      "title": "Taxation Omnibus",
+      "status": "Structured extraction complete",
+      "key_provisions": [
+        "Tax simplification measures",
+        "TPT changes",
+        "Multiple tax code updates"
+      ]
+    },
+    {
+      "bill": "HB4155",
+      "title": "Amusements",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4156",
+      "title": "Capital Outlay",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4157",
+      "title": "Commerce",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4158",
+      "title": "Criminal Justice",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4159",
+      "title": "Environment",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4164",
+      "title": "Local Government",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4165",
+      "title": "Revenue",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4166",
+      "title": "State Budget Implementation",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4167",
+      "title": "State Properties",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "HB4169",
+      "title": "Transportation",
+      "status": "Structured extraction complete (summary level)"
+    },
+    {
+      "bill": "JLBC",
+      "title": "FY2026 Appropriations Report (569 pages)",
+      "status": "Structured extraction complete (summary level)",
+      "description": "569-page JLBC Appropriations Report containing detailed agency budget tables, historical comparisons, and program-level funding for FY2026",
+      "value": "Primary source for detailed line-item budget context and variance analysis against checkbook spend"
+    }
+  ]
+}

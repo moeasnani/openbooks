@@ -3,21 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OpenBooks — Talking to the Money</title>
+<title>OpenBooks — Arizona Fiscal Oversight</title>
 <style>
 :root{
   --bg:#0a0e14;--card:#131820;--card-hi:#1a2330;--line:#1e2836;--ink:#dde2ea;
   --mut:#6b7d95;--acc:#4ea1ff;--t1:#e05555;--t2:#e0a030;--t3:#8a93a6;
-  --grn:#3ecf8e;--yel:#e0c040;--warn-bg:#1a1206;--warn-line:#4a3a10;--warn-ink:#d8b86a
+  --grn:#3ecf8e;--yel:#e0c040;--warn-bg:#1a1206;--warn-line:#4a3a10;--warn-ink:#d8b86a;
+  --budget:#4ea1ff;--actual:#3ecf8e;--audit:#e05555
 }
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
-header{position:sticky;top:0;z-index:10;background:#0a0e14f2;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px 16px}
+header{position:sticky;top:0;z-index:30;background:#0a0e14f2;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:11px 16px}
 h1{margin:0;font-size:15px;font-weight:650;display:flex;gap:10px;align-items:center}
-.tabs{display:flex;gap:3px;margin-top:9px;flex-wrap:wrap}
-.tab{background:var(--card);border:1px solid var(--line);color:var(--mut);padding:6px 13px;font-size:12px;border-radius:7px;cursor:pointer;transition:.12s}
-.tab.on,.tab:hover{background:var(--acc);color:#060f1f;border-color:var(--acc);font-weight:650}
-main{max-width:1100px;margin:0 auto;padding:10px 14px 30px}
+.tabs{display:flex;gap:3px;margin-top:9px;flex-wrap:wrap;position:relative}
+.tab{background:var(--card);border:1px solid var(--line);color:var(--mut);padding:7px 15px;font-size:12.5px;border-radius:7px;cursor:pointer;transition:.12s;font-weight:600}
+.tab.on,.tab:hover{background:var(--acc);color:#060f1f;border-color:var(--acc);font-weight:700}
+.tabwrap{position:relative}
+.tabmenu{position:absolute;top:calc(100% + 5px);left:0;z-index:40;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px;min-width:185px;box-shadow:0 12px 36px #000a;display:none}
+.tabwrap.open .tabmenu{display:block}
+.tabmenu button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--ink);padding:8px 11px;font-size:12.5px;border-radius:6px;cursor:pointer;font-weight:500}
+.tabmenu button:hover,.tabmenu button.on{background:var(--card-hi);color:var(--acc)}
+main{max-width:1180px;margin:0 auto;padding:14px 16px 96px}
 .bar{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
 input,select,button{background:var(--card);border:1px solid var(--line);color:var(--ink);padding:8px 11px;border-radius:8px;font-size:13px}
 input{flex:1 1 200px;min-width:160px}
@@ -69,7 +75,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .slbl{color:var(--mut);font-size:11px}
 .subtitle{color:var(--mut);font-weight:400;font-size:12px}
 .framing{font-size:11px;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:7px;padding:6px 10px;margin:10px 0 2px}
-footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px solid var(--warn-line);color:var(--warn-ink);font-size:10.5px;line-height:1.45;padding:7px 16px;backdrop-filter:blur(8px)}
+footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px solid var(--warn-line);color:var(--warn-ink);font-size:10.5px;line-height:1.45;padding:7px 16px;backdrop-filter:blur(8px);z-index:20}
 .merged{margin:8px 0;padding:8px 10px;background:var(--card-hi);border-radius:7px;font-size:11.5px}
 .agctx{margin:8px 0;padding:7px 10px;background:#0d1828;border:1px solid #1d3a5c;border-left:3px solid var(--acc);border-radius:7px;font-size:11px;color:#9fc0e8;line-height:1.5}
 .merged b{color:var(--acc)}
@@ -78,23 +84,188 @@ footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px s
 .explain-box .calc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--acc);margin-top:6px;word-break:break-all}
 .mut{color:var(--mut)}
 @media (max-width:640px){.chd{grid-template-columns:14px 1fr auto;gap:6px}}
+/* ── Ask (conversational lane) ─────────────────────────────────────── */
+.asklog{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.qbubble{align-self:flex-end;max-width:82%;background:var(--acc);color:#060f1f;font-weight:600;padding:7px 12px;border-radius:13px 13px 3px 13px;font-size:13px;word-break:break-word}
+.abubble{align-self:stretch;min-width:0}
+.alabel{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin:2px 0 6px}
+.ahint{color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55}
+.ahint b{color:var(--acc)}
+.examples{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+button.ghost.ex{font-size:12px;padding:6px 11px}
+.picks{display:flex;gap:16px;flex-wrap:wrap;margin-top:4px}
+.pickgrp{flex:1 1 220px;min-width:0}
+.picklbl{color:var(--mut);font-size:11px;margin-bottom:5px}
+button.ghost.pick{display:block;width:100%;text-align:left;margin:3px 0;white-space:normal}
+.aimode{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);margin:8px 0 2px;cursor:pointer;user-select:none}
+.aimode input{margin:0;cursor:pointer}
+.aianswer{line-height:1.5}
+.aianswer p{margin:0 0 8px}
+.aianswer h3,.aianswer h4{margin:10px 0 5px}
+.aianswer code{background:rgba(127,127,127,.16);padding:1px 5px;border-radius:4px;font-size:12px}
+table.aitbl{margin:8px 0;width:100%}
+.worktrail{margin:8px 0;font-size:12px}
+.worktrail summary{cursor:pointer;color:var(--mut)}
+.worktrail ul{margin:6px 0 0;padding-left:18px}
+.worktrail code{font-size:11.5px}
+/* ── Dashboard (three-way triangulation) ───────────────────────────── */
+.dash-hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+.pillar{position:relative;background:linear-gradient(160deg,var(--card),var(--card-hi));border:1px solid var(--line);border-radius:14px;padding:18px;overflow:hidden}
+.pillar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.pillar.budget::before{background:var(--budget)}
+.pillar.actual::before{background:var(--actual)}
+.pillar.audit::before{background:var(--audit)}
+.pillar .picon{font-size:20px}
+.pillar .plbl{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-top:8px;font-weight:600}
+.pillar .pval{font-size:30px;font-weight:750;font-variant-numeric:tabular-nums;margin-top:4px;letter-spacing:-.5px}
+.pillar.budget .pval{color:var(--budget)}
+.pillar.actual .pval{color:var(--actual)}
+.pillar.audit .pval{color:var(--audit)}
+.pillar .psub{color:var(--mut);font-size:11.5px;margin-top:6px}
+.varbar-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0}
+.varbar-title{font-size:13px;font-weight:650;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.varbar-pct{font-size:18px;font-weight:750;font-variant-numeric:tabular-nums}
+.varbar-pct.over{color:var(--audit)}.varbar-pct.under{color:var(--actual)}
+.varbar-track{position:relative;height:40px;margin:16px 0 6px;border-radius:9px;background:var(--card-hi);overflow:hidden}
+.varbar-auth{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#2a5a8f,var(--budget));display:flex;align-items:center;padding-left:12px;font-size:12px;font-weight:700;color:#fff;border-radius:9px 0 0 9px}
+.varbar-actual-line{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--actual);box-shadow:0 0 8px var(--actual)}
+.varbar-actual-flag{position:absolute;top:-22px;transform:translateX(-50%);font-size:10.5px;font-weight:700;color:var(--actual);white-space:nowrap}
+.varbar-legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--mut);font-size:11.5px;margin-top:14px}
+.varbar-legend .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+.sec-title{font-size:13.5px;font-weight:650;margin:24px 0 4px;display:flex;align-items:center;gap:8px}
+.sec-sub{color:var(--mut);font-size:11.5px;margin:0 0 8px}
+/* dual bar variance chart */
+.dvchart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:6px 0}
+.dvrow{display:grid;grid-template-columns:165px 1fr 110px;gap:10px;align-items:center;padding:5px 0;cursor:pointer;border-radius:7px;transition:.1s}
+.dvrow:hover{background:var(--card-hi)}
+.dvname{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.dvbars{display:flex;flex-direction:column;gap:3px}
+.dvbar{height:9px;border-radius:5px;min-width:2px;transition:width .5s ease}
+.dvbar.auth{background:linear-gradient(90deg,#2a5a8f,var(--budget))}
+.dvbar.actual{background:linear-gradient(90deg,#1f7d54,var(--actual))}
+.dvval{text-align:right;font-size:10.5px;font-variant-numeric:tabular-nums;color:var(--mut)}
+.dvval .over{color:var(--audit);font-weight:700}
+.dvval .under{color:var(--actual);font-weight:700}
+@media (max-width:640px){.dvrow{grid-template-columns:110px 1fr 76px;gap:6px}.dvname{font-size:10.5px}}
+/* audit risk heatmap */
+.heat-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+.heat-tbl th{color:var(--mut);font-size:10px;text-transform:uppercase;letter-spacing:.03em;padding:6px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg)}
+.heat-tbl td{padding:7px 8px;border-bottom:1px solid #161d29}
+.heat-tbl tbody tr{cursor:pointer;transition:.1s}
+.heat-tbl tbody tr:hover{background:var(--card-hi)}
+.heat-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.risk-pill{display:inline-block;min-width:30px;text-align:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:800}
+.risk-hi{background:#3a1414;color:#ff8a8a}
+.risk-md{background:#3a3010;color:#f0d060}
+.risk-lo{background:#0e2a1e;color:var(--grn)}
+.var-up{color:var(--audit);font-weight:700}
+.var-down{color:var(--actual);font-weight:700}
+.agency-link{color:var(--ink);font-weight:600}
+.heat-tbl tbody tr:hover .agency-link{color:var(--acc)}
+/* ── Agency 360 modal ──────────────────────────────────────────────── */
+.modal-back{position:fixed;inset:0;background:#04070cd8;backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.modal-back.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:16px;width:100%;max-width:860px;box-shadow:0 24px 70px #000c;animation:pop .18s ease}
+@keyframes pop{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.modal-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line)}
+.modal-hd h2{margin:0;font-size:17px;font-weight:700;line-height:1.3}
+.modal-hd .mhmeta{color:var(--mut);font-size:11.5px;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+.modal-close{background:var(--card-hi);border:1px solid var(--line);color:var(--mut);width:30px;height:30px;border-radius:8px;font-size:16px;line-height:1;padding:0;flex-shrink:0;cursor:pointer}
+.modal-close:hover{color:var(--audit);border-color:var(--audit)}
+.modal-body{padding:18px 20px}
+.tri-light{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:600}
+.tri-light .lamp{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.tri-green{background:#0e2a1e;color:var(--grn)}.tri-green .lamp{background:var(--grn);box-shadow:0 0 10px var(--grn)}
+.tri-yellow{background:#2a2410;color:var(--yel)}.tri-yellow .lamp{background:var(--yel);box-shadow:0 0 10px var(--yel)}
+.tri-red{background:#2a1212;color:#ff8a8a}.tri-red .lamp{background:var(--audit);box-shadow:0 0 10px var(--audit)}
+.tri-grey{background:var(--card-hi);color:var(--mut)}.tri-grey .lamp{background:var(--mut)}
+.tri-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tri-panel{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg)}
+.tri-panel .tph{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.tri-panel.budget .tph{color:var(--budget)}
+.tri-panel.actual .tph{color:var(--actual)}
+.tri-panel.audit .tph{color:var(--audit)}
+.tp-big{font-size:22px;font-weight:750;font-variant-numeric:tabular-nums}
+.tp-line{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:3px 0;border-bottom:1px solid #161d29}
+.tp-line:last-child{border-bottom:none}
+.tp-line .k{color:var(--mut)}
+.tp-line .v{font-variant-numeric:tabular-nums;font-weight:600}
+.fundbar-row{margin:5px 0;font-size:11px}
+.fundbar-row .fbtop{display:flex;justify-content:space-between;gap:8px}
+.fundbar-track{height:6px;border-radius:3px;background:var(--card-hi);margin-top:3px;overflow:hidden}
+.fundbar-fill{height:100%;background:linear-gradient(90deg,#2a5a8f,var(--budget));border-radius:3px}
+.mini-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}
+.mini-tbl td{padding:3px 6px;border-bottom:1px solid #161d29}
+.mini-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* ── Budget tab ─────────────────────────────────────────────────────── */
+.bdg-tab-row{display:flex;gap:4px;margin:10px 0;flex-wrap:wrap}
+.bdg-subtab{background:var(--card);border:1px solid var(--line);color:var(--mut);padding:6px 14px;font-size:11.5px;border-radius:7px;cursor:pointer;transition:.12s;font-weight:600}
+.bdg-subtab.on{background:var(--acc);color:#060f1f;border-color:var(--acc);font-weight:700}
+.bdg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
+.bdg-stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.bdg-stat .sval{font-size:22px;font-weight:700;display:block}
+.bdg-stat .slbl{color:var(--mut);font-size:10.5px;margin-top:3px}
+.bdg-stat.acc .sval{color:var(--budget)}
+.bdg-stat.grn .sval{color:var(--actual)}
+.bdg-stat.t1 .sval{color:var(--audit)}
+.bdg-stat.yel .sval{color:var(--yel)}
+.bdg-search{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.bdg-search input{flex:1 1 250px}
+.bdg-section-label{color:var(--mut);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px;font-weight:600}
+.bdg-overview-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.bdg-overview-tbl th,.bdg-overview-tbl td{padding:6px 8px;border-bottom:1px solid #1a2230;text-align:left}
+.bdg-overview-tbl th{color:var(--mut);font-size:10px;text-transform:uppercase;position:sticky;top:0;background:var(--bg)}
+.bdg-overview-tbl td.n{text-align:right;font-variant-numeric:tabular-nums}
+.bdg-overview-tbl tbody tr{cursor:pointer}
+.bdg-overview-tbl tbody tr:hover{background:var(--card-hi)}
+.bdg-bar-chart{margin:6px 0}
+.bdg-bar-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:11px}
+.bdg-bar-label{width:170px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bdg-bar-track{flex:1;height:14px;background:var(--card-hi);border-radius:7px;overflow:hidden}
+.bdg-bar-fill{height:100%;border-radius:7px;transition:width .4s}
+.bdg-bar-val{width:84px;flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;font-size:10.5px;color:var(--mut)}
 </style>
 </head>
 <body>
 <header>
-<h1>&#9878; OpenBooks <span class="subtitle">Talking to the Money — leads warranting confirmation, never findings</span></h1>
+<h1>&#9878; OpenBooks <span class="subtitle">Arizona Fiscal Oversight — authorized vs. actual vs. audited. Leads, never findings.</span></h1>
 <div class="tabs" id="tabs" role="tablist">
-<button class="tab on" data-p="vendor" role="tab">Vendor Lookup</button>
-<button class="tab" data-p="leads" role="tab">Leads</button>
-<button class="tab" data-p="agency" role="tab">Agency Card</button>
-<button class="tab" data-p="pending" role="tab">Pending Review</button>
-<button class="tab" data-p="waterfall" role="tab">Waterfall</button>
+  <button class="tab on" data-p="dashboard" role="tab">&#127963; Dashboard</button>
+  <button class="tab" data-p="budget" role="tab">&#128202; Budget</button>
+  <div class="tabwrap" id="wrap-investigate">
+    <button class="tab" data-menu="investigate" role="tab">&#128269; Investigate &#9662;</button>
+    <div class="tabmenu" id="menu-investigate">
+      <button data-p="vendor">Vendor Lookup</button>
+      <button data-p="leads">Leads</button>
+      <button data-p="agency">Agency Card</button>
+      <button data-p="pending">Pending Review</button>
+      <button data-p="waterfall">Tier Waterfall</button>
+    </div>
+  </div>
+  <div class="tabwrap" id="wrap-audit">
+    <button class="tab" data-menu="audit" role="tab">&#9878; Audit &#9662;</button>
+    <div class="tabmenu" id="menu-audit">
+      <button data-p="findings">AG Findings Search</button>
+      <button data-p="agleaders">AG Leaderboard</button>
+    </div>
+  </div>
+  <button class="tab" data-p="ask" role="tab">&#128172; Ask</button>
 </div>
 </header>
 <main id="main"></main>
 
+<div class="modal-back" id="modal-back">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-hd">
+      <div><h2 id="modal-title">—</h2><div class="mhmeta" id="modal-meta"></div></div>
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
 <footer class="disclaimer">
-<b>Data contract:</b> every tier, marker, and flag is a <b>lead warranting confirmation — never a finding of fraud, misconduct, or illegality</b>. No individual or entity is accused. Figures are cash-basis checkbook data and differ from audited GAAP (the ACFR governs). FY2022 is absent from the source data; FY2019–2020 lack vendor/appropriation identifiers and under-flag by construction. "Machine-screened" means <i>not yet reviewed</i> — it never means clean. This is analytics, not a credit rating or investment advice, and describes State of Arizona spending only.
+<b>Data contract:</b> every tier, marker, and flag is a <b>lead warranting confirmation — never a finding of fraud, misconduct, or illegality</b>. No individual or entity is accused. Figures are cash-basis checkbook data and differ from audited GAAP (the ACFR governs). Authorized amounts are FY2026–27 appropriations (SB1847); actual spend is FY2025 checkbook — fiscal-year and basis differences mean variance is directional context, not a deficit calculation. FY2022 is absent from source data; FY2019–2020 lack vendor/appropriation identifiers and under-flag by construction. "Machine-screened" means <i>not yet reviewed</i> — never clean. Analytics only; State of Arizona spending.
 </footer>
 
 <script>
@@ -103,10 +274,12 @@ footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px s
 /* ── utilities ─────────────────────────────────────────────────────── */
 
 const fmt = n => n == null ? "—"
-  : n >= 1e9 ? "$" + (n / 1e9).toFixed(2) + "B"
-  : n >= 1e6 ? "$" + (n / 1e6).toFixed(1) + "M"
-  : n >= 1e3 ? "$" + (n / 1e3).toFixed(0) + "K"
+  : n < 0 ? "-" + fmt(-n)
+  : Math.abs(n) >= 1e9 ? "$" + (n / 1e9).toFixed(2) + "B"
+  : Math.abs(n) >= 1e6 ? "$" + (n / 1e6).toFixed(1) + "M"
+  : Math.abs(n) >= 1e3 ? "$" + (n / 1e3).toFixed(0) + "K"
   : "$" + Math.round(n);
+const pct1 = n => n == null ? "—" : (n > 0 ? "+" : "") + n.toFixed(1) + "%";
 const el = id => document.getElementById(id);
 const esc = s => ("" + (s ?? "")).replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -123,9 +296,7 @@ const errBox = (e) => e.status === 404
   ? '<div class="empty">No match found</div>'
   : '<div class="error-box">Request failed: ' + esc(e.message) + '</div>';
 
-/* ── verdict chip — rendered EVERYWHERE a tier/marker chip appears ──
-   Data contract §6.2–6.3: a flag is never shown bare, and
-   screened_unreviewed gets an explicit "not yet reviewed" badge.     */
+/* ── verdict chip ──────────────────────────────────────────────────── */
 
 const VERDICT_LABELS = {
   genuine_review: "genuine review",
@@ -143,7 +314,6 @@ function vchip(status, interest) {
 }
 const tierBadge = t => '<span class="badge ' + (t === 1 ? "t1b" : t === 2 ? "t2b" : "t3b") + '">T' + t + "</span>";
 
-/* FY2022 is a data gap (source absent), never a zero (§6.5). */
 const FY_GAPS = new Set([2022]);
 function trendRows(trend, cols) {
   const byFy = new Map(trend.map(t => [Number(t.fiscal_year), t]));
@@ -182,7 +352,7 @@ async function loadExplain(txnId, slotId) {
   } catch (e) { slot.innerHTML = errBox(e); }
 }
 
-/* ── renderers ─────────────────────────────────────────────────────── */
+/* ── renderers (preserved) ─────────────────────────────────────────── */
 
 function txnTable(txns, withExplain) {
   const rows = (txns || []).map((t, i) => {
@@ -204,10 +374,16 @@ function agContextNote(pa) {
   const est = pa.questioned_cost_has_estimate ? "*" : "";
   const qc = pa.n_findings_with_cost > 0
     ? " · " + fmt(pa.total_questioned_cost) + " questioned" + est : "";
+  const adverse = (pa.n_adverse_findings != null && pa.n_adverse_findings > 0)
+    ? " · <b>" + pa.n_adverse_findings + " adverse finding" +
+      (pa.n_adverse_findings === 1 ? "" : "s") + "</b>" +
+      (pa.most_recent_adverse_fy ? " (most recent FY" + pa.most_recent_adverse_fy + ")" : "") +
+      (pa.n_findings_with_cost > 0 ? ", " + fmt(pa.total_questioned_cost) + " total questioned" : "")
+    : "";
   return '<div class="agctx">🔍 <b>Agency context</b> (not a finding about this vendor): ' +
     "this vendor's primary agency <b>" + esc(pa.agency) + "</b> has <b>" +
     pa.n_reports + " Auditor General audit" + (pa.n_reports === 1 ? "" : "s") +
-    "</b> FY" + pa.first_fy + "–" + pa.last_fy + qc +
+    "</b> FY" + pa.first_fy + "–" + pa.last_fy + qc + adverse +
     ". AG findings concern the agency's operations, not " +
     "this vendor — see the Agency Card." +
     (est ? " * includes estimates/projections." : "") + "</div>";
@@ -259,13 +435,25 @@ function renderAgAudit(ag) {
   if (!ag) return "";
   const qcChip = c => '<span class="qc-' + esc(c || "na") + '">' +
     esc((c || "—")) + "</span>";
-  const findings = (ag.findings_with_cost || []).map(f =>
-    "<tr><td>" + esc(f.report_id) + "</td>" +
-    '<td class="n">' + fmt(f.questioned_cost_usd) + "</td>" +
-    "<td>" + qcChip(f.questioned_cost_confidence) + "</td>" +
-    '<td class="mut" style="font-size:10.5px">' +
-    esc(f.questioned_cost_basis || f.finding_text || "") + "</td></tr>"
-  ).join("");
+  const advChip = f => f.has_adverse_findings
+    ? ' <span class="vchip v-genuine_review" title="Adverse finding">adverse</span>' : "";
+  const findings = (ag.findings_with_cost || []).map(f => {
+    const pa = f.program_area
+      ? '<span class="chip">' + esc(f.program_area) + "</span>"
+      : '<span class="mut">—</span>';
+    const pct = f.questioned_pct_of_agency_spend != null
+      ? Number(f.questioned_pct_of_agency_spend).toFixed(1) + "%"
+      : "—";
+    const fy = f.fiscal_year ? "FY" + f.fiscal_year : "";
+    return "<tr><td>" + esc(f.report_id) + advChip(f) + "</td>" +
+      '<td class="mut">' + fy + "</td>" +
+      '<td class="n">' + fmt(f.questioned_cost_usd) + "</td>" +
+      "<td>" + qcChip(f.questioned_cost_confidence) + "</td>" +
+      "<td>" + pa + "</td>" +
+      '<td class="n">' + pct + "</td>" +
+      '<td class="mut" style="font-size:10.5px">' +
+      esc(f.questioned_cost_basis || f.finding_text_preview || f.finding_text || "") + "</td></tr>";
+  }).join("");
   const reports = (ag.reports || []).map(r =>
     '<span class="agrep" title="' + esc(r.title || "") + '">' +
     esc(r.report_id) + " <span class=\"mut\">" + agReportType(r.report_type) +
@@ -275,8 +463,22 @@ function renderAgAudit(ag) {
       (ag.questioned_cost_has_estimate ? " *" : "") + '</div><div class="sval">' +
       fmt(ag.total_questioned_cost) + "</div></div>"
     : "";
+  const spendLine = ag.actual_spend_during_audit_period != null
+    ? '<div class="stat"><div class="slbl">Actual Spend (audit period)</div><div class="sval">' +
+      fmt(ag.actual_spend_during_audit_period) + "</div></div>"
+    : "";
+  const adverseLine = ag.n_adverse_findings != null && ag.n_adverse_findings > 0
+    ? '<div class="stat"><div class="slbl">Adverse Findings</div><div class="sval">' +
+      ag.n_adverse_findings + '</div><div class="meta">most recent FY' +
+      (ag.most_recent_adverse_fy || "—") + "</div></div>"
+    : "";
   const estNote = ag.questioned_cost_has_estimate
     ? " * Includes estimates/projections/contingent amounts (see basis); not all are confirmed losses."
+    : "";
+  const spendCompare = (ag.actual_spend_during_audit_period != null && ag.n_findings_with_cost > 0)
+    ? '<div class="framing">Auditors questioned <b>' + fmt(ag.total_questioned_cost) +
+      "</b> · Actual agency spending during the audit period: <b>" +
+      fmt(ag.actual_spend_during_audit_period) + "</b>.</div>"
     : "";
   return '<h3 style="margin:18px 0 6px;font-size:13px">Auditor General Findings ' +
     '<span class="subtitle">(official audited findings — external corroboration)</span></h3>' +
@@ -284,12 +486,13 @@ function renderAgAudit(ag) {
     '<div class="stat"><div class="slbl">AG Audits</div><div class="sval">' + ag.n_reports + "</div></div>" +
     '<div class="stat"><div class="slbl">FY Span</div><div class="sval">' +
     (ag.first_fy ? ag.first_fy + "–" + ag.last_fy : "—") + "</div></div>" +
-    qcLine +
+    qcLine + spendLine + adverseLine +
     '<div class="stat"><div class="slbl">Findings w/ $</div><div class="sval">' +
     ag.n_findings_with_cost + "</div></div></div>" +
     '<div class="framing">AG performance-audit findings are <b>audited findings</b>, distinct from this product\u2019s tier "leads." Questioned costs are cash-basis figures drawn from AG reports.' + estNote + "</div>" +
+    spendCompare +
     (findings
-      ? '<table style="margin-top:8px"><thead><tr><th>Report</th><th class=n>Questioned $</th><th>Conf.</th><th>Basis</th></tr></thead><tbody>' + findings + "</tbody></table>"
+      ? '<table style="margin-top:8px"><thead><tr><th>Report</th><th>FY</th><th class=n>Questioned $</th><th>Conf.</th><th>Program Area</th><th class=n>% of Spend</th><th>Basis</th></tr></thead><tbody>' + findings + "</tbody></table>"
       : '<div class="mut" style="font-size:11px;margin-top:6px">No questioned-cost findings recorded for this agency.</div>') +
     '<div class="mut" style="font-size:10.5px;margin-top:8px">Reports: ' + reports + "</div>";
 }
@@ -344,16 +547,625 @@ function renderWaterfall(d) {
     '<div class="framing">The model\'s first job is to exonerate: most dollars are scheduled, structural, and clean. Tier-4 is "large but clean," not suspicious.</div></div>';
 }
 
-/* ── panels ────────────────────────────────────────────────────────── */
+/* ── AG Findings search ────────────────────────────────────────────── */
 
-let panel = "vendor";
+function renderFindings(d) {
+  if (!d || !d.findings || !d.findings.length)
+    return '<div class="empty">No AG findings match that keyword</div>';
+  const rows = d.findings.map(f => {
+    const adv = f.has_adverse_findings
+      ? ' <span class="vchip v-genuine_review">adverse</span>' : "";
+    const qc = f.questioned_cost_usd != null ? fmt(f.questioned_cost_usd) : "—";
+    const conf = f.questioned_cost_confidence
+      ? '<span class="qc-' + esc(f.questioned_cost_confidence) + '">' +
+        esc(f.questioned_cost_confidence) + "</span>" : '<span class="mut">—</span>';
+    const preview = (f.finding_text_preview || f.finding_text || "")
+      .replace(/\s+/g, " ").slice(0, 220);
+    return "<tr><td>" + esc(f.finding_id) + adv + "</td>" +
+      "<td>" + esc(f.agency || "") + "</td>" +
+      '<td class="mut">' + (f.fiscal_year ? "FY" + f.fiscal_year : "—") + "</td>" +
+      '<td class="n">' + qc + "</td>" +
+      "<td>" + conf + "</td>" +
+      '<td class="mut" style="font-size:10.5px;max-width:380px">' + esc(preview) +
+      (f.report_id ? ' <span class="mut">[' + esc(f.report_id) + "]</span>" : "") +
+      "</td></tr>";
+  }).join("");
+  return '<div class="framing">Full-text search across Arizona Auditor-General audit findings (finding text, recommendations, report titles). These are <b>audited findings</b>, distinct from the warehouse tier "leads."</div>' +
+    '<div class="meta">' + d.n + ' matching finding' + (d.n === 1 ? "" : "s") +
+    ' for <b>' + esc(d.query) + "</b></div>" +
+    '<table><thead><tr><th>Finding</th><th>Agency</th><th>FY</th><th class=n>Questioned $</th><th>Conf.</th><th>Preview</th></tr></thead><tbody>' +
+    rows + "</tbody></table>";
+}
+
+/* ── AG Leaderboard ────────────────────────────────────────────────── */
+
+const AG_METRICS = {
+  total_questioned_cost: "Questioned $",
+  n_findings: "Findings",
+  n_findings_with_cost: "Findings w/ $",
+  n_adverse: "Adverse",
+  n_reports: "Reports",
+};
+
+function renderAgLeaders(d) {
+  if (!d || !d.agencies || !d.agencies.length)
+    return '<div class="empty">No AG leaderboard data available</div>';
+  const rows = d.agencies.map((a, i) =>
+    "<tr><td class=n>" + (i + 1) + "</td><td>" + esc(a.agency || "") + "</td>" +
+    '<td class=n>' + (a.n_reports ?? "—") + "</td>" +
+    '<td class=n>' + (a.n_findings ?? "—") + "</td>" +
+    '<td class=n>' + fmt(a.total_questioned_cost) + "</td>" +
+    '<td class=n>' + (a.n_findings_with_cost ?? "—") + "</td>" +
+    '<td class=n>' + (a.n_adverse ?? "—") + "</td>" +
+    '<td class="mut">' + (a.first_fy ? a.first_fy + "–" + a.last_fy : "—") + "</td></tr>"
+  ).join("");
+  return '<div class="card" style="padding:14px">' +
+    '<h2 style="margin:0 0 8px">AG Leaderboard <span class="subtitle">ranked by ' +
+    esc(AG_METRICS[d.metric] || d.metric) + "</span></h2>" +
+    '<div class="framing">Top agencies by Auditor-General audit metrics — audited findings, not tier leads. Questioned costs are cash-basis figures from AG reports.</div>' +
+    '<table><thead><tr><th>#</th><th>Agency</th><th class=n>Reports</th>' +
+    '<th class=n>Findings</th><th class=n>Questioned $</th><th class=n>w/ $</th>' +
+    '<th class=n>Adverse</th><th>FY Span</th></tr></thead><tbody>' + rows +
+    "</tbody></table></div>";
+}
+
+/* ── Ask (conversational router) ───────────────────────────────────── */
+
+const ASK_EXAMPLES = [
+  "Which agencies spent the most over budget?",
+  "Tell me about Fondomonte",
+  "Show me the genuine leads",
+  "How is the Land Department doing?",
+  "What needs review?",
+];
+
+const LEAD_STATUS = [
+  [/\bgenuine|interesting|real\b/, "genuine_review"],
+  [/\bexplained|benign\b/, "explained_benign"],
+  [/\bfalse[\s-]?positive\b/, "false_positive_marker"],
+  [/\bmixed\b/, "mixed"],
+  [/\bscreened|machine|unreviewed\b/, "screened_unreviewed"],
+];
+
+function askLog() { return el("asklog"); }
+
+function pushQ(text) {
+  const log = askLog();
+  if (log.dataset.welcome !== "cleared" && log.querySelector(".ahint")) {
+    log.innerHTML = ""; log.dataset.welcome = "cleared";
+  }
+  const d = document.createElement("div");
+  d.className = "qbubble";
+  d.textContent = text;
+  log.appendChild(d);
+}
+
+function pushA(label) {
+  const wrap = document.createElement("div");
+  wrap.className = "abubble";
+  wrap.innerHTML = '<div class="alabel">' + esc(label) + "</div>" +
+    '<div class="aslot">' + spinner + "</div>";
+  askLog().appendChild(wrap);
+  wrap.scrollIntoView({ behavior: "smooth", block: "start" });
+  return wrap.querySelector(".aslot");
+}
+
+function leadStatusFrom(q) {
+  for (const [re, status] of LEAD_STATUS) if (re.test(q)) return status;
+  return null;
+}
+
+function classify(q) {
+  const s = q.toLowerCase().trim();
+  if (/\b(over budget|overspent|over-budget|variance|authorized vs|budget vs|under budget)\b/.test(s))
+    return { kind: "variance" };
+  if (/\b(waterfall|distribution|clear most|exonerat|most dollars|tier breakdown|how (much|many).*tier)\b/.test(s))
+    return { kind: "waterfall" };
+  if (/\b(pending|needs review|need review|to review|reviewer queue|not.* reviewed|adjudicat|what should i review)\b/.test(s))
+    return { kind: "pending" };
+  if (/\b(leads?|flagged|show me.*(lead|flag)|genuine|false[\s-]?positive)\b/.test(s) && !/\babout\b/.test(s))
+    return { kind: "leads", status: leadStatusFrom(s) };
+  const subject = q.replace(
+    /\b(tell me about|how('?s| is| are)|what about|who('?s| is| are)|show me|look ought?|lookup|look up|info on|information on|details on|the|a|an|agency|department|dept|doing|going|vendor|company|please)\b/gi,
+    " ").replace(/[^\w\s&-]/g, " ").replace(/\s+/g, " ").trim();
+  const preferAgency = /\b(agency|department|dept|cabinet)\b/i.test(q);
+  return { kind: "subject", subject: subject || q, preferAgency };
+}
+
+async function answerWaterfall(slot) {
+  try { slot.innerHTML = renderWaterfall(await api("/api/waterfall")); }
+  catch (e) { slot.innerHTML = errBox(e); }
+}
+async function answerPending(slot) {
+  try { slot.innerHTML = renderPending(await api("/api/pending?limit=30")); }
+  catch (e) { slot.innerHTML = errBox(e); }
+}
+async function answerVariance(slot) {
+  try {
+    const d = await loadTriangulation();
+    const matched = d.agencies.filter(a => a.matched && a.variance != null);
+    const over = matched.filter(a => a.variance > 0).sort((a, b) => b.variance - a.variance).slice(0, 12);
+    slot.innerHTML = '<div class="meta">Agencies spending the most above their FY2026–27 authorization (FY2025 actual). Click any row for the 360° view.</div>' +
+      varianceTable(over, "over");
+  } catch (e) { slot.innerHTML = errBox(e); }
+}
+async function answerLeads(slot, status) {
+  try {
+    const d = await api("/api/leads?tier=1&limit=30" + (status ? "&status=" + encodeURIComponent(status) : ""));
+    slot.innerHTML = (status ? "" :
+      '<div class="meta">Tier-1 leads across all verification statuses. Filter by saying e.g. &ldquo;genuine leads&rdquo;.</div>') +
+      renderLeads(d);
+  } catch (e) { slot.innerHTML = errBox(e); }
+}
+
+async function answerSubject(slot, subject, preferAgency) {
+  let hits;
+  try { hits = await api("/api/search?q=" + encodeURIComponent(subject)); }
+  catch (e) { slot.innerHTML = errBox(e); return; }
+  const ents = hits.entities || [], ags = hits.agencies || [];
+  if (!ents.length && !ags.length) {
+    slot.innerHTML = '<div class="ahint">No vendor, agency, or program matches <b>' +
+      esc(subject) + "</b>. Try a different spelling, or browse the " +
+      "<b>Leads</b> and <b>Pending Review</b> tabs.</div>";
+    return;
+  }
+  const subjU = subject.toUpperCase();
+  const strongAg = ags.find(a => (a.agency || "").toUpperCase().startsWith(subjU));
+  const strongEnt = ents.find(e => (e.entity_name || e.entity_key || "").toUpperCase().startsWith(subjU));
+
+  if (preferAgency) {
+    if (strongAg) return renderAgencyInto(slot, strongAg.agency);
+    if (ags.length === 1) return renderAgencyInto(slot, ags[0].agency);
+    if (!ags.length && ents.length === 1) return renderEntityInto(slot, ents[0].entity_name || ents[0].entity_key);
+  } else {
+    if (ents.length === 1 && !ags.length) return renderEntityInto(slot, ents[0].entity_name || ents[0].entity_key);
+    if (strongEnt && !ags.length) return renderEntityInto(slot, strongEnt.entity_name || strongEnt.entity_key);
+    if (ents.length === 1 && strongEnt) return renderEntityInto(slot, strongEnt.entity_name || strongEnt.entity_key);
+  }
+  const ord = preferAgency ? ["ag", "ent"] : ["ent", "ag"];
+  const entBtns = ents.slice(0, 6).map(e =>
+    '<button class="ghost pick" data-ask-entity="' + esc(e.entity_name || e.entity_key) + '">' +
+    esc(e.entity_name || e.entity_key) + ' <span class="mut">· ' + fmt(e.usd_tier1) +
+    " T1 · " + (e.n_tier1 ?? 0) + " txns</span></button>").join("");
+  const agBtns = ags.slice(0, 6).map(a =>
+    '<button class="ghost pick" data-ask-agency="' + esc(a.agency) + '">' +
+    esc(a.agency) + ' <span class="mut">· ' + fmt(a.usd_tier1) + " T1</span></button>").join("");
+  const entGrp = entBtns ? '<div class="pickgrp"><div class="picklbl">Vendors</div>' + entBtns + "</div>" : "";
+  const agGrp = agBtns ? '<div class="pickgrp"><div class="picklbl">Agencies</div>' + agBtns + "</div>" : "";
+  slot.innerHTML = '<div class="ahint">A few matches for <b>' + esc(subject) +
+    "</b> — which did you mean?</div><div class=\"picks\">" +
+    (ord[0] === "ag" ? agGrp + entGrp : entGrp + agGrp) +
+    "</div>";
+}
+
+async function renderEntityInto(slot, name) {
+  try { slot.innerHTML = renderVendor(await api("/api/entity?q=" + encodeURIComponent(name))); }
+  catch (e) { slot.innerHTML = errBox(e); }
+}
+async function renderAgencyInto(slot, name) {
+  try { slot.innerHTML = renderAgency(await api("/api/agency?q=" + encodeURIComponent(name))); }
+  catch (e) { slot.innerHTML = errBox(e); }
+}
+
+/* ── AI mode ───────────────────────────────────────────────────────── */
+
+function mdLite(src) {
+  let s = esc(src || "");
+  s = s.replace(/(?:^\|.*\|\s*$\n?)+/gm, block => {
+    const rows = block.trimEnd().split("\n").map(r => r.replace(/^\||\|$/g, "").split("|").map(c => c.trim()));
+    if (rows.length < 2) return block;
+    const isSep = r => r.every(c => /^:?-{2,}:?$/.test(c));
+    const head = rows[0], bodyRows = rows.slice(isSep(rows[1]) ? 2 : 1);
+    const th = "<tr>" + head.map(c => "<th>" + c + "</th>").join("") + "</tr>";
+    const tb = bodyRows.map(r => "<tr>" + r.map(c => '<td class="' +
+      (/^\$?[\d,.]+%?$/.test(c) ? "n" : "") + '">' + c + "</td>").join("") + "</tr>").join("");
+    return '<table class="aitbl"><thead>' + th + "</thead><tbody>" + tb + "</tbody></table>";
+  });
+  s = s.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>");
+  s = s.replace(/^### (.*)$/gm, "<h4>$1</h4>").replace(/^## (.*)$/gm, "<h3>$1</h3>");
+  s = s.replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>");
+  return "<p>" + s + "</p>";
+}
+
+function workTrail(calls) {
+  if (!Array.isArray(calls) || !calls.length) return "";
+  const items = calls.map(c => "<li><code>" + esc(c.name) + "</code>(" +
+    esc(Object.entries(c.arguments || {}).map(([k, v]) => k + "=" + JSON.stringify(v)).join(", ")) +
+    ")" + (c.rows != null ? ' <span class="mut">→ ' + c.rows + " rows</span>" : "") + "</li>").join("");
+  return '<details class="worktrail"><summary>Show work — ' + calls.length +
+    " grounded quer" + (calls.length === 1 ? "y" : "ies") + "</summary><ul>" + items + "</ul></details>";
+}
+
+async function answerAI(slot, q) {
+  try {
+    const r = await fetch("/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data && data.error ? data.error : "HTTP " + r.status);
+    slot.innerHTML = '<div class="aianswer">' + mdLite(data.answer) + "</div>" +
+      workTrail(data.tool_calls) +
+      '<div class="framing">Answered by ' + esc(data.model || "AI") +
+      ', grounded in live OpenBooks queries — leads warranting confirmation, never findings.</div>';
+  } catch (e) {
+    slot.innerHTML = errBox(e) +
+      '<div class="mut" style="font-size:11px;margin-top:6px">AI answers need an LLM credential on the server ' +
+      "(set <code>OPENBOOKS_ASK_PROVIDER</code> and the matching API key). Toggle off &#129504; AI to use the instant keyword router instead.</div>";
+  }
+}
+
+async function ask(q) {
+  q = (q || "").trim();
+  if (!q) return;
+  pushQ(q);
+  el("askq").value = "";
+  const aiOn = el("aimode") && el("aimode").checked;
+  if (aiOn) {
+    const slot = pushA("AI");
+    return answerAI(slot, q);
+  }
+  const intent = classify(q);
+  const labels = { waterfall: "Tier waterfall", pending: "Reviewer queue",
+    leads: "Tier-1 leads", variance: "Budget vs actual", subject: "Result" };
+  const slot = pushA(labels[intent.kind] || "Result");
+  if (intent.kind === "variance") return answerVariance(slot);
+  if (intent.kind === "waterfall") return answerWaterfall(slot);
+  if (intent.kind === "pending") return answerPending(slot);
+  if (intent.kind === "leads") return answerLeads(slot, intent.status);
+  return answerSubject(slot, intent.subject, intent.preferAgency);
+}
+
+/* ── Triangulation data (shared cache) ─────────────────────────────── */
+
+let triData = null;
+async function loadTriangulation() {
+  if (triData) return triData;
+  triData = await api("/api/triangulation");
+  return triData;
+}
+function agencyByName(name) {
+  if (!triData) return null;
+  return triData.agencies.find(a => a.agency === name) || null;
+}
+function riskClass(s) { return s >= 61 ? "risk-hi" : s >= 31 ? "risk-md" : "risk-lo"; }
+
+/* ── Dashboard (landing) ───────────────────────────────────────────── */
+
+async function renderDashboard() {
+  const m = el("main");
+  m.innerHTML = spinner;
+  let d;
+  try { d = await loadTriangulation(); }
+  catch (e) { m.innerHTML = errBox(e); return; }
+  const s = d.summary;
+
+  const auth = s.total_authorized, actual = s.total_actual_spend_fy25;
+  const max = Math.max(auth, actual);
+  const authW = (auth / max * 100), actualPos = (actual / max * 100);
+  const overPct = s.overall_variance_pct;
+  const overCls = overPct >= 0 ? "over" : "under";
+
+  let html = "";
+
+  // hero pillars
+  html += '<div class="dash-hero">';
+  html += '<div class="pillar budget"><div class="picon">📜</div><div class="plbl">Authorized · Budget</div>' +
+    '<div class="pval">' + fmt(auth) + '</div><div class="psub">FY2026–27 appropriations across ' + s.n_budget_agencies + ' agencies</div></div>';
+  html += '<div class="pillar actual"><div class="picon">💸</div><div class="plbl">Actual · Checkbook</div>' +
+    '<div class="pval">' + fmt(actual) + '</div><div class="psub">FY2025 spend across ' + s.n_matched + ' matched agencies</div></div>';
+  html += '<div class="pillar audit"><div class="picon">⚖️</div><div class="plbl">Flagged · Audit</div>' +
+    '<div class="pval">' + fmt(s.total_questioned_cost) + '</div><div class="psub">questioned costs · ' + s.total_adverse_findings + ' adverse findings</div></div>';
+  html += '</div>';
+
+  // variance bar
+  html += '<div class="varbar-wrap">';
+  html += '<div class="varbar-title"><span>Statewide: Authorized vs. Actual</span>' +
+    '<span class="varbar-pct ' + overCls + '">' + pct1(overPct) + (overPct >= 0 ? " over authorization" : " under") + '</span></div>';
+  html += '<div class="varbar-track">';
+  html += '<div class="varbar-auth" style="width:' + authW.toFixed(1) + '%">Authorized ' + fmt(auth) + '</div>';
+  html += '<div class="varbar-actual-line" style="left:' + actualPos.toFixed(1) + '%"></div>';
+  html += '<div class="varbar-actual-flag" style="left:' + actualPos.toFixed(1) + '%">Actual ' + fmt(actual) + '</div>';
+  html += '</div>';
+  html += '<div class="varbar-legend">' +
+    '<span><span class="dot" style="background:var(--budget)"></span>Authorized (FY2026–27 budget)</span>' +
+    '<span><span class="dot" style="background:var(--actual)"></span>Actual (FY2025 checkbook)</span>' +
+    '<span class="mut">Δ ' + fmt(s.overall_variance) + ' — directional, not a deficit (basis &amp; FY differ)</span></div>';
+  html += '</div>';
+
+  // top variance dual-bar chart
+  const ranked = d.agencies.filter(a => a.matched && a.variance != null)
+    .sort((a, b) => b.authorized - a.authorized).slice(0, 15);
+  const chartMax = Math.max(...ranked.map(a => Math.max(a.authorized, a.actual_spend_fy25)));
+  html += '<div class="sec-title">📊 Top 15 Agencies — Authorized vs. Actual</div>';
+  html += '<div class="sec-sub">Two bars per agency: budget authorized (blue) and FY2025 actual spend (green). Click any agency for the 360° view.</div>';
+  html += '<div class="dvchart">';
+  ranked.forEach(a => {
+    const aw = (a.authorized / chartMax * 100).toFixed(1);
+    const acw = (a.actual_spend_fy25 / chartMax * 100).toFixed(1);
+    const vcls = a.variance > 0 ? "over" : "under";
+    html += '<div class="dvrow" data-agency360="' + esc(a.agency) + '">';
+    html += '<span class="dvname" title="' + esc(a.agency) + '">' + esc(a.agency) + '</span>';
+    html += '<div class="dvbars"><div class="dvbar auth" style="width:' + aw + '%"></div>' +
+      '<div class="dvbar actual" style="width:' + acw + '%"></div></div>';
+    html += '<span class="dvval">' + fmt(a.actual_spend_fy25) + '<br><span class="' + vcls + '">' + pct1(a.variance_pct) + '</span></span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // audit risk heatmap
+  const byRisk = d.agencies.filter(a => a.risk_score > 0)
+    .sort((a, b) => b.risk_score - a.risk_score || (b.questioned_cost || 0) - (a.questioned_cost || 0)).slice(0, 15);
+  html += '<div class="sec-title">⚖️ Audit Risk Heatmap</div>';
+  html += '<div class="sec-sub">Agencies ranked by composite risk score (budget variance × audit exposure). Click for detail.</div>';
+  html += '<table class="heat-tbl"><thead><tr><th>Agency</th><th class="n">Authorized</th><th class="n">Actual</th>' +
+    '<th class="n">Variance</th><th class="n">AG Rpts</th><th class="n">Questioned $</th><th class="n">Adverse</th><th class="n">Risk</th></tr></thead><tbody>';
+  byRisk.forEach(a => {
+    const vcls = a.variance_pct == null ? "" : a.variance_pct > 0 ? "var-up" : "var-down";
+    html += '<tr data-agency360="' + esc(a.agency) + '">';
+    html += '<td><span class="agency-link">' + esc(a.agency) + '</span></td>';
+    html += '<td class="n">' + fmt(a.authorized) + '</td>';
+    html += '<td class="n">' + (a.matched ? fmt(a.actual_spend_fy25) : '<span class="mut">—</span>') + '</td>';
+    html += '<td class="n ' + vcls + '">' + pct1(a.variance_pct) + '</td>';
+    html += '<td class="n">' + (a.n_ag_reports || 0) + '</td>';
+    html += '<td class="n">' + (a.questioned_cost ? fmt(a.questioned_cost) : '<span class="mut">—</span>') + '</td>';
+    html += '<td class="n">' + (a.n_adverse || 0) + '</td>';
+    html += '<td class="n"><span class="risk-pill ' + riskClass(a.risk_score) + '">' + a.risk_score + '</span></td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+
+  // summary footer
+  const unmatched = s.n_budget_agencies - s.n_matched;
+  html += '<div class="framing" style="margin-top:18px">Coverage: <b>' + s.n_matched + ' of ' + s.n_budget_agencies +
+    '</b> budget agencies matched to checkbook spend (' + unmatched + ' unmatched — typically pass-through, aid, or differently-named entities, shown with “—” actuals). ' +
+    'Risk score blends budget overage with AG audit exposure; it is a triage signal, <b>not</b> a finding of wrongdoing.</div>';
+
+  m.innerHTML = html;
+}
+
+/* dual variance table (used by Ask + Budget variance subtab) */
+function varianceTable(rows, dir) {
+  let html = '<table class="heat-tbl"><thead><tr><th>Agency</th><th class="n">Authorized</th><th class="n">Actual (FY25)</th>' +
+    '<th class="n">Δ Amount</th><th class="n">Δ %</th></tr></thead><tbody>';
+  rows.forEach(a => {
+    const vcls = a.variance > 0 ? "var-up" : "var-down";
+    html += '<tr data-agency360="' + esc(a.agency) + '">';
+    html += '<td><span class="agency-link">' + esc(a.agency) + '</span></td>';
+    html += '<td class="n">' + fmt(a.authorized) + '</td>';
+    html += '<td class="n">' + fmt(a.actual_spend_fy25) + '</td>';
+    html += '<td class="n ' + vcls + '">' + (a.variance > 0 ? "+" : "") + fmt(a.variance) + '</td>';
+    html += '<td class="n ' + vcls + '">' + pct1(a.variance_pct) + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+/* ── Agency 360° modal ─────────────────────────────────────────────── */
+
+function openAgency360(name) {
+  const a = agencyByName(name);
+  if (!a) return;
+  el("modal-title").textContent = a.agency;
+
+  let lampCls = "tri-grey", lampTxt = "Not matched to checkbook spend — variance unavailable.";
+  if (a.matched && a.variance_pct != null) {
+    const v = a.variance_pct;
+    if (v > 25) { lampCls = "tri-red"; lampTxt = "Actual spend " + pct1(v) + " above authorization — high variance."; }
+    else if (v > 10) { lampCls = "tri-yellow"; lampTxt = "Actual spend " + pct1(v) + " above authorization — moderate variance."; }
+    else if (v >= -10) { lampCls = "tri-green"; lampTxt = "Actual spend within ±10% of authorization (" + pct1(v) + ")."; }
+    else { lampCls = "tri-green"; lampTxt = "Actual spend " + pct1(v) + " — well under authorization."; }
+  }
+
+  el("modal-meta").innerHTML =
+    '<span>📜 ' + fmt(a.authorized) + ' authorized</span>' +
+    (a.matched ? '<span>💸 ' + fmt(a.actual_spend_fy25) + ' actual</span>' : '') +
+    (a.n_ag_reports ? '<span>⚖️ ' + a.n_ag_reports + ' AG report' + (a.n_ag_reports === 1 ? "" : "s") + '</span>' : '') +
+    '<span class="risk-pill ' + riskClass(a.risk_score) + '" style="font-size:10px">risk ' + a.risk_score + '</span>';
+
+  let body = '<div class="tri-light ' + lampCls + '"><span class="lamp"></span>' + esc(lampTxt) + '</div>';
+  body += '<div class="tri-panels">';
+
+  // Budget panel
+  body += '<div class="tri-panel budget"><div class="tph">📜 Budget</div>';
+  body += '<div class="tp-big" style="color:var(--budget)">' + fmt(a.authorized) + '</div>';
+  body += '<div class="mut" style="font-size:11px;margin-bottom:8px">authorized FY2026–27</div>';
+  body += '<div class="tp-line"><span class="k">FTE positions</span><span class="v">' + (a.fte != null ? a.fte.toLocaleString() : "—") + '</span></div>';
+  body += '<div class="tp-line"><span class="k">Line items</span><span class="v">' + (a.n_line_items || 0) + '</span></div>';
+  body += '<div class="tp-line"><span class="k">Fund sources</span><span class="v">' + (a.n_fund_sources || 0) + '</span></div>';
+  if (a.fund_sources && a.fund_sources.length) {
+    const fmax = Math.max(...a.fund_sources.map(f => f.amount || 0));
+    body += '<div style="margin-top:10px">' + a.fund_sources.slice(0, 5).map(f =>
+      '<div class="fundbar-row"><div class="fbtop"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%" title="' + esc(f.fund) + '">' + esc(f.fund) + '</span><span class="mut">' + fmt(f.amount) + '</span></div>' +
+      '<div class="fundbar-track"><div class="fundbar-fill" style="width:' + (fmax ? (f.amount / fmax * 100).toFixed(0) : 0) + '%"></div></div></div>').join("") + '</div>';
+  }
+  body += '</div>';
+
+  // Checkbook panel
+  body += '<div class="tri-panel actual"><div class="tph">💸 Checkbook</div>';
+  if (a.matched) {
+    body += '<div class="tp-big" style="color:var(--actual)">' + fmt(a.actual_spend_fy25) + '</div>';
+    body += '<div class="mut" style="font-size:11px;margin-bottom:8px">FY2025 actual spend</div>';
+    body += '<div class="tp-line"><span class="k">FY2024 spend</span><span class="v">' + fmt(a.actual_spend_fy24) + '</span></div>';
+    const yoy = (a.actual_spend_fy24 && a.actual_spend_fy24 !== 0) ? ((a.actual_spend_fy25 - a.actual_spend_fy24) / a.actual_spend_fy24 * 100) : null;
+    body += '<div class="tp-line"><span class="k">YoY change</span><span class="v ' + (yoy != null && yoy > 0 ? "var-up" : yoy != null ? "var-down" : "") + '">' + (yoy != null ? pct1(yoy) : "—") + '</span></div>';
+    body += '<div class="tp-line"><span class="k">FY25 transactions</span><span class="v">' + (a.n_txn_fy25 != null ? a.n_txn_fy25.toLocaleString() : "—") + '</span></div>';
+    body += '<div class="tp-line"><span class="k">vs. authorized</span><span class="v ' + (a.variance > 0 ? "var-up" : "var-down") + '">' + (a.variance > 0 ? "+" : "") + fmt(a.variance) + ' (' + pct1(a.variance_pct) + ')</span></div>';
+  } else {
+    body += '<div class="mut" style="padding:16px 0;font-size:12px">No checkbook match for this budget entity. May be pass-through funding, aid, or recorded under a different agency name.</div>';
+  }
+  body += '</div>';
+
+  // Audit panel
+  body += '<div class="tri-panel audit"><div class="tph">⚖️ Audit</div>';
+  if (a.n_ag_reports) {
+    body += '<div class="tp-big" style="color:var(--audit)">' + fmt(a.questioned_cost) + '</div>';
+    body += '<div class="mut" style="font-size:11px;margin-bottom:8px">questioned costs</div>';
+    body += '<div class="tp-line"><span class="k">AG reports</span><span class="v">' + a.n_ag_reports + '</span></div>';
+    body += '<div class="tp-line"><span class="k">Adverse findings</span><span class="v">' + (a.n_adverse || 0) + '</span></div>';
+    body += '<div class="tp-line"><span class="k">Audit period</span><span class="v">' + (a.ag_first_fy ? "FY" + a.ag_first_fy + "–" + a.ag_last_fy : "—") + '</span></div>';
+    body += '<button class="ghost" style="margin-top:10px" data-find-agency="' + esc(a.agency) + '">Search AG findings →</button>';
+  } else {
+    body += '<div class="mut" style="padding:16px 0;font-size:12px">No Auditor General reports on record for this agency.</div>';
+  }
+  body += '</div>';
+
+  body += '</div>';
+  body += '<div class="framing" style="margin-top:14px">Variance is directional context (FY2025 cash spend vs. FY2026–27 authorization — basis and fiscal year differ). Risk score and audit figures are triage signals and audited findings respectively — <b>never</b> accusations against this agency, its staff, or its vendors.</div>';
+
+  el("modal-body").innerHTML = body;
+  el("modal-back").classList.add("show");
+}
+function closeModal() { el("modal-back").classList.remove("show"); }
+
+/* ── Budget tab ─────────────────────────────────────────────────────── */
+
+let budgetSubtab = "overview";
+
+function renderBudgetOverview(d) {
+  const s = d.summary;
+  const ags = d.agencies;
+  let html = '<div class="bdg-grid">';
+  html += '<div class="bdg-stat acc"><span class="sval">' + fmt(s.total_authorized) + '</span><span class="slbl">Authorized (FY2026–27)</span></div>';
+  html += '<div class="bdg-stat grn"><span class="sval">' + fmt(s.total_actual_spend_fy25) + '</span><span class="slbl">Actual Spend (FY2025)</span></div>';
+  html += '<div class="bdg-stat t1"><span class="sval">' + pct1(s.overall_variance_pct) + '</span><span class="slbl">Statewide Variance</span></div>';
+  html += '<div class="bdg-stat"><span class="sval">' + s.n_budget_agencies + '</span><span class="slbl">Agencies</span></div>';
+  html += '<div class="bdg-stat yel"><span class="sval">' + s.n_matched + '</span><span class="slbl">Matched to Spend</span></div>';
+  html += '</div>';
+
+  const top = [...ags].sort((a, b) => b.authorized - a.authorized).slice(0, 12);
+  const max = Math.max(...top.map(a => a.authorized));
+  html += '<div class="bdg-section-label">Top 12 Agencies by Authorization</div><div class="bdg-bar-chart">';
+  top.forEach(a => {
+    const pct = (a.authorized / max * 100).toFixed(1);
+    html += '<div class="bdg-bar-row" data-agency360="' + esc(a.agency) + '" style="cursor:pointer">' +
+      '<span class="bdg-bar-label" title="' + esc(a.agency) + '">' + esc(a.agency) + '</span>' +
+      '<div class="bdg-bar-track"><div class="bdg-bar-fill" style="width:' + pct + '%;background:linear-gradient(90deg,#2a5a8f,var(--budget))"></div></div>' +
+      '<span class="bdg-bar-val">' + fmt(a.authorized) + '</span></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="bdg-section-label">All Agencies — Authorized vs. Actual</div>';
+  html += '<table class="bdg-overview-tbl"><thead><tr><th>Agency</th><th class="n">Authorized</th><th class="n">Actual (FY25)</th><th class="n">Variance</th><th class="n">FTE</th><th class="n">Risk</th></tr></thead><tbody>';
+  [...ags].sort((a, b) => b.authorized - a.authorized).forEach(a => {
+    const vcls = a.variance_pct == null ? "" : a.variance_pct > 0 ? "var-up" : "var-down";
+    html += '<tr data-agency360="' + esc(a.agency) + '">';
+    html += '<td>' + esc(a.agency) + '</td>';
+    html += '<td class="n">' + fmt(a.authorized) + '</td>';
+    html += '<td class="n">' + (a.matched ? fmt(a.actual_spend_fy25) : '<span class="mut">—</span>') + '</td>';
+    html += '<td class="n ' + vcls + '">' + pct1(a.variance_pct) + '</td>';
+    html += '<td class="n">' + (a.fte != null ? a.fte.toLocaleString() : "—") + '</td>';
+    html += '<td class="n"><span class="risk-pill ' + riskClass(a.risk_score) + '" style="font-size:10px">' + a.risk_score + '</span></td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+function renderBudgetVariance(d) {
+  const matched = d.agencies.filter(a => a.matched && a.variance != null);
+  const over = matched.filter(a => a.variance > 0).sort((a, b) => b.variance - a.variance);
+  const under = matched.filter(a => a.variance <= 0).sort((a, b) => a.variance - b.variance);
+  let html = '<div class="sec-title" style="margin-top:6px">🔺 Spending Above Authorization</div>';
+  html += '<div class="sec-sub">FY2025 actual exceeds FY2026–27 authorization. Directional — basis &amp; fiscal year differ.</div>';
+  html += over.length ? varianceTable(over.slice(0, 25), "over") : '<div class="empty">None</div>';
+  html += '<div class="sec-title">🔻 Spending Below Authorization</div>';
+  html += '<div class="sec-sub">FY2025 actual under authorization (or near it).</div>';
+  html += under.length ? varianceTable(under.slice(0, 25), "under") : '<div class="empty">None</div>';
+  return html;
+}
+
+function renderBudgetFunds(d) {
+  const fundMap = {};
+  d.agencies.forEach(a => (a.fund_sources || []).forEach(fs => {
+    if (!fundMap[fs.fund]) fundMap[fs.fund] = 0;
+    fundMap[fs.fund] += fs.amount || 0;
+  }));
+  const sorted = Object.entries(fundMap).sort((a, b) => b[1] - a[1]);
+  const max = sorted.length ? sorted[0][1] : 1;
+  let html = '<div class="bdg-section-label">Fund Sources Across All Agencies</div><div class="bdg-bar-chart">';
+  sorted.slice(0, 20).forEach(([name, total]) => {
+    const pct = (total / max * 100).toFixed(1);
+    html += '<div class="bdg-bar-row"><span class="bdg-bar-label" title="' + esc(name) + '">' + esc(name) + '</span>' +
+      '<div class="bdg-bar-track"><div class="bdg-bar-fill" style="width:' + pct + '%;background:linear-gradient(90deg,#2a5a8f,var(--budget))"></div></div>' +
+      '<span class="bdg-bar-val">' + fmt(total) + '</span></div>';
+  });
+  html += '</div><div class="mut" style="font-size:11px;margin:6px 0">Showing top 20 of ' + sorted.length + ' unique fund sources</div>';
+  return html;
+}
+
+function renderBudgetSearchResults(d, query) {
+  const q = query.toLowerCase();
+  const matches = d.agencies.filter(a =>
+    (a.agency || "").toLowerCase().includes(q) ||
+    (a.fund_sources || []).some(fs => (fs.fund || "").toLowerCase().includes(q))
+  );
+  if (!matches.length) return '<div class="empty">No budget matches for "' + esc(query) + '"</div>';
+  let html = '<div class="meta">' + matches.length + ' agenc' + (matches.length === 1 ? "y" : "ies") + ' match <b>' + esc(query) + '</b> — click for the 360° view</div>';
+  html += '<table class="heat-tbl"><thead><tr><th>Agency</th><th class="n">Authorized</th><th class="n">Actual</th><th class="n">Variance</th><th class="n">Risk</th></tr></thead><tbody>';
+  matches.sort((a, b) => b.authorized - a.authorized).forEach(a => {
+    const vcls = a.variance_pct == null ? "" : a.variance_pct > 0 ? "var-up" : "var-down";
+    html += '<tr data-agency360="' + esc(a.agency) + '"><td><span class="agency-link">' + esc(a.agency) + '</span></td>' +
+      '<td class="n">' + fmt(a.authorized) + '</td>' +
+      '<td class="n">' + (a.matched ? fmt(a.actual_spend_fy25) : '<span class="mut">—</span>') + '</td>' +
+      '<td class="n ' + vcls + '">' + pct1(a.variance_pct) + '</td>' +
+      '<td class="n"><span class="risk-pill ' + riskClass(a.risk_score) + '" style="font-size:10px">' + a.risk_score + '</span></td></tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+async function renderBudgetPanel() {
+  const m = el("main");
+  m.innerHTML = '<div class="bdg-tab-row">' +
+    '<button class="bdg-subtab" data-bdg-sub="overview">📊 Overview</button>' +
+    '<button class="bdg-subtab" data-bdg-sub="variance">📈 Variance</button>' +
+    '<button class="bdg-subtab" data-bdg-sub="funds">🏦 Fund Sources</button>' +
+    '<button class="bdg-subtab" data-bdg-sub="search">🔍 Search</button>' +
+    '</div><div id="bdg-content">' + spinner + '</div>';
+  document.querySelectorAll("[data-bdg-sub]").forEach(b => {
+    b.classList.toggle("on", b.dataset.bdgSub === budgetSubtab);
+    b.addEventListener("click", () => {
+      budgetSubtab = b.dataset.bdgSub;
+      document.querySelectorAll("[data-bdg-sub]").forEach(x => x.classList.toggle("on", x === b));
+      renderBudgetContent();
+    });
+  });
+  renderBudgetContent();
+}
+
+async function renderBudgetContent() {
+  const slot = el("bdg-content");
+  if (!slot) return;
+  slot.innerHTML = spinner;
+  let d;
+  try { d = await loadTriangulation(); }
+  catch (e) { slot.innerHTML = errBox(e); return; }
+
+  if (budgetSubtab === "overview") slot.innerHTML = renderBudgetOverview(d);
+  else if (budgetSubtab === "variance") slot.innerHTML = renderBudgetVariance(d);
+  else if (budgetSubtab === "funds") slot.innerHTML = renderBudgetFunds(d);
+  else if (budgetSubtab === "search") {
+    slot.innerHTML = '<div class="bdg-search"><input id="bdg-q" type="search" placeholder="Search agencies or fund sources…" autocomplete="off"><button id="bdg-go">Search</button></div><div id="bdg-search-out"></div>';
+    const go = () => { el("bdg-search-out").innerHTML = renderBudgetSearchResults(d, el("bdg-q").value.trim()); };
+    el("bdg-go").addEventListener("click", go);
+    el("bdg-q").addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+    el("bdg-q").focus();
+  }
+}
+
+/* ── panels (Investigate / Audit / Ask) ────────────────────────────── */
+
+let panel = "dashboard";
 
 async function searchAndRender(kind) {
   const q = el("q").value.trim();
   if (!q) return;
   el("out").innerHTML = spinner;
   try {
-    const route = kind === "vendor" ? "entity" : kind;   // panel name ≠ API route
+    const route = kind === "vendor" ? "entity" : kind;
     const d = await api("/api/" + route + "?q=" + encodeURIComponent(q));
     el("out").innerHTML = kind === "vendor" ? renderVendor(d) : renderAgency(d);
   } catch (e) { el("out").innerHTML = errBox(e); }
@@ -368,13 +1180,56 @@ async function loadLeads() {
   } catch (e) { el("out").innerHTML = errBox(e); }
 }
 
+async function searchFindings(prefill) {
+  const q = (prefill != null ? prefill : el("q").value).trim();
+  if (!q) return;
+  if (el("q")) el("q").value = q;
+  el("out").innerHTML = spinner;
+  try {
+    const d = await api("/api/findings?q=" + encodeURIComponent(q));
+    el("out").innerHTML = renderFindings(d);
+  } catch (e) { el("out").innerHTML = errBox(e); }
+}
+
+async function loadAgLeaders() {
+  el("out").innerHTML = spinner;
+  try {
+    const metric = el("agmetric").value;
+    const d = await api("/api/ag-leaderboard?metric=" + encodeURIComponent(metric) + "&limit=15");
+    el("out").innerHTML = renderAgLeaders(d);
+  } catch (e) { el("out").innerHTML = errBox(e); }
+}
+
 async function render() {
+  closeAllMenus();
   const m = el("main");
   const searchBar = ph => '<div class="bar"><input id="q" type="search" placeholder="' + ph +
     '" autocomplete="off"><button id="go">Search</button></div><div id="out"></div>';
   switch (panel) {
+    case "dashboard": return renderDashboard();
+    case "budget": return renderBudgetPanel();
+    case "ask":
+      m.innerHTML =
+        '<div class="bar"><input id="askq" type="search" ' +
+        'placeholder="Ask about the money — budget variance, a vendor, an agency, the leads…" autocomplete="off">' +
+        '<button id="askgo">Ask</button></div>' +
+        '<label class="aimode" id="aimodewrap" title="When on, your question is answered in natural language by an LLM, grounded in real query results. When off, an instant keyword router sends you to the matching view.">' +
+        '<input type="checkbox" id="aimode"> &#129504; AI answers <span class="mut">(natural language)</span></label>' +
+        '<div class="examples" id="askex"></div>' +
+        '<div class="asklog" id="asklog"></div>';
+      break;
     case "vendor": m.innerHTML = searchBar("Vendor name — e.g. FONDOMONTE… (Enter)"); break;
     case "agency": m.innerHTML = searchBar("Agency name — e.g. DEPT OF TRANSPORTATION… (Enter)"); break;
+    case "findings": m.innerHTML = searchBar("Search AG findings — e.g. procurement, overtime, conflict… (Enter)") + '<div class="framing" style="margin-top:6px">Full-text search across Arizona Auditor-General audit findings.</div>'; break;
+    case "agleaders":
+      m.innerHTML = '<div class="bar"><select id="agmetric">' +
+        '<option value="total_questioned_cost">Questioned $</option>' +
+        '<option value="n_findings">Total Findings</option>' +
+        '<option value="n_findings_with_cost">Findings w/ $</option>' +
+        '<option value="n_adverse">Adverse Findings</option>' +
+        '<option value="n_reports">Audit Reports</option>' +
+        '</select><button id="go">Load</button></div><div id="out">' + spinner + "</div>";
+      break;
     case "leads":
       m.innerHTML = '<div class="bar"><select id="st"><option value="">All verification statuses</option>' +
         '<option value="genuine_review">Genuine Review</option>' +
@@ -388,11 +1243,36 @@ async function render() {
       m.innerHTML = '<div id="out">' + spinner + "</div>";
       break;
   }
+  if (panel === "ask") {
+    const ex = el("askex");
+    ex.innerHTML = ASK_EXAMPLES.map(q =>
+      '<button class="ghost ex" data-ask-ex="' + esc(q) + '">' + esc(q) + "</button>").join("");
+    if (!askLog().childElementCount) {
+      askLog().innerHTML = '<div class="abubble"><div class="ahint">' +
+        "Ask in plain language and I'll route you to the right view — <b>budget variance</b>, a <b>vendor</b> or " +
+        "<b>agency</b> card, the <b>Tier-1 leads</b>, the <b>reviewer queue</b>, or the " +
+        "<b>tier waterfall</b>. Everything shown is a <b>lead warranting confirmation, never a finding</b>. " +
+        "Try one of the examples above.</div></div>";
+    }
+    el("askgo").addEventListener("click", () => ask(el("askq").value));
+    el("askq").addEventListener("keydown", e => { if (e.key === "Enter") ask(el("askq").value); });
+    el("askq").focus();
+  }
   if (panel === "vendor" || panel === "agency") {
     const kind = panel;
     el("q").addEventListener("keydown", e => { if (e.key === "Enter") searchAndRender(kind); });
     el("go").addEventListener("click", () => searchAndRender(kind));
     el("q").focus();
+  }
+  if (panel === "findings") {
+    el("q").addEventListener("keydown", e => { if (e.key === "Enter") searchFindings(); });
+    el("go").addEventListener("click", () => searchFindings());
+    el("q").focus();
+  }
+  if (panel === "agleaders") {
+    el("go").addEventListener("click", loadAgLeaders);
+    el("agmetric").addEventListener("change", loadAgLeaders);
+    loadAgLeaders();
   }
   if (panel === "leads") { el("go").addEventListener("click", loadLeads); loadLeads(); }
   if (panel === "pending") {
@@ -405,22 +1285,71 @@ async function render() {
   }
 }
 
-/* ── event wiring (delegated; no inline handlers) ──────────────────── */
+/* ── tab + menu wiring ─────────────────────────────────────────────── */
+
+const PANEL_PARENT = { vendor: "investigate", leads: "investigate", agency: "investigate",
+  pending: "investigate", waterfall: "investigate", findings: "audit", agleaders: "audit" };
+
+function closeAllMenus() {
+  document.querySelectorAll(".tabwrap.open").forEach(w => w.classList.remove("open"));
+}
+
+function setActiveTab(p) {
+  document.querySelectorAll("#tabs .tab").forEach(t => {
+    if (t.dataset.p) t.classList.toggle("on", t.dataset.p === p);
+    else if (t.dataset.menu) t.classList.toggle("on", PANEL_PARENT[p] === t.dataset.menu);
+  });
+  document.querySelectorAll(".tabmenu button").forEach(b => b.classList.toggle("on", b.dataset.p === p));
+}
 
 el("tabs").addEventListener("click", e => {
-  const b = e.target.closest(".tab");
+  const menuBtn = e.target.closest("[data-menu]");
+  if (menuBtn) {
+    const wrap = menuBtn.closest(".tabwrap");
+    const wasOpen = wrap.classList.contains("open");
+    closeAllMenus();
+    if (!wasOpen) wrap.classList.add("open");
+    return;
+  }
+  const b = e.target.closest("[data-p]");
   if (!b) return;
-  [...b.parentElement.children].forEach(x => x.classList.toggle("on", x === b));
   panel = b.dataset.p;
+  setActiveTab(panel);
+  closeAllMenus();
   render();
 });
 
+document.addEventListener("click", e => {
+  if (!e.target.closest(".tabwrap")) closeAllMenus();
+});
+
 el("main").addEventListener("click", e => {
+  const a360 = e.target.closest("[data-agency360]");
+  if (a360) { openAgency360(a360.dataset.agency360); return; }
+  const ex = e.target.closest("[data-ask-ex]");
+  if (ex) { ask(ex.dataset.askEx); return; }
+  const pe = e.target.closest("[data-ask-entity]");
+  if (pe) { renderEntityInto(pe.closest(".aslot") || pe.parentElement, pe.dataset.askEntity); return; }
+  const pa = e.target.closest("[data-ask-agency]");
+  if (pa) { renderAgencyInto(pa.closest(".aslot") || pa.parentElement, pa.dataset.askAgency); return; }
   const x = e.target.closest("[data-explain]");
   if (x) { e.stopPropagation(); loadExplain(x.dataset.explain, x.dataset.slot); return; }
   const c = e.target.closest(".chd");
   if (c) c.parentElement.classList.toggle("open");
 });
+
+// modal: jump to AG findings for an agency
+el("modal-body").addEventListener("click", e => {
+  const fa = e.target.closest("[data-find-agency]");
+  if (!fa) return;
+  closeModal();
+  panel = "findings";
+  setActiveTab("findings");
+  render().then(() => searchFindings(fa.dataset.findAgency));
+});
+el("modal-close").addEventListener("click", closeModal);
+el("modal-back").addEventListener("click", e => { if (e.target === el("modal-back")) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
 render();
 </script>

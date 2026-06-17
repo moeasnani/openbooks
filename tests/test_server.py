@@ -55,7 +55,7 @@ def test_health(base_url):
 def test_waterfall_endpoint(base_url):
     status, body = _get(f"{base_url}/api/waterfall")
     assert status == 200
-    assert body["total_txns"] == 306_604
+    assert body["total_txns"] == 342_994
 
 
 def test_entity_endpoint(base_url):

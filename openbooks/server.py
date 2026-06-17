@@ -65,6 +65,200 @@ class BadRequest(ValueError):
     """Client error → HTTP 400."""
 
 
+def _load_budget_json() -> dict:
+    """Load SB1847 structured budget JSON for the /api/budget endpoint."""
+    import json
+    import os
+    paths = [
+        os.path.join(os.getcwd(), "budget_pdfs", "fy2027_sb1847_structured.json"),
+        os.path.join(os.path.dirname(__file__), "..", "budget_pdfs", "fy2027_sb1847_structured.json"),
+    ]
+    for p in paths:
+        if os.path.isfile(p):
+            with open(p) as f:
+                return json.load(f)
+    return {"error": "budget JSON not found", "agencies": []}
+
+
+# Manual aliases for budget→checkbook agency name matching
+_BUDGET_AGENCY_ALIASES: dict[str, str] = {
+    "ARIZONA HEALTH CARE COST CONTAINMENT SYSTEM": "AHCCCS",
+    "SUPERINTENDENT OF PUBLIC INSTRUCTION": "DEPT OF EDUCATION",
+    "STATE DEPARTMENT OF CORRECTIONS": "DEPT OF CORRECTIONS",
+    "STATE DEPT OF CORRECTIONS": "DEPT OF CORRECTIONS",
+}
+
+
+def _match_budget_to_checkbook(budget_agency: str, spend_agencies_norm: dict[str, str],
+                               norm_fn) -> str | None:
+    """Match a budget agency name to a normalized checkbook agency name."""
+    import re
+    norm = norm_fn(budget_agency)
+
+    # 1) Direct match
+    if norm in spend_agencies_norm:
+        return norm
+
+    # 2) Alias table
+    alias = _BUDGET_AGENCY_ALIASES.get(norm) or _BUDGET_AGENCY_ALIASES.get(budget_agency.upper())
+    if alias and norm_fn(alias) in spend_agencies_norm:
+        return norm_fn(alias)
+
+    # 3) Strip STATE/ARIZONA prefix and try again
+    stripped = re.sub(r'^(STATE |ARIZONA )', '', norm)
+    if stripped in spend_agencies_norm:
+        return stripped
+    for sn in spend_agencies_norm:
+        if stripped == sn or sn in stripped or stripped in sn:
+            return sn
+
+    # 4) Keyword overlap (≥2 significant words)
+    stop = {'DEPT', 'OF', 'THE', 'BOARD', 'COMMISSION', 'OFFICE', 'DIVISION',
+            'BUREAU', 'DEPARTMENT', 'STATE', 'ARIZONA', 'AND', 'FOR'}
+    words = set(re.findall(r'[A-Z]+', stripped)) - stop
+    best = None
+    best_score = 0
+    for sn in spend_agencies_norm:
+        s_words = set(re.findall(r'[A-Z]+', sn)) - stop
+        if not words or not s_words:
+            continue
+        overlap = words & s_words
+        score = len(overlap)
+        if score > best_score:
+            best_score = score
+            best = sn
+    if best and best_score >= 2:
+        return best
+    return None
+
+
+def _triangulation_data(ob) -> dict:
+    """Join budget authorization + checkbook actual spend + AG audit per agency."""
+    import json as _json
+    import os
+
+    budget = _load_budget_json()
+    if "error" in budget:
+        return budget
+
+    # Build spend lookup from agency_summary (fast, pre-aggregated)
+    spend_rows = ob._query(
+        "SELECT agency, fiscal_year, total_amount, txn_count "
+        "FROM agency_summary WHERE transaction_type = 'EX' "
+        "AND fiscal_year IN (2025, 2024)"
+    )
+    spend_map: dict[str, dict[int, dict]] = {}
+    for row in spend_rows:
+        norm = ob._norm_agency(row["agency"])
+        if norm not in spend_map:
+            spend_map[norm] = {}
+        spend_map[norm][int(row["fiscal_year"])] = {
+            "total": float(row["total_amount"] or 0),
+            "n_txn": int(row["txn_count"] or 0),
+        }
+    spend_agencies_norm = {k: k for k in spend_map}
+
+    results = []
+    for ba in budget.get("agencies", []):
+        agency_name = ba.get("agency", "")
+        authorized = ba.get("total_appropriation", 0) or 0
+        fte = ba.get("fte_positions", 0) or 0
+
+        # Match to checkbook
+        matched_norm = _match_budget_to_checkbook(
+            agency_name, spend_agencies_norm, ob._norm_agency
+        )
+        spend_25 = 0
+        spend_24 = 0
+        n_txn_25 = 0
+        if matched_norm and matched_norm in spend_map:
+            s25 = spend_map[matched_norm].get(2025, {})
+            s24 = spend_map[matched_norm].get(2024, {})
+            spend_25 = s25.get("total", 0)
+            spend_24 = s24.get("total", 0)
+            n_txn_25 = s25.get("n_txn", 0)
+
+        # AG audit
+        ag = ob._ag_audit(matched_norm or agency_name) if matched_norm or agency_name else None
+        n_ag_reports = 0
+        questioned_cost = 0
+        n_adverse = 0
+        ag_first_fy = None
+        ag_last_fy = None
+        if ag:
+            n_ag_reports = ag.get("n_reports", 0) or 0
+            questioned_cost = ag.get("total_questioned_cost", 0) or 0
+            n_adverse = ag.get("n_adverse_findings", 0) or 0
+            ag_first_fy = ag.get("first_fy")
+            ag_last_fy = ag.get("last_fy")
+
+        variance = spend_25 - authorized if spend_25 and authorized else None
+        variance_pct = (
+            (variance / authorized * 100)
+            if variance is not None and authorized
+            else None
+        )
+
+        # Risk score: combines audit severity + variance magnitude
+        risk_score = 0
+        if n_adverse > 0:
+            risk_score += min(n_adverse * 10, 40)
+        if questioned_cost > 0:
+            risk_score += min(int(questioned_cost / 1e6), 30)
+        if variance_pct is not None and variance_pct > 20:
+            risk_score += min(int(variance_pct), 30)
+
+        results.append({
+            "agency": agency_name,
+            "matched": matched_norm is not None,
+            "authorized": authorized,
+            "actual_spend_fy25": spend_25,
+            "actual_spend_fy24": spend_24,
+            "variance": variance,
+            "variance_pct": variance_pct,
+            "fte": fte,
+            "n_line_items": len(ba.get("line_items") or []),
+            "n_fund_sources": len(ba.get("fund_sources") or []),
+            "n_txn_fy25": n_txn_25,
+            "n_ag_reports": n_ag_reports,
+            "questioned_cost": questioned_cost,
+            "n_adverse": n_adverse,
+            "ag_first_fy": ag_first_fy,
+            "ag_last_fy": ag_last_fy,
+            "risk_score": risk_score,
+            "fund_sources": ba.get("fund_sources", []),
+            "line_items": ba.get("line_items", []),
+        })
+
+    # Sort by authorized descending
+    results.sort(key=lambda x: x["authorized"], reverse=True)
+
+    # Summary stats
+    total_authorized = sum(r["authorized"] for r in results)
+    total_spend = sum(r["actual_spend_fy25"] for r in results if r["matched"])
+    total_questioned = sum(r["questioned_cost"] for r in results)
+    total_adverse = sum(r["n_adverse"] for r in results)
+    n_matched = sum(1 for r in results if r["matched"])
+
+    return {
+        "agencies": results,
+        "summary": {
+            "n_budget_agencies": len(results),
+            "n_matched": n_matched,
+            "total_authorized": total_authorized,
+            "total_actual_spend_fy25": total_spend,
+            "total_questioned_cost": total_questioned,
+            "total_adverse_findings": total_adverse,
+            "overall_variance": total_spend - total_authorized if total_spend else None,
+            "overall_variance_pct": (
+                (total_spend - total_authorized) / total_authorized * 100
+                if total_spend and total_authorized
+                else None
+            ),
+        },
+    }
+
+
 def make_handler(ob: OpenBooks, *, cors: str | None, static_dir: str):
     """Build the request handler class around a shared OpenBooks instance.
 
@@ -88,6 +282,13 @@ def make_handler(ob: OpenBooks, *, cors: str | None, static_dir: str):
             if path in ("", "/index.html"):
                 return self._static("index.html")
 
+            def _leaderboard() -> Any:
+                metric = _first(params, "metric", "total_questioned_cost") or "total_questioned_cost"
+                try:
+                    return ob.rank_ag_findings(metric, limit=_int_param(params, "limit", 15, hi=100))
+                except ValueError as exc:
+                    raise BadRequest(str(exc)) from exc
+
             routes: dict[str, Callable[[], Any]] = {
                 "/api/entity": lambda: ob.entity(_first(params, "q", "") or ""),
                 "/api/leads": lambda: ob.leads(
@@ -99,11 +300,17 @@ def make_handler(ob: OpenBooks, *, cors: str | None, static_dir: str):
                 "/api/agency": lambda: ob.agency_card(_first(params, "q", "") or ""),
                 "/api/explain": lambda: ob.explain(_first(params, "q", "") or ""),
                 "/api/search": lambda: ob.search(_first(params, "q", "") or "", limit=20),
+                "/api/findings": lambda: ob.search_findings(
+                    _first(params, "q", "") or "", limit=_int_param(params, "limit", 20, hi=100)
+                ),
+                "/api/ag-leaderboard": _leaderboard,
                 "/api/waterfall": lambda: ob.waterfall(),
                 "/api/pending": lambda: ob.verdicts_pending(
                     limit=_int_param(params, "limit", 50)
                 ),
                 "/api/health": lambda: {"status": "ok"},
+                "/api/budget": _load_budget_json,
+                "/api/triangulation": lambda: _triangulation_data(ob),
             }
             fn = routes.get(path)
             if fn is None:
@@ -111,7 +318,36 @@ def make_handler(ob: OpenBooks, *, cors: str | None, static_dir: str):
             self._dispatch(fn)
 
         def do_POST(self) -> None:
-            if self.path.rstrip("/") != "/api/verdict":
+            path = self.path.rstrip("/")
+            if path == "/api/ask":
+                try:
+                    body = self._read_json_body()
+                except BadRequest as exc:
+                    return self._err(400, str(exc))
+                question = (body.get("question") or "").strip()
+                if not question:
+                    return self._err(400, "missing 'question'")
+                # NL answering makes a network call to the LLM provider and
+                # may take a few seconds; it runs OUTSIDE db_lock for the
+                # HTTP round-trip, but ask() re-acquires db_lock around each
+                # tool dispatch so warehouse reads stay serialized.
+                from openbooks.ask import AskError
+                from openbooks.ask import ask as _ask
+
+                try:
+                    # ``db_lock`` is acquired per tool dispatch inside ask()
+                    # (not around the slow LLM HTTP call), serializing DB
+                    # access without blocking other requests during the model
+                    # round-trip.
+                    result = _ask(ob, question, lock=db_lock)
+                except AskError as exc:
+                    return self._err(502, str(exc))
+                except Exception:
+                    log.exception("error handling /api/ask")
+                    return self._err(500, "internal error")
+                return self._json(result)
+
+            if path != "/api/verdict":
                 return self._err(404, "not found")
             try:
                 body = self._read_json_body()

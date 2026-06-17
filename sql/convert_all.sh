@@ -9,6 +9,8 @@ JOBS=(
 "State of Arizona FY2019.csv|base38|FY2019"
 "State of Arizona FY2020.csv|base38|FY2020"
 "State of Arizona FY2021.csv|fy2021|FY2021"
+"State_of_Arizona_FY22_000.csv|full57|FY2022_000"
+"State_of_Arizona_FY22_001.csv|full57|FY2022_001"
 "State_of_Arizona_FY23_000.csv|full57|FY2023_000"
 "State_of_Arizona_FY23_001.csv|full57|FY2023_001"
 "State_of_Arizona_FY24_000.csv|full57|FY2024_000"

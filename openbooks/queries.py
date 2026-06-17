@@ -17,6 +17,9 @@ Usage::
     ob.explain(transaction_id)     # why this tier
     ob.search("healthcare")        # fuzzy entity/agency/program search
     ob.waterfall()                 # tier distribution
+    ob.rank_agencies("usd_tier1")  # agency leaderboard by a metric
+    ob.rank_vendors("usd_tier1")   # vendor leaderboard (optional agency filter)
+    ob.rank_programs()             # program/appropriation leaderboard
     ob.verdicts_pending()          # reviewer queue
     ob.set_verdict(key, verdict)   # curation (writable connections only)
 
@@ -259,16 +262,62 @@ class OpenBooks:
         return self._query(sql, tuple(params))
 
     def _ag_audit_summary(self, agency: str) -> dict | None:
-        """Lightweight AG-audit rollup for an agency — counts only, no
-        findings list. Used for search-result badges and as the core of the
-        fuller :meth:`_ag_audit`. Returns ``None`` if the ag_* tables are
-        absent or the agency has no AG coverage.
+        """Lightweight AG-audit rollup for an agency — counts, questioned
+        costs, and actual spending context. Used for search-result badges,
+        vendor-card agency context, and as the core of :meth:`_ag_audit`.
 
-        One round-trip: a single aggregate query over the joined layer.
+        Returns ``None`` if the ag_* tables are absent or the agency has no
+        AG coverage. Prefers the enriched ``ag_finding_context`` table when
+        available (adds spending comparison + program areas); falls back to
+        the raw ``ag_reports``/``ag_findings`` join otherwise.
         """
         if not (self._table_exists("ag_reports")
                 and self._table_exists("ag_findings")):
             return None
+
+        # Enriched path: use ag_finding_context + ag_agency_spending
+        if self._table_exists("ag_agency_spending"):
+            rows = self._query(
+                """
+                SELECT n_audit_reports, first_audit_fy, last_audit_fy,
+                       n_findings, n_findings_with_cost, n_adverse_findings,
+                       total_questioned_cost, actual_spend_during_audit_period,
+                       most_recent_adverse_fy
+                FROM ag_agency_spending WHERE agency = ?
+                """,
+                (agency,),
+            )
+            if not rows:
+                return None
+            r = rows[0]
+            # Check for estimate flags in finding context
+            has_estimate = False
+            if self._table_exists("ag_finding_context"):
+                est = self._query(
+                    """SELECT bool_or(
+                       lower(coalesce(questioned_cost_confidence, '')) IN ('medium', 'low')
+                       OR lower(coalesce(questioned_cost_basis, '')) LIKE '%projection%'
+                       OR lower(coalesce(questioned_cost_basis, '')) LIKE '%projected%'
+                       OR lower(coalesce(questioned_cost_basis, '')) LIKE '%estimate%'
+                       OR lower(coalesce(questioned_cost_basis, '')) LIKE '%contingent%'
+                       ) AS has_estimate
+                       FROM ag_finding_context WHERE agency = ?""",
+                    (agency,),
+                )
+                has_estimate = bool(est[0]["has_estimate"]) if est else False
+            return {
+                "n_reports": r["n_audit_reports"],
+                "first_fy": r["first_audit_fy"],
+                "last_fy": r["last_audit_fy"],
+                "total_questioned_cost": r["total_questioned_cost"],
+                "n_findings_with_cost": r["n_findings_with_cost"],
+                "n_adverse_findings": r["n_adverse_findings"],
+                "most_recent_adverse_fy": r["most_recent_adverse_fy"],
+                "actual_spend_during_audit_period": r["actual_spend_during_audit_period"],
+                "questioned_cost_has_estimate": has_estimate,
+            }
+
+        # Fallback: raw join without spending context
         rows = self._query(
             """
             SELECT count(DISTINCT r.report_id) AS n_reports,
@@ -307,9 +356,14 @@ class OpenBooks:
         Joins the ``ag_reports`` / ``ag_findings`` layer (extracted from AG
         performance-audit PDFs) by ``agency_checkbook`` to the checkbook
         agency name. Returns audit count, FY span, questioned-cost rollup,
-        and a per-report findings list — the external-corroboration surface
-        for the agency card (INTEGRATION_BRIEF §1, the AG cross-reference as
-        a "credibility multiplier").
+        spending comparison, and a per-finding list with program context —
+        the external-corroboration surface for the agency card.
+
+        When the ``ag_finding_context`` table is available, each finding
+        includes: actual agency expenditure for the audit FY, questioned
+        cost as % of spend, matched program area, and matched fund —
+        enabling the "auditors questioned $X, actual spending was $Y"
+        comparison.
 
         Degrades to ``None`` when the ``ag_*`` tables are absent (DBs built
         before this layer was loaded), so the agency card never breaks.
@@ -336,19 +390,40 @@ class OpenBooks:
         if not reports:
             return None
 
-        findings = self._query(
-            """
-            SELECT f.report_id, f.finding_no, f.finding_text,
-                   f.questioned_cost_usd, f.questioned_cost_confidence,
-                   f.questioned_cost_basis, f.has_adverse_findings
-            FROM ag_findings f
-            JOIN ag_reports r ON r.report_id = f.report_id
-            WHERE r.agency_checkbook = ?
-            ORDER BY f.questioned_cost_usd DESC NULLS LAST,
-                     f.report_id DESC, f.finding_no
-            """,
-            (agency,),
-        )
+        # Enriched findings path: use ag_finding_context for spending comparison
+        if self._table_exists("ag_finding_context"):
+            findings = self._query(
+                """
+                SELECT finding_id, report_id,
+                       substring(finding_text, 1, 600) AS finding_text_preview,
+                       questioned_cost_usd, questioned_cost_confidence,
+                       questioned_cost_basis, has_adverse_findings,
+                       fiscal_year, program_area, fund_keyword,
+                       actual_agency_expenditure, actual_fund_expenditure,
+                       questioned_pct_of_agency_spend, questioned_pct_of_fund_spend
+                FROM ag_finding_context
+                WHERE agency = ?
+                ORDER BY questioned_cost_usd DESC NULLS LAST,
+                         fiscal_year DESC, finding_id
+                """,
+                (agency,),
+            )
+        else:
+            findings = self._query(
+                """
+                SELECT f.finding_id, f.report_id,
+                       substring(f.finding_text, 1, 600) AS finding_text_preview,
+                       f.questioned_cost_usd, f.questioned_cost_confidence,
+                       f.questioned_cost_basis, f.has_adverse_findings,
+                       r.fiscal_year
+                FROM ag_findings f
+                JOIN ag_reports r ON r.report_id = f.report_id
+                WHERE r.agency_checkbook = ?
+                ORDER BY f.questioned_cost_usd DESC NULLS LAST,
+                         f.report_id DESC, f.finding_no
+                """,
+                (agency,),
+            )
 
         qc_rows = [f for f in findings if f.get("questioned_cost_usd")]
         total_qc = sum(f["questioned_cost_usd"] for f in qc_rows)
@@ -364,6 +439,22 @@ class OpenBooks:
         has_estimate = any(_is_soft(f) for f in qc_rows)
         years = [r["fiscal_year"] for r in reports if r.get("fiscal_year")]
 
+        # Spending context from ag_agency_spending (if available)
+        actual_spend = None
+        n_adverse = None
+        most_recent_adverse = None
+        if self._table_exists("ag_agency_spending"):
+            sp = self._query(
+                """SELECT actual_spend_during_audit_period,
+                          n_adverse_findings, most_recent_adverse_fy
+                   FROM ag_agency_spending WHERE agency = ?""",
+                (agency,),
+            )
+            if sp:
+                actual_spend = sp[0]["actual_spend_during_audit_period"]
+                n_adverse = sp[0]["n_adverse_findings"]
+                most_recent_adverse = sp[0]["most_recent_adverse_fy"]
+
         return {
             "n_reports": len(reports),
             "first_fy": min(years) if years else None,
@@ -371,9 +462,103 @@ class OpenBooks:
             "total_questioned_cost": total_qc,
             "n_findings_with_cost": len(qc_rows),
             "questioned_cost_has_estimate": has_estimate,
+            "n_adverse_findings": n_adverse,
+            "most_recent_adverse_fy": most_recent_adverse,
+            "actual_spend_during_audit_period": actual_spend,
             "reports": reports,
             "findings_with_cost": qc_rows,
         }
+
+    #: Allowed sort metrics for rank_ag_findings → aggregate aliases in the
+    #: ranking query. Like the other _*_METRICS dicts, this whitelist is what
+    #: makes the ORDER BY safe — the alias can never come from free text.
+    _AG_FINDING_METRICS = {
+        "total_questioned_cost": "total_questioned_cost",
+        "n_findings": "n_findings",
+        "n_findings_with_cost": "n_findings_with_cost",
+        "n_adverse": "n_adverse",
+        "n_reports": "n_reports",
+    }
+
+    def search_findings(self, text: str, limit: int = 20) -> dict | None:
+        """Full-text search across Arizona Auditor-General audit findings.
+
+        Searches ``finding_text``, ``recommendation_text``, and the report
+        ``title`` — case-insensitive contains. Returns matching findings with
+        their report context (agency, fiscal year, questioned cost, etc.).
+
+        Returns ``None`` when the ``ag_*`` tables are absent (degrades
+        gracefully like the other AG methods).
+        """
+        if not (self._table_exists("ag_reports")
+                and self._table_exists("ag_findings")):
+            return None
+        limit = max(1, min(int(limit), 100))
+        q = f"%{(text or '').upper()}%"
+        rows = self._query(
+            """
+            SELECT f.finding_id, f.finding_no,
+                   substring(f.finding_text, 1, 500) AS finding_text_preview,
+                   f.questioned_cost_usd, f.questioned_cost_confidence,
+                   f.questioned_cost_basis, f.has_adverse_findings,
+                   r.report_id, r.fiscal_year, r.report_type,
+                   r.agency_checkbook AS agency, r.title
+            FROM ag_findings f
+            JOIN ag_reports r ON r.report_id = f.report_id
+            WHERE upper(coalesce(f.finding_text, '')) LIKE ?
+               OR upper(coalesce(f.recommendation_text, '')) LIKE ?
+               OR upper(coalesce(r.title, '')) LIKE ?
+            ORDER BY f.questioned_cost_usd DESC NULLS LAST,
+                     r.fiscal_year DESC, f.finding_no
+            LIMIT ?
+            """,
+            (q, q, q, limit),
+        )
+        return {"query": text, "n": len(rows), "findings": rows}
+
+    def rank_ag_findings(
+        self, metric: str = "total_questioned_cost", limit: int = 10
+    ) -> dict | None:
+        """Leaderboard of agencies by Auditor-General audit metrics.
+
+        Answers cross-agency questions like *"which agencies had the most
+        questioned costs?"*, *"most audit findings?"*, *"most adverse
+        findings?"*. Backed by the pre-joined ``ag_reports`` +
+        ``ag_findings`` layer, grouped by ``agency_checkbook``.
+
+        ``metric`` is whitelisted via :attr:`_AG_FINDING_METRICS`.
+        Returns ``None`` when the ``ag_*`` tables are absent.
+        """
+        if not (self._table_exists("ag_reports")
+                and self._table_exists("ag_findings")):
+            return None
+        col = self._AG_FINDING_METRICS.get(metric)
+        if col is None:
+            raise ValueError(
+                f"unknown metric {metric!r}; choose from "
+                f"{sorted(self._AG_FINDING_METRICS)}"
+            )
+        limit = max(1, min(int(limit), 100))
+        rows = self._query(
+            f"""
+            SELECT r.agency_checkbook AS agency,
+                   count(DISTINCT r.report_id) AS n_reports,
+                   count(f.finding_id) AS n_findings,
+                   coalesce(sum(f.questioned_cost_usd), 0) AS total_questioned_cost,
+                   count(f.questioned_cost_usd) AS n_findings_with_cost,
+                   count(*) FILTER (WHERE f.has_adverse_findings) AS n_adverse,
+                   min(r.fiscal_year) AS first_fy,
+                   max(r.fiscal_year) AS last_fy
+            FROM ag_reports r
+            LEFT JOIN ag_findings f ON f.report_id = r.report_id
+            WHERE r.agency_checkbook IS NOT NULL
+            GROUP BY r.agency_checkbook
+            ORDER BY {col} DESC
+            LIMIT ?
+            """,
+            (limit,),
+        )
+        return {"metric": metric, "ranked_by": col, "n": len(rows), "agencies": rows}
 
     def agency_card(self, agency: str) -> dict | None:
         """Agency scorecard + FY trend + top flagged vendors.
@@ -542,6 +727,460 @@ class OpenBooks:
             "total_exposure": total["exposure"],
             "tiers": rows,
             "summary": summary if rows else "No tiered data available.",
+        }
+
+    # ── ranking / aggregation ──────────────────────────────────────────
+    # These answer "which is biggest / most / top-N" questions directly
+
+    #: Common abbreviation expansions for agency-name resolution. The
+    #: warehouse stores abbreviated names ("DEPT OF …"); users and LLMs
+    #: often type the long form ("Department of …"). Normalize both sides.
+    _AGENCY_ABBREV = {
+        "department": "dept",
+        "DEPARTMENT": "DEPT",
+        "&": "and",
+    }
+
+    def _canonical_agencies(self) -> list[str]:
+        """All distinct agency names, cached for the connection's lifetime."""
+        cached = getattr(self, "_agency_cache", None)
+        if cached is None:
+            rows = self._query("SELECT DISTINCT agency FROM tier_agency_summary")
+            cached = [r["agency"] for r in rows if r.get("agency")]
+            self._agency_cache = cached
+        return cached
+
+    @staticmethod
+    def _norm_agency(s: str) -> str:
+        """Normalize an agency string for comparison: upper, expand abbrevs."""
+        s = (s or "").upper().strip()
+        s = s.replace("DEPARTMENT", "DEPT").replace("&", "AND")
+        # collapse punctuation/whitespace to single spaces
+        out = []
+        for ch in s:
+            out.append(ch if (ch.isalnum() or ch == " ") else " ")
+        return " ".join("".join(out).split())
+
+    def resolve_agency(self, name: str) -> dict:
+        """Map a fuzzy agency name to the canonical warehouse name.
+
+        Returns ``{"input", "match", "confidence", "candidates"}``:
+
+        * ``match`` — best canonical name, or ``None`` if nothing plausible.
+        * ``confidence`` — ``exact`` | ``strong`` | ``weak`` | ``none``.
+        * ``candidates`` — up to 5 ranked alternates (for disambiguation).
+
+        Scoring is token-overlap on normalized strings (handles
+        "Department of Corrections" → "DEPT OF CORRECTIONS",
+        "ADOT"/"transportation" → "DEPT OF TRANSPORTATION", etc.). No LLM,
+        no network — pure string work over the 100-odd agency names.
+        """
+        agencies = self._canonical_agencies()
+        qn = self._norm_agency(name)
+        if not qn:
+            return {"input": name, "match": None, "confidence": "none", "candidates": []}
+
+        q_tokens = set(qn.split())
+        scored: list[tuple[float, str]] = []
+        for canon in agencies:
+            cn = self._norm_agency(canon)
+            if cn == qn:
+                return {"input": name, "match": canon, "confidence": "exact",
+                        "candidates": [canon]}
+            c_tokens = set(cn.split())
+            if not c_tokens:
+                continue
+            overlap = q_tokens & c_tokens
+            if not overlap:
+                # substring rescue: "transportation" inside "DEPT OF TRANSPORTATION"
+                if qn in cn or cn in qn:
+                    scored.append((0.5, canon))
+                continue
+            # Jaccard-ish: reward shared tokens, normalized by the smaller set
+            score = len(overlap) / max(1, min(len(q_tokens), len(c_tokens)))
+            # small bonus if the query is fully contained
+            if q_tokens <= c_tokens:
+                score += 0.25
+            scored.append((score, canon))
+
+        if not scored:
+            return {"input": name, "match": None, "confidence": "none", "candidates": []}
+
+        scored.sort(key=lambda x: (-x[0], len(x[1])))
+        best_score, best = scored[0]
+        candidates = [c for _, c in scored[:5]]
+        confidence = "strong" if best_score >= 0.75 else "weak"
+        return {"input": name, "match": best, "confidence": confidence,
+                "candidates": candidates}
+
+    # Sort keys
+    # from the pre-aggregated summary tables, rather than forcing a caller
+    # (or an LLM tool layer) to sample transactions and guess. Sort keys
+    # are whitelisted per table — the ``metric`` argument can never reach
+    # SQL as free text, so there's no injection surface.
+
+    #: Allowed sort metrics for rank_agencies → real tier_agency_summary columns.
+    _AGENCY_METRICS = {
+        "usd_tier1": "usd_tier1",
+        "tier12_exposure": "tier12_exposure",
+        "hv_exposure": "hv_exposure",
+        "n_tier1": "n_tier1",
+        "n_flagged": "n_flagged",
+        "tier12_pct_of_hv": "tier12_pct_of_hv",
+        "avg_risk_score": "avg_risk_score",
+        "distinct_flagged_vendors": "distinct_flagged_vendors",
+    }
+
+    #: Allowed sort metrics for rank_vendors → real tier_entities columns.
+    _VENDOR_METRICS = {
+        "usd_tier1": "usd_tier1",
+        "flagged_exposure": "flagged_exposure",
+        "hv_exposure": "hv_exposure",
+        "n_tier1": "n_tier1",
+        "n_flagged": "n_flagged",
+        "max_risk_score": "max_risk_score",
+    }
+
+    #: Allowed sort metrics for rank_programs → real tier_program_summary columns.
+    _PROGRAM_METRICS = {
+        "tier12_exposure": "tier12_exposure",
+        "hv_exposure": "hv_exposure",
+        "n_tier1": "n_tier1",
+        "max_risk_score": "max_risk_score",
+        "distinct_vendors": "distinct_vendors",
+    }
+
+    def rank_agencies(
+        self, metric: str = "usd_tier1", limit: int = 10
+    ) -> dict:
+        """Top agencies by a chosen metric — the agency leaderboard.
+
+        Answers "which agency has the most tier-1 exposure / flags / …".
+        ``metric`` must be one of :attr:`_AGENCY_METRICS` (defaults to
+        Tier-1 dollar exposure); anything else raises ``ValueError`` so an
+        upstream caller can correct it rather than get a wrong answer.
+        """
+        col = self._AGENCY_METRICS.get(metric)
+        if col is None:
+            raise ValueError(
+                f"unknown metric {metric!r}; choose from "
+                f"{sorted(self._AGENCY_METRICS)}"
+            )
+        limit = max(1, min(int(limit), 100))
+        rows = self._query(
+            f"""
+            SELECT agency, cabinet, n_tier1, usd_tier1, n_tier2,
+                   tier12_exposure, hv_exposure, tier12_pct_of_hv,
+                   n_flagged, distinct_flagged_vendors, avg_risk_score
+            FROM tier_agency_summary
+            WHERE {col} IS NOT NULL
+            ORDER BY {col} DESC
+            LIMIT ?
+            """,
+            (limit,),
+        )
+        return {"metric": metric, "ranked_by": col, "n": len(rows), "agencies": rows}
+
+    def rank_vendors(
+        self, metric: str = "usd_tier1", agency: str | None = None, limit: int = 10
+    ) -> dict:
+        """Top vendor entities by a chosen metric, optionally within an agency.
+
+        Answers "which vendors have the most tier-1 dollars / flags …".
+        ``metric`` is whitelisted via :attr:`_VENDOR_METRICS`. When
+        ``agency`` is given, ranks only entities whose ``agencies`` array
+        contains that agency (case-insensitive contains match).
+        """
+        col = self._VENDOR_METRICS.get(metric)
+        if col is None:
+            raise ValueError(
+                f"unknown metric {metric!r}; choose from "
+                f"{sorted(self._VENDOR_METRICS)}"
+            )
+        limit = max(1, min(int(limit), 100))
+        where = [f"{col} IS NOT NULL"]
+        params: list[Any] = []
+        resolved_agency = None
+        if agency:
+            # Resolve fuzzy/long-form names ("Department of Corrections") to
+            # the canonical warehouse name ("DEPT OF CORRECTIONS") so the
+            # contains-match hits on the first try.
+            res = self.resolve_agency(agency)
+            where.append(
+                "upper(array_to_string(agencies, '||')) LIKE ?"
+            )
+            if res["confidence"] in ("exact", "strong"):
+                # resolved_agency is the exact canonical name from the
+                # warehouse — match it raw (it's what's stored in agencies).
+                resolved_agency = res["match"]
+                params.append(f"%{resolved_agency.upper()}%")
+            else:
+                params.append(f"%{agency.upper()}%")
+        params.append(limit)
+        rows = self._query(
+            f"""
+            SELECT entity_key, entity_name, n_tier1, usd_tier1, n_flagged,
+                   flagged_exposure, hv_exposure, top_tier, max_risk_score,
+                   n_agencies, agencies, verify_verdict
+            FROM tier_entities
+            WHERE {' AND '.join(where)}
+            ORDER BY {col} DESC
+            LIMIT ?
+            """,
+            tuple(params),
+        )
+        return {
+            "metric": metric,
+            "ranked_by": col,
+            "agency_filter": resolved_agency or agency,
+            "n": len(rows),
+            "vendors": rows,
+        }
+
+    def rank_programs(
+        self, metric: str = "tier12_exposure", limit: int = 10
+    ) -> dict:
+        """Top appropriations/programs by a chosen metric.
+
+        ``metric`` is whitelisted via :attr:`_PROGRAM_METRICS`.
+        """
+        col = self._PROGRAM_METRICS.get(metric)
+        if col is None:
+            raise ValueError(
+                f"unknown metric {metric!r}; choose from "
+                f"{sorted(self._PROGRAM_METRICS)}"
+            )
+        limit = max(1, min(int(limit), 100))
+        rows = self._query(
+            f"""
+            SELECT appropriation, lead_agency, n_tier1, tier12_exposure,
+                   hv_exposure, distinct_vendors, max_risk_score
+            FROM tier_program_summary
+            WHERE {col} IS NOT NULL
+            ORDER BY {col} DESC
+            LIMIT ?
+            """,
+            (limit,),
+        )
+        return {"metric": metric, "ranked_by": col, "n": len(rows), "programs": rows}
+
+    # ── complete-spend aggregation (full transactions table) ────────────
+    #
+    # The rank_*/leads/entity methods read the TIERED tables, which only
+    # contain high-value transactions (>= $100K) selected for forensic
+    # review. "How much did agency X spend on Y" questions need the COMPLETE
+    # ledger — every check, including the many sub-$100K invoices that make
+    # up most operational spend. That lives in the `transactions` view
+    # (parquet-backed, ~115M rows, DuckDB-only). This method is the only
+    # read path over it.
+    #
+    # transaction_type: 'EX' = expenditures (actual outflows), 'RV' =
+    # revenue/receipts. "Spend" means EX; default to it. The view already
+    # restricts to those two types.
+
+    #: Category-name columns searched by the spend() `category` keyword,
+    #: most-specific first. All are real columns on `transactions` AND on
+    #: `spend_summary` (the Postgres-compatible rollup).
+    _SPEND_CATEGORY_COLS = (
+        "category_level_2_name",
+        "category_level_3_name",
+        "category_level_1_name",
+        "appropriation_1_name",
+    )
+
+    def _spend_filters(
+        self,
+        agency: str | None,
+        fiscal_year: int | None,
+        category: str | None,
+        tt: str,
+    ) -> tuple[list[str], list[Any], str | None]:
+        """Build the WHERE clause shared by the full-ledger and rollup paths.
+
+        Returns ``(where_clauses, params, resolved_agency)``. The agency
+        column name is ``organization_level_1_name`` on both tables, so the
+        same clauses apply identically.
+        """
+        where: list[str] = []
+        params: list[Any] = []
+
+        if tt != "ALL":
+            where.append("transaction_type = ?")
+            params.append(tt)
+
+        resolved_agency = None
+        if agency:
+            res = self.resolve_agency(agency)
+            if res["confidence"] in ("exact", "strong"):
+                resolved_agency = res["match"]
+                where.append("organization_level_1_name = ?")
+                params.append(resolved_agency)
+            else:
+                # weak/none: fall back to a contains-match so we still try
+                where.append("upper(organization_level_1_name) LIKE ?")
+                params.append(f"%{agency.upper()}%")
+
+        if fiscal_year is not None:
+            where.append("fiscal_year = ?")
+            params.append(int(fiscal_year))
+
+        if category:
+            # OR across the category hierarchy + appropriation name.
+            cat_clause = " OR ".join(
+                f"upper({col}) LIKE ?" for col in self._SPEND_CATEGORY_COLS
+            )
+            where.append(f"({cat_clause})")
+            kw = f"%{category.upper()}%"
+            params.extend([kw] * len(self._SPEND_CATEGORY_COLS))
+
+        return where, params, resolved_agency
+
+    def spend(
+        self,
+        agency: str | None = None,
+        fiscal_year: int | None = None,
+        category: str | None = None,
+        *,
+        transaction_type: str = "EX",
+        breakdown: str = "category",
+        limit: int = 25,
+    ) -> dict:
+        """Total spending from the COMPLETE transaction ledger.
+
+        Unlike the tiered/forensic methods (which see only >= $100K
+        transactions), this aggregates the full ``transactions`` view, so it
+        answers "how much did <agency> spend (on <category>) (in FY<year>)"
+        accurately — including the long tail of small invoices.
+
+        Parameters
+        ----------
+        agency:
+            Agency name; fuzzy/long-form names are auto-resolved to the
+            canonical warehouse name via :meth:`resolve_agency`.
+        fiscal_year:
+            Restrict to one fiscal year (e.g. 2024). None = all years.
+        category:
+            Free-text keyword matched (case-insensitive contains) across the
+            category hierarchy and appropriation name — e.g. "information
+            technology", "travel", "software". None = all categories.
+        transaction_type:
+            ``EX`` expenditures (default, = "spend"), ``RV`` revenue, or
+            ``ALL`` for both. Anything else raises ``ValueError``.
+        breakdown:
+            ``category`` (level-2 buckets, default), ``year`` (per-FY trend),
+            ``vendor`` (top payees — full ledger only), or ``none`` (grand
+            total only).
+        limit:
+            Max breakdown rows (clamped to [1, 200]).
+
+        Returns a dict with the grand ``total``, ``n_txns``, the resolved
+        filters, and a ``breakdown`` list. Returns an ``error`` key if
+        neither the full ledger nor the spend rollup is available.
+        """
+        tt = (transaction_type or "EX").upper()
+        if tt not in ("EX", "RV", "ALL"):
+            raise ValueError(
+                f"transaction_type must be EX, RV, or ALL; got {tt!r}"
+            )
+        if breakdown not in ("category", "year", "vendor", "none"):
+            raise ValueError(
+                "breakdown must be one of: category, year, vendor, none"
+            )
+        limit = max(1, min(int(limit), 200))
+
+        has_full = self._table_exists("transactions")
+        has_rollup = self._table_exists("spend_summary")
+
+        if not has_full and not has_rollup:
+            return {
+                "error": (
+                    "neither the complete-ledger 'transactions' view nor a "
+                    "'spend_summary' rollup is available in this deployment; "
+                    "spend totals cannot be computed here."
+                ),
+                "agency": agency, "fiscal_year": fiscal_year, "category": category,
+            }
+
+        # The vendor breakdown requires per-payee grain, which the rollup
+        # doesn't carry. On a rollup-only (Postgres) deployment, return a
+        # clear error rather than a wrong answer.
+        if breakdown == "vendor" and not has_full:
+            return {
+                "error": (
+                    "vendor breakdown requires the full 'transactions' ledger "
+                    "(DuckDB+parquet only); the 'spend_summary' rollup on this "
+                    "deployment doesn't carry per-vendor detail. Use "
+                    "breakdown='category' or 'year' instead."
+                ),
+                "agency": agency, "fiscal_year": fiscal_year, "category": category,
+            }
+
+        where, params, resolved_agency = self._spend_filters(
+            agency, fiscal_year, category, tt,
+        )
+        # The full-ledger path needs amount IS NOT NULL (the rollup already
+        # excludes nulls at build time).
+        if has_full:
+            where.insert(0, "amount IS NOT NULL")
+        where_sql = " AND ".join(where)
+
+        # Choose the table and aggregate expressions for each path. The
+        # rollup stores pre-summed total_usd / n_txns per grain row, so the
+        # grand total is sum(total_usd) / sum(n_txns) — numerically identical
+        # to sum(amount) / count(*) over the raw ledger.
+        if has_full:
+            table = "transactions"
+            sum_expr = "round(sum(amount), 0)"
+            count_expr = "count(*)"
+        else:
+            table = "spend_summary"
+            sum_expr = "round(sum(total_usd), 0)"
+            count_expr = "sum(n_txns)"
+
+        # Grand total (single aggregate over the filtered set).
+        total_row = self._query(
+            f"SELECT {sum_expr} AS total, {count_expr} AS n "
+            f"FROM {table} WHERE {where_sql}",
+            tuple(params),
+        )[0]
+
+        # Breakdown.
+        breakdown_rows: list[dict] = []
+        if breakdown != "none" and total_row["n"]:
+            group_col = {
+                "category": "category_level_2_name",
+                "year": "fiscal_year",
+                "vendor": "payee_customer_vendor_name",
+            }[breakdown]
+            order_sql = "grp" if breakdown == "year" else "usd DESC"
+            breakdown_rows = self._query(
+                f"""
+                SELECT {group_col} AS grp,
+                       {sum_expr} AS usd,
+                       {count_expr} AS n
+                FROM {table}
+                WHERE {where_sql}
+                GROUP BY {group_col}
+                ORDER BY {order_sql}
+                LIMIT ?
+                """,
+                tuple(params) + (limit,),
+            )
+
+        basis = "complete ledger (all transaction sizes), cash-basis"
+        if not has_full:
+            basis += " — via spend_summary rollup"
+
+        return {
+            "agency": resolved_agency or agency,
+            "fiscal_year": fiscal_year,
+            "category": category,
+            "transaction_type": tt,
+            "basis": basis,
+            "total": total_row["total"],
+            "n_txns": total_row["n"],
+            "breakdown_by": breakdown,
+            "breakdown": breakdown_rows,
         }
 
     def verdicts_pending(self, tier: int = 1, limit: int = 50) -> list[dict]:

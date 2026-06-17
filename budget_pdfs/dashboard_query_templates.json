@@ -1,0 +1,251 @@
+{
+  "dashboard": "OpenBooks Three-Way Triangulation",
+  "layers": {
+    "budget": {
+      "source": "SB1847 + BRBs + JLBC structured JSON",
+      "total_authorized": 47423774900,
+      "n_agencies": 86,
+      "fiscal_years": [
+        "2025-26",
+        "2026-27"
+      ]
+    },
+    "checkbook": {
+      "source": "warehouse.duckdb",
+      "total_transactions": 129000000,
+      "tiered_transactions": 343000,
+      "fiscal_years": "FY2016-FY2025"
+    },
+    "audit": {
+      "source": "ag_findings tables",
+      "n_reports": 122,
+      "n_findings": 231,
+      "total_questioned_costs": 2050000000
+    }
+  },
+  "query_templates": {
+    "budget": [
+      {
+        "id": "BQ-1",
+        "name": "Agency Budget Summary",
+        "inputs": [
+          "agency_name"
+        ]
+      },
+      {
+        "id": "BQ-2",
+        "name": "Line-Item Breakdown",
+        "inputs": [
+          "agency_name"
+        ]
+      },
+      {
+        "id": "BQ-3",
+        "name": "Fund Source Analysis",
+        "inputs": [
+          "agency_name"
+        ]
+      },
+      {
+        "id": "BQ-4",
+        "name": "Top N Agencies by Appropriation",
+        "inputs": [
+          "limit"
+        ]
+      },
+      {
+        "id": "BQ-5",
+        "name": "Year-over-Year Budget Comparison",
+        "inputs": [
+          "agency_name"
+        ]
+      },
+      {
+        "id": "BQ-6",
+        "name": "General Fund Exposure",
+        "inputs": [
+          "agency_name"
+        ]
+      },
+      {
+        "id": "BQ-7",
+        "name": "Cross-Agency Program Search",
+        "inputs": [
+          "keyword"
+        ]
+      }
+    ],
+    "checkbook": [
+      {
+        "id": "CQ-1",
+        "name": "Total Agency Spend",
+        "inputs": [
+          "agency_name",
+          "fiscal_year?"
+        ],
+        "existing_method": "ob.spend()"
+      },
+      {
+        "id": "CQ-2",
+        "name": "Spend by Category",
+        "inputs": [
+          "agency_name",
+          "category"
+        ],
+        "existing_method": "ob.spend()"
+      },
+      {
+        "id": "CQ-3",
+        "name": "Spend Trend Over Time",
+        "inputs": [
+          "agency_name"
+        ],
+        "existing_method": "ob.spend(breakdown='year')"
+      },
+      {
+        "id": "CQ-4",
+        "name": "Top Vendors for Agency",
+        "inputs": [
+          "agency_name"
+        ],
+        "existing_method": "ob.spend(breakdown='vendor')"
+      },
+      {
+        "id": "CQ-5",
+        "name": "Agency Ranking by Spend",
+        "inputs": [],
+        "existing_method": "ob.rank_agencies()"
+      },
+      {
+        "id": "CQ-6",
+        "name": "Vendor Deep Dive",
+        "inputs": [
+          "vendor_name"
+        ],
+        "existing_method": "ob.entity()"
+      },
+      {
+        "id": "CQ-7",
+        "name": "Flagged Transactions",
+        "inputs": [
+          "agency_name"
+        ],
+        "existing_method": "ob.leads()"
+      }
+    ],
+    "audit": [
+      {
+        "id": "AQ-1",
+        "name": "Agency Audit Profile",
+        "inputs": [
+          "agency_name"
+        ],
+        "existing_method": "ob.search_findings()"
+      },
+      {
+        "id": "AQ-2",
+        "name": "Questioned Cost Leaderboard",
+        "inputs": [],
+        "existing_method": "ob.rank_ag_findings()"
+      },
+      {
+        "id": "AQ-3",
+        "name": "Finding-to-Spend Linkage",
+        "inputs": [
+          "agency_name"
+        ],
+        "existing_method": "ag_finding_context"
+      },
+      {
+        "id": "AQ-4",
+        "name": "Topic Search",
+        "inputs": [
+          "keyword"
+        ],
+        "existing_method": "ob.search_findings()"
+      },
+      {
+        "id": "AQ-5",
+        "name": "Adverse Findings",
+        "inputs": [],
+        "existing_method": "ob.rank_ag_findings('n_adverse')"
+      }
+    ],
+    "triangulation": [
+      {
+        "id": "TQ-1",
+        "name": "Budget vs. Actual Variance",
+        "inputs": [
+          "agency_name",
+          "fiscal_year"
+        ],
+        "flow": "BQ-1 \u2192 CQ-1 \u2192 variance",
+        "star": "HEADLINE METRIC"
+      },
+      {
+        "id": "TQ-2",
+        "name": "Three-Way Agency Card",
+        "inputs": [
+          "agency_name"
+        ],
+        "flow": "BQ-1 + CQ-1 + CQ-4 + CQ-7 + AQ-1 + AQ-3",
+        "star": "FLAGSHIP VIEW"
+      },
+      {
+        "id": "TQ-3",
+        "name": "Over-Budget Agencies",
+        "inputs": [],
+        "flow": "All agencies: BQ-1 \u2192 CQ-1 \u2192 filter"
+      },
+      {
+        "id": "TQ-4",
+        "name": "Audit Risk \u00d7 Budget Exposure Matrix",
+        "inputs": [],
+        "flow": "BQ-4 \u2192 AQ-1 cross-ref"
+      },
+      {
+        "id": "TQ-5",
+        "name": "Program-Level Accountability",
+        "inputs": [
+          "keyword"
+        ],
+        "flow": "BQ-7 \u2192 CQ-2 \u2192 AQ-4"
+      },
+      {
+        "id": "TQ-6",
+        "name": "Fund Source Risk",
+        "inputs": [],
+        "flow": "BQ-6 all agencies"
+      },
+      {
+        "id": "TQ-7",
+        "name": "YoY Delta with Spending Context",
+        "inputs": [
+          "agency_name"
+        ],
+        "flow": "BQ-5 \u2192 CQ-3"
+      },
+      {
+        "id": "TQ-8",
+        "name": "Questioned Cost as % of Budget",
+        "inputs": [],
+        "flow": "BQ-1 \u2192 AQ-1 \u2192 ratio"
+      },
+      {
+        "id": "TQ-9",
+        "name": "Vendor-Budget Cross-Reference",
+        "inputs": [
+          "vendor_name",
+          "agency_name"
+        ],
+        "flow": "CQ-6 \u2192 BQ-2 \u2192 AQ-4"
+      },
+      {
+        "id": "TQ-10",
+        "name": "Dashboard Summary Cards",
+        "inputs": [],
+        "flow": "All layers aggregated"
+      }
+    ]
+  }
+}

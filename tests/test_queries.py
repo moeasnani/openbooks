@@ -6,10 +6,12 @@ these, something structural moved and a human should look.
 
 from __future__ import annotations
 
+from typing import Any
+
 
 def test_total_tiered_transactions(ob):
     n = ob._query("SELECT count(*) AS n FROM tx_tiered")[0]["n"]
-    assert n == 306_604
+    assert n == 342_994
 
 
 def test_tier_distribution(ob):
@@ -21,16 +23,16 @@ def test_tier_distribution(ob):
             "FROM tx_tiered GROUP BY tier"
         )
     }
-    assert rows[1]["n"] == 1_094
-    assert rows[1]["usd"] == 5_053_439_234
-    assert rows[4]["n"] == 40_918
-    assert rows[4]["usd"] == 304_264_118_883
-    assert rows[5]["n"] == 227_032
+    assert rows[1]["n"] == 1_204
+    assert rows[1]["usd"] == 5_525_669_547
+    assert rows[4]["n"] == 45_708
+    assert rows[4]["usd"] == 347_677_622_193
+    assert rows[5]["n"] == 254_040
 
 
 def test_entity_universe(ob):
     n = ob._query("SELECT count(*) AS n FROM tier_entities")[0]["n"]
-    assert n == 1_700
+    assert n == 1_788
 
 
 def test_waterfall_reconciles(ob):
@@ -236,3 +238,221 @@ def test_push_to_postgres_ag_missing_regression():
 
     con.close()
     # If we reach here the presence / MISSING decision logic is intact.
+
+
+# ---------------------------------------------------------------------------
+# spend_summary rollup — the Postgres-compatible path for spend().
+# Verifies (a) the rollup produces identical numbers to the full ledger,
+# (b) the rollup is used when transactions is absent, and (c) the vendor
+# breakdown returns a clear error on the rollup-only path.
+# Uses in-memory DuckDB — no warehouse required.
+# ---------------------------------------------------------------------------
+
+
+def _make_spend_db(*, with_transactions: bool = True) -> Any:
+    """Build a tiny in-memory warehouse with a spend_summary rollup and
+    optionally a raw transactions table, plus a minimal tier_agency_summary
+    for the agency resolver."""
+    import duckdb
+
+    from openbooks import OpenBooks
+    from openbooks.db import DuckDBBackend
+
+    con = duckdb.connect()
+    con.execute("""
+        CREATE TABLE tier_agency_summary (
+            agency VARCHAR, cabinet VARCHAR, hv_txn INTEGER, hv_exposure DOUBLE,
+            n_tier1 INTEGER, usd_tier1 DOUBLE, n_tier2 INTEGER, usd_tier2 DOUBLE,
+            n_tier3 INTEGER, n_flagged INTEGER, tier12_exposure DOUBLE,
+            tier12_pct_of_hv DOUBLE, avg_risk_score DOUBLE, max_risk_score DOUBLE,
+            distinct_flagged_vendors INTEGER, top_markers VARCHAR[]
+        )
+    """)
+    con.execute("INSERT INTO tier_agency_summary VALUES ('DEPT OF TRANSPORTATION', null, 0,0,0,0,0,0,0,0,0,0,0,0,0,null)")
+
+    # Always create the raw transactions table first (needed to build the
+    # rollup), then drop it if the caller wants a rollup-only DB.
+    con.execute("""
+        CREATE TABLE transactions (
+            organization_level_1_name VARCHAR, fiscal_year INTEGER,
+            transaction_type VARCHAR, category_level_1_name VARCHAR,
+            category_level_2_name VARCHAR, category_level_3_name VARCHAR,
+            appropriation_1_name VARCHAR,
+            payee_customer_vendor_name VARCHAR, amount DOUBLE
+        )
+    """)
+    con.execute("""
+        INSERT INTO transactions VALUES
+        ('DEPT OF TRANSPORTATION', 2024, 'EX', 'GOODS', 'IT SERVICES', 'SOFTWARE', 'IT', 'VENDOR A', 1000),
+        ('DEPT OF TRANSPORTATION', 2024, 'EX', 'GOODS', 'IT SERVICES', 'SOFTWARE', 'IT', 'VENDOR B', 2000),
+        ('DEPT OF TRANSPORTATION', 2024, 'EX', 'GOODS', 'TRAVEL', 'AIRFARE', 'TRAVEL', 'VENDOR C', 500),
+        ('DEPT OF TRANSPORTATION', 2023, 'EX', 'GOODS', 'IT SERVICES', 'HARDWARE', 'IT', 'VENDOR A', 3000),
+        ('DEPT OF TRANSPORTATION', 2024, 'RV', 'REVENUE', 'FEES', 'LICENSES', 'REV', 'VENDOR D', 999)
+    """)
+
+    # Build the rollup (same SQL as the push script).
+    con.execute("""
+        CREATE TABLE spend_summary AS
+        SELECT
+            organization_level_1_name, fiscal_year, transaction_type,
+            category_level_1_name, category_level_2_name, category_level_3_name,
+            appropriation_1_name,
+            round(sum(amount), 0) AS total_usd, count(*) AS n_txns
+        FROM transactions
+        WHERE amount IS NOT NULL
+        GROUP BY 1,2,3,4,5,6,7
+    """)
+
+    if not with_transactions:
+        con.execute("DROP TABLE transactions")
+
+    backend = DuckDBBackend.__new__(DuckDBBackend)
+    backend.db_path = ":memory:"
+    backend.read_only = False
+    backend._conn = con
+    return OpenBooks(backend=backend)
+
+
+def test_spend_rollup_matches_full_ledger():
+    """The rollup path must produce the same total + txn count as the
+    full-ledger path for the same filters."""
+    ob_full = _make_spend_db(with_transactions=True)
+    ob_rollup = _make_spend_db(with_transactions=False)
+
+    # Grand total, EX, all years.
+    r_full = ob_full.spend(agency="DEPT OF TRANSPORTATION", breakdown="none")
+    r_rollup = ob_rollup.spend(agency="DEPT OF TRANSPORTATION", breakdown="none")
+    assert r_full["total"] == r_rollup["total"]
+    assert r_full["n_txns"] == r_rollup["n_txns"]
+    assert "rollup" in r_rollup["basis"]
+
+    # Category breakdown.
+    r_full = ob_full.spend(agency="DEPT OF TRANSPORTATION", breakdown="category")
+    r_rollup = ob_rollup.spend(agency="DEPT OF TRANSPORTATION", breakdown="category")
+    assert r_full["total"] == r_rollup["total"]
+    assert len(r_full["breakdown"]) == len(r_rollup["breakdown"])
+    for f, r in zip(r_full["breakdown"], r_rollup["breakdown"], strict=True):
+        assert f["grp"] == r["grp"]
+        assert f["usd"] == r["usd"]
+        assert f["n"] == r["n"]
+
+    # Year breakdown.
+    r_full = ob_full.spend(agency="DEPT OF TRANSPORTATION", breakdown="year")
+    r_rollup = ob_rollup.spend(agency="DEPT OF TRANSPORTATION", breakdown="year")
+    assert r_full["total"] == r_rollup["total"]
+    assert len(r_full["breakdown"]) == len(r_rollup["breakdown"])
+
+    ob_full.close()
+    ob_rollup.close()
+
+
+def test_spend_rollup_vendor_breakdown_returns_error():
+    """The vendor breakdown requires per-payee grain, which the rollup
+    doesn't carry — must return a clear error, not a wrong answer."""
+    ob = _make_spend_db(with_transactions=False)
+    result = ob.spend(agency="DEPT OF TRANSPORTATION", breakdown="vendor")
+    assert "error" in result
+    assert "vendor" in result["error"].lower()
+    ob.close()
+
+
+def test_spend_full_ledger_vendor_breakdown_works():
+    """The vendor breakdown still works on the full-ledger path."""
+    ob = _make_spend_db(with_transactions=True)
+    result = ob.spend(agency="DEPT OF TRANSPORTATION", breakdown="vendor")
+    assert "error" not in result
+    assert result["breakdown"]
+    assert any(b["grp"] == "VENDOR A" for b in result["breakdown"])
+    ob.close()
+
+
+def test_spend_neither_table_returns_error():
+    """When neither transactions nor spend_summary exists, return a clear
+    error — not a crash."""
+    import duckdb
+
+    from openbooks import OpenBooks
+    from openbooks.db import DuckDBBackend
+
+    con = duckdb.connect()
+    con.execute("CREATE TABLE tier_agency_summary (agency VARCHAR)")
+    con.execute("INSERT INTO tier_agency_summary VALUES ('DEPT OF TRANSPORTATION')")
+    backend = DuckDBBackend.__new__(DuckDBBackend)
+    backend.db_path = ":memory:"
+    backend.read_only = False
+    backend._conn = con
+    ob = OpenBooks(backend=backend)
+
+    result = ob.spend(agency="DEPT OF TRANSPORTATION")
+    assert "error" in result
+    ob.close()
+
+
+# ---------------------------------------------------------------------------
+# AG audit-finding tools — search_findings + rank_ag_findings
+# ---------------------------------------------------------------------------
+
+
+def test_search_findings(ob):
+    """search_findings returns matching AG findings with report context."""
+    if not ob._table_exists("ag_reports"):
+        assert ob.search_findings("procurement") is None
+        return
+    out = ob.search_findings("procurement", limit=10)
+    assert out is not None
+    assert out["n"] > 0
+    assert len(out["findings"]) <= 10
+    f = out["findings"][0]
+    assert "finding_text_preview" in f
+    assert "agency" in f
+    assert "fiscal_year" in f
+    assert "questioned_cost_usd" in f
+
+
+def test_search_findings_empty_text(ob):
+    """An empty search string should not crash — returns 0 or all."""
+    if not ob._table_exists("ag_reports"):
+        return
+    out = ob.search_findings("", limit=5)
+    assert out is not None  # doesn't crash
+
+
+def test_rank_ag_findings(ob):
+    """rank_ag_findings returns a leaderboard of agencies by AG metrics."""
+    if not ob._table_exists("ag_reports"):
+        assert ob.rank_ag_findings() is None
+        return
+    out = ob.rank_ag_findings("total_questioned_cost", limit=5)
+    assert out is not None
+    assert out["metric"] == "total_questioned_cost"
+    assert out["n"] > 0
+    assert len(out["agencies"]) <= 5
+    a = out["agencies"][0]
+    assert "agency" in a
+    assert "n_reports" in a
+    assert "n_findings" in a
+    assert "total_questioned_cost" in a
+    assert "n_adverse" in a
+    # ranked descending by the chosen metric
+    vals = [a["total_questioned_cost"] for a in out["agencies"]]
+    assert vals == sorted(vals, reverse=True)
+
+
+def test_rank_ag_findings_bad_metric_raises(ob):
+    """Unknown metric must raise ValueError (injection-safe whitelist)."""
+    if not ob._table_exists("ag_reports"):
+        return
+    import pytest
+    with pytest.raises(ValueError):
+        ob.rank_ag_findings("drop_table")
+
+
+def test_rank_ag_findings_all_metrics(ob):
+    """Every whitelisted metric must produce a valid leaderboard."""
+    if not ob._table_exists("ag_reports"):
+        return
+    for metric in ("total_questioned_cost", "n_findings", "n_findings_with_cost",
+                   "n_adverse", "n_reports"):
+        out = ob.rank_ag_findings(metric, limit=3)
+        assert out is not None
+        assert out["ranked_by"] == metric

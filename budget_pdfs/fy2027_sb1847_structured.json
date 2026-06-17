@@ -1,0 +1,4015 @@
+{
+  "bill": "SB 1847",
+  "description": "General Appropriations Act; 2026-2027",
+  "fiscal_years": [
+    "2025-26",
+    "2026-27"
+  ],
+  "source_pdf": "SB1847_general_appropriations.pdf",
+  "agencies": [
+    {
+      "section": 23,
+      "agency": "STATE DEPARTMENT OF CORRECTIONS",
+      "fiscal_years": [
+        "2025-26",
+        "2026-27"
+      ],
+      "fte_positions": 9592.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2025-26": 816308500,
+          "2026-27": 828190500
+        },
+        {
+          "name": "Overtime and compensatory time",
+          "2025-26": 92320300,
+          "2026-27": null
+        },
+        {
+          "name": "Private prison per diem",
+          "2025-26": 269359200,
+          "2026-27": 266956700
+        },
+        {
+          "name": "Community corrections",
+          "2025-26": 24330300,
+          "2026-27": null
+        },
+        {
+          "name": "Inmate health care contracted services",
+          "2025-26": 380978900,
+          "2026-27": 371499400
+        },
+        {
+          "name": "Noncontract medication",
+          "2025-26": 15000000,
+          "2026-27": null
+        },
+        {
+          "name": "Injunction-related IT upgrades",
+          "2025-26": 2400000,
+          "2026-27": null
+        }
+      ],
+      "total_appropriation": 1600697200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 1537433000
+        },
+        {
+          "fund": "State education fund for correctional education",
+          "amount": 736400
+        },
+        {
+          "fund": "Alcohol abuse treatment fund",
+          "amount": 555800
+        },
+        {
+          "fund": "Penitentiary land fund",
+          "amount": 3466000
+        },
+        {
+          "fund": "State charitable, penal and reformatory institutions land fund",
+          "amount": 3733100
+        },
+        {
+          "fund": "Corrections fund",
+          "amount": 35787600
+        },
+        {
+          "fund": "Transition program fund",
+          "amount": 2400300
+        },
+        {
+          "fund": "Prison construction and operations fund",
+          "amount": 12500100
+        },
+        {
+          "fund": "Inmate store proceeds fund",
+          "amount": 4084900
+        }
+      ]
+    },
+    {
+      "section": 3,
+      "agency": "ARIZONA STATE BOARD OF ACCOUNTANCY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 14.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 2257400
+        }
+      ],
+      "total_appropriation": 2257400,
+      "fund_sources": [
+        {
+          "fund": "Board of accountancy fund",
+          "amount": 2257400
+        }
+      ]
+    },
+    {
+      "section": 4,
+      "agency": "ACUPUNCTURE BOARD OF EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 1.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 217000
+        }
+      ],
+      "total_appropriation": 217000,
+      "fund_sources": [
+        {
+          "fund": "Acupuncture board of examiners fund",
+          "amount": 217000
+        }
+      ]
+    },
+    {
+      "section": 5,
+      "agency": "DEPARTMENT OF ADMINISTRATION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 517.1,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 97472700
+        },
+        {
+          "name": "Utilities",
+          "2026-27": 7649900
+        },
+        {
+          "name": "Arizona financial information system",
+          "2026-27": 13362800
+        },
+        {
+          "name": "Risk management administrative expenses",
+          "2026-27": 14770700
+        },
+        {
+          "name": "Risk management losses and premiums",
+          "2026-27": 63460900
+        },
+        {
+          "name": "Workers' compensation losses and premiums",
+          "2026-27": 28741000
+        },
+        {
+          "name": "Cyber risk insurance",
+          "2026-27": 23037200
+        },
+        {
+          "name": "Information technology project management and oversight",
+          "2026-27": 1791000
+        },
+        {
+          "name": "State surplus property sales agency proceeds",
+          "2026-27": 1810000
+        },
+        {
+          "name": "Digital solutions office",
+          "2026-27": 1356800
+        },
+        {
+          "name": "Critical applications catalogue",
+          "2026-27": 400000
+        },
+        {
+          "name": "Cybersecurity systems administration",
+          "2026-27": 446500
+        },
+        {
+          "name": "Enterprise resource planning division",
+          "2026-27": 7512200
+        },
+        {
+          "name": "Government transformation office",
+          "2026-27": 2093800
+        },
+        {
+          "name": "State employee professional development pilot program",
+          "2026-27": 1000000
+        },
+        {
+          "name": "Emergency telecommunications call handling services",
+          "2026-27": 4000000
+        },
+        {
+          "name": "Food bank capital",
+          "2026-27": 3000000
+        },
+        {
+          "name": "Elected officials' retirement plan offset",
+          "2026-27": 3000000
+        },
+        {
+          "name": "Small county assistance",
+          "2026-27": 7650700
+        },
+        {
+          "name": "County support for corrections officer employer contributions",
+          "2026-27": 377100
+        },
+        {
+          "name": "Gila county disaster relief",
+          "2026-27": 10000000
+        },
+        {
+          "name": "County sheriff support",
+          "2026-27": 7000000
+        }
+      ],
+      "total_appropriation": 299933300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 30435300
+        },
+        {
+          "fund": "Air quality fund",
+          "amount": 930300
+        },
+        {
+          "fund": "Arizona financial information system collections fund",
+          "amount": 16762400
+        },
+        {
+          "fund": "Arizona highway patrol fund",
+          "amount": 2000000
+        },
+        {
+          "fund": "Automation operations fund",
+          "amount": 29940400
+        },
+        {
+          "fund": "Capital outlay stabilization fund",
+          "amount": 21165700
+        },
+        {
+          "fund": "Corrections fund",
+          "amount": 640100
+        },
+        {
+          "fund": "Cyber risk insurance fund",
+          "amount": 23037200
+        },
+        {
+          "fund": "Federal surplus materials revolving fund",
+          "amount": 473600
+        },
+        {
+          "fund": "Information technology fund",
+          "amount": 6221400
+        },
+        {
+          "fund": "Livestock operator fire and flood assistance fund",
+          "amount": 10000000
+        },
+        {
+          "fund": "Personnel division fund",
+          "amount": 18612300
+        },
+        {
+          "fund": "Risk management revolving fund",
+          "amount": 115337400
+        },
+        {
+          "fund": "Special employee health insurance trust fund",
+          "amount": 5746100
+        },
+        {
+          "fund": "Special services revolving fund",
+          "amount": 1302800
+        },
+        {
+          "fund": "State surplus materials revolving fund",
+          "amount": 3216200
+        },
+        {
+          "fund": "State web portal fund",
+          "amount": 12012600
+        },
+        {
+          "fund": "Telecommunications fund",
+          "amount": 2099500
+        }
+      ]
+    },
+    {
+      "section": 6,
+      "agency": "DEPARTMENT OF ADMINISTRATION, DIVISION OF SCHOOL FACILITIES",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 22.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 1624700
+        },
+        {
+          "name": "New school facilities debt service",
+          "2026-27": 9938100
+        },
+        {
+          "name": "Building renewal grants deposit",
+          "2026-27": 199967900
+        },
+        {
+          "name": "Building renewal grants administration",
+          "2026-27": 750000
+        },
+        {
+          "name": "New school facilities",
+          "2026-27": 12734900
+        }
+      ],
+      "total_appropriation": 225015600,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 225015600
+        }
+      ]
+    },
+    {
+      "section": 7,
+      "agency": "DEPARTMENT OF ADMINISTRATION, AUTOMATION PROJECTS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": null,
+      "line_items": [
+        {
+          "name": "Department of revenue integrated tax system modernization",
+          "2026-27": 3656800
+        },
+        {
+          "name": "Medicaid enterprise system mainframe modernization",
+          "2026-27": 12940000
+        },
+        {
+          "name": "Department of revenue mainframe migration",
+          "2026-27": 1425000
+        },
+        {
+          "name": "Arizona medical board website modernization",
+          "2026-27": 150000
+        }
+      ],
+      "total_appropriation": 18154600,
+      "fund_sources": [
+        {
+          "fund": "Department of revenue subaccount",
+          "amount": 5081800
+        },
+        {
+          "fund": "Medicaid enterprise system modernization subaccount",
+          "amount": 12940000
+        },
+        {
+          "fund": "Arizona medical board subaccount",
+          "amount": 150000
+        }
+      ]
+    },
+    {
+      "section": 8,
+      "agency": "OFFICE OF ADMINISTRATIVE HEARINGS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 12.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 985200
+        }
+      ],
+      "total_appropriation": 985200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 985200
+        }
+      ]
+    },
+    {
+      "section": 9,
+      "agency": "ARIZONA DEPARTMENT OF AGRICULTURE",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 217.4,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 17249500
+        },
+        {
+          "name": "Agricultural employment relations board",
+          "2026-27": 23300
+        },
+        {
+          "name": "Animal damage control",
+          "2026-27": 65000
+        },
+        {
+          "name": "Licensing system maintenance",
+          "2026-27": 500000
+        },
+        {
+          "name": "Red imported fire ant control",
+          "2026-27": 23200
+        },
+        {
+          "name": "Agricultural consulting and training",
+          "2026-27": 135700
+        }
+      ],
+      "total_appropriation": 17996700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 15866400
+        },
+        {
+          "fund": "Air quality fund",
+          "amount": 1630300
+        },
+        {
+          "fund": "Pest management trust fund",
+          "amount": 500000
+        }
+      ]
+    },
+    {
+      "section": 10,
+      "agency": "ARIZONA HEALTH CARE COST CONTAINMENT SYSTEM",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2428.3,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 223281000
+        },
+        {
+          "name": "AHCCCS data storage",
+          "2026-27": 19605800
+        },
+        {
+          "name": "DES eligibility",
+          "2026-27": 97074500
+        },
+        {
+          "name": "Proposition 204 \u2014 AHCCCS administration",
+          "2026-27": 15788200
+        },
+        {
+          "name": "Proposition 204 \u2014 DES eligibility",
+          "2026-27": 44358700
+        },
+        {
+          "name": "Public Law 119-21 implementation \u2013 medicaid",
+          "2026-27": 51500000
+        },
+        {
+          "name": "Traditional medicaid services",
+          "2026-27": 10308634300
+        },
+        {
+          "name": "Proposition 204 services",
+          "2026-27": 7193353000
+        },
+        {
+          "name": "Adult expansion services",
+          "2026-27": 844120200
+        },
+        {
+          "name": "Comprehensive health plan",
+          "2026-27": 200180300
+        },
+        {
+          "name": "KidsCare services",
+          "2026-27": 257442000
+        },
+        {
+          "name": "ALTCS services",
+          "2026-27": 2663643700
+        },
+        {
+          "name": "Behavioral health services in schools",
+          "2026-27": 8289600
+        },
+        {
+          "name": "Enhanced residential treatment program",
+          "2026-27": 7812000
+        },
+        {
+          "name": "Nonmedicaid behavioral health services - Crisis services",
+          "2026-27": 20391300
+        },
+        {
+          "name": "Nonmedicaid seriously mentally ill services",
+          "2026-27": 77646900
+        },
+        {
+          "name": "Supported housing",
+          "2026-27": 65324800
+        },
+        {
+          "name": "Disproportionate share payments",
+          "2026-27": 884800
+        },
+        {
+          "name": "Disproportionate share payments \u2014 voluntary match",
+          "2026-27": 207593800
+        },
+        {
+          "name": "Critical access hospitals",
+          "2026-27": 28336000
+        },
+        {
+          "name": "Graduate medical education",
+          "2026-27": 569176800
+        },
+        {
+          "name": "Targeted investments program",
+          "2026-27": 56000000
+        }
+      ],
+      "total_appropriation": 22960437700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2919510700
+        },
+        {
+          "fund": "Budget neutrality compliance fund",
+          "amount": 5304500
+        },
+        {
+          "fund": "Children's health insurance program fund",
+          "amount": 193430100
+        },
+        {
+          "fund": "Prescription drug rebate fund \u2014 state",
+          "amount": 291207900
+        },
+        {
+          "fund": "Seriously mentally ill housing trust fund",
+          "amount": 2957300
+        },
+        {
+          "fund": "Substance abuse services fund",
+          "amount": 2250200
+        },
+        {
+          "fund": "Tobacco products tax fund \u2014 emergency health services account",
+          "amount": 13467800
+        },
+        {
+          "fund": "Tobacco tax and health care fund \u2014 medically needy account",
+          "amount": 51482300
+        },
+        {
+          "fund": "Expenditure authority",
+          "amount": 19480826900
+        }
+      ]
+    },
+    {
+      "section": 11,
+      "agency": "ARIZONA COMMISSION ON THE ARTS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": null,
+      "line_items": [
+        {
+          "name": "Arizona arts trust fund deposit",
+          "2026-27": 2000000
+        }
+      ],
+      "total_appropriation": 2000000,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2000000
+        }
+      ]
+    },
+    {
+      "section": 12,
+      "agency": "BOARD OF ATHLETIC TRAINING",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 1.5,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 166000
+        }
+      ],
+      "total_appropriation": 166000,
+      "fund_sources": [
+        {
+          "fund": "Athletic training fund",
+          "amount": 166000
+        }
+      ]
+    },
+    {
+      "section": 13,
+      "agency": "ATTORNEY GENERAL \u2014 DEPARTMENT OF LAW",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 677.7,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 65330000
+        },
+        {
+          "name": "Capital postconviction prosecution",
+          "2026-27": 880300
+        },
+        {
+          "name": "Criminal division major fraud unit",
+          "2026-27": 1268100
+        },
+        {
+          "name": "Southern Arizona law enforcement",
+          "2026-27": 1717300
+        },
+        {
+          "name": "State grand jury",
+          "2026-27": 194400
+        },
+        {
+          "name": "Child and family advocacy centers",
+          "2026-27": 100000
+        },
+        {
+          "name": "Coordinated reentry planning services grants",
+          "2026-27": 17000000
+        },
+        {
+          "name": "Government accountability and special litigation",
+          "2026-27": 1467300
+        },
+        {
+          "name": "Internet crimes against children enforcement",
+          "2026-27": 1613300
+        },
+        {
+          "name": "Organized retail theft task force",
+          "2026-27": 1645200
+        },
+        {
+          "name": "Risk management interagency service agreement",
+          "2026-27": 10489000
+        },
+        {
+          "name": "Tobacco enforcement",
+          "2026-27": 877000
+        },
+        {
+          "name": "Victims' rights",
+          "2026-27": 4022500
+        }
+      ],
+      "total_appropriation": 106604400,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 36007600
+        },
+        {
+          "fund": "Antitrust enforcement revolving fund",
+          "amount": 162900
+        },
+        {
+          "fund": "Attorney general legal services cost allocation fund",
+          "amount": 2338900
+        },
+        {
+          "fund": "Collection enforcement revolving fund",
+          "amount": 7374300
+        },
+        {
+          "fund": "Consumer protection\u2013consumer fraud revolving fund",
+          "amount": 16918400
+        },
+        {
+          "fund": "Consumer restitution and remediation revolving fund \u2013 consumer remediation subaccount",
+          "amount": 3000000
+        },
+        {
+          "fund": "Driving under the influence abatement fund",
+          "amount": 1800000
+        },
+        {
+          "fund": "Drag racing prevention enforcement fund",
+          "amount": 800000
+        },
+        {
+          "fund": "Interagency service agreements fund",
+          "amount": 17635600
+        },
+        {
+          "fund": "Internet crimes against children enforcement fund",
+          "amount": 900000
+        },
+        {
+          "fund": "Risk management revolving fund",
+          "amount": 12855300
+        },
+        {
+          "fund": "Utility regulation revolving fund",
+          "amount": 3000000
+        },
+        {
+          "fund": "Victims' rights fund",
+          "amount": 3811400
+        }
+      ]
+    },
+    {
+      "section": 14,
+      "agency": "BARBERING AND COSMETOLOGY BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 36.5,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 3262300
+        }
+      ],
+      "total_appropriation": 3262300,
+      "fund_sources": [
+        {
+          "fund": "Barbering and cosmetology fund",
+          "amount": 3262300
+        }
+      ]
+    },
+    {
+      "section": 15,
+      "agency": "BOARD OF BEHAVIORAL HEALTH EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 27.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 2766900
+        }
+      ],
+      "total_appropriation": 2766900,
+      "fund_sources": [
+        {
+          "fund": "Behavioral health examiners fund",
+          "amount": 2766900
+        }
+      ]
+    },
+    {
+      "section": 16,
+      "agency": "STATE BOARD FOR CHARTER SCHOOLS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 25.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 2811100
+        }
+      ],
+      "total_appropriation": 2811100,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2811100
+        }
+      ]
+    },
+    {
+      "section": 17,
+      "agency": "DEPARTMENT OF CHILD SAFETY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 3283.1,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 179221300
+        },
+        {
+          "name": "Attorney general legal services",
+          "2026-27": 29914500
+        },
+        {
+          "name": "Caseworkers",
+          "2026-27": 139316600
+        },
+        {
+          "name": "Office of child welfare investigations",
+          "2026-27": 11314600
+        },
+        {
+          "name": "Training resources",
+          "2026-27": 9150000
+        },
+        {
+          "name": "Congregate group care",
+          "2026-27": 134429700
+        },
+        {
+          "name": "Extended foster care",
+          "2026-27": 26860400
+        },
+        {
+          "name": "Extended foster care service model fund deposit",
+          "2026-27": 10742000
+        },
+        {
+          "name": "Foster home placement",
+          "2026-27": 40547300
+        },
+        {
+          "name": "Foster home recruitment, study and supervision",
+          "2026-27": 32753600
+        },
+        {
+          "name": "Kinship care",
+          "2026-27": 15184600
+        },
+        {
+          "name": "Adoption services",
+          "2026-27": 282440400
+        },
+        {
+          "name": "Permanent guardianship subsidy",
+          "2026-27": 18686800
+        },
+        {
+          "name": "DCS child care subsidy",
+          "2026-27": 61675400
+        },
+        {
+          "name": "In-home mitigation",
+          "2026-27": 44414300
+        },
+        {
+          "name": "Out-of-home support services",
+          "2026-27": 107284600
+        },
+        {
+          "name": "Preventive services",
+          "2026-27": 28412700
+        },
+        {
+          "name": "Comprehensive health plan services",
+          "2026-27": 172360900
+        },
+        {
+          "name": "Comprehensive health plan administration",
+          "2026-27": 24291000
+        },
+        {
+          "name": "Comprehensive health plan premium tax",
+          "2026-27": 3528400
+        }
+      ],
+      "total_appropriation": 1372529100,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 508279500
+        },
+        {
+          "fund": "Federal child care and development fund block grant",
+          "amount": 40516000
+        },
+        {
+          "fund": "Federal temporary assistance for needy families block grant",
+          "amount": 160985500
+        },
+        {
+          "fund": "Child abuse prevention fund",
+          "amount": 1459300
+        },
+        {
+          "fund": "Children and family services training program fund",
+          "amount": 207500
+        },
+        {
+          "fund": "Child safety expenditure authority",
+          "amount": 459833600
+        },
+        {
+          "fund": "Child welfare licensing fee fund",
+          "amount": 1067400
+        },
+        {
+          "fund": "Comprehensive health plan expenditure authority fund",
+          "amount": 200180300
+        }
+      ]
+    },
+    {
+      "section": 18,
+      "agency": "STATE BOARD OF CHIROPRACTIC EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 6.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 660600
+        }
+      ],
+      "total_appropriation": 660600,
+      "fund_sources": [
+        {
+          "fund": "Board of chiropractic examiners fund",
+          "amount": 660600
+        }
+      ]
+    },
+    {
+      "section": 19,
+      "agency": "ARIZONA COMMERCE AUTHORITY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 100.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 10000000
+        },
+        {
+          "name": "Arizona competes fund deposit",
+          "2026-27": 500000
+        },
+        {
+          "name": "Advanced air mobility",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Asia trade offices",
+          "2026-27": 750000
+        },
+        {
+          "name": "Economic development marketing and attraction",
+          "2026-27": 500000
+        },
+        {
+          "name": "Frankfurt, Germany trade office",
+          "2026-27": 500000
+        },
+        {
+          "name": "Israel trade office",
+          "2026-27": 300000
+        },
+        {
+          "name": "Mexico trade offices",
+          "2026-27": 500000
+        }
+      ],
+      "total_appropriation": 15050000,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 13050000
+        },
+        {
+          "fund": "Advanced air mobility fund",
+          "amount": 2000000
+        }
+      ]
+    },
+    {
+      "section": 20,
+      "agency": "ARIZONA COMMUNITY COLLEGES",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": null,
+      "line_items": [
+        {
+          "name": "Equalization aid - Cochise",
+          "2026-27": 12715600
+        },
+        {
+          "name": "Equalization aid - Graham",
+          "2026-27": 24422600
+        },
+        {
+          "name": "Equalization aid - Navajo",
+          "2026-27": 13698200
+        },
+        {
+          "name": "Equalization aid - Yuma/La Paz",
+          "2026-27": 2019800
+        },
+        {
+          "name": "Operating state aid - various",
+          "2026-27": 14483400
+        },
+        {
+          "name": "STEM and workforce programs state aid",
+          "2026-27": 15903700
+        },
+        {
+          "name": "Rural aid",
+          "2026-27": 14000000
+        },
+        {
+          "name": "Rural county reimbursement subsidy",
+          "2026-27": 1082900
+        },
+        {
+          "name": "Additional Gila workforce development aid",
+          "2026-27": 200000
+        },
+        {
+          "name": "Din\u00e9 college remedial education",
+          "2026-27": 1000000
+        }
+      ],
+      "total_appropriation": 99526200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 99526200
+        }
+      ]
+    },
+    {
+      "section": 21,
+      "agency": "REGISTRAR OF CONTRACTORS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 103.6,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 13310600
+        },
+        {
+          "name": "Office of administrative hearings costs",
+          "2026-27": 1017600
+        }
+      ],
+      "total_appropriation": 14328200,
+      "fund_sources": [
+        {
+          "fund": "Registrar of contractors fund",
+          "amount": 14328200
+        }
+      ]
+    },
+    {
+      "section": 22,
+      "agency": "CORPORATION COMMISSION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 303.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 38107800
+        },
+        {
+          "name": "Corporation filings, same-day service",
+          "2026-27": 417800
+        },
+        {
+          "name": "Utilities audits, studies, investigations and hearings",
+          "2026-27": 1000000
+        }
+      ],
+      "total_appropriation": 39525600,
+      "fund_sources": [
+        {
+          "fund": "Arizona arts trust fund",
+          "amount": 57200
+        },
+        {
+          "fund": "Investment management regulatory and enforcement fund",
+          "amount": 1370400
+        },
+        {
+          "fund": "Public access fund",
+          "amount": 8235100
+        },
+        {
+          "fund": "Securities regulatory and enforcement fund",
+          "amount": 8283100
+        },
+        {
+          "fund": "Utility regulation revolving fund",
+          "amount": 21579800
+        }
+      ]
+    },
+    {
+      "section": 23,
+      "agency": "STATE DEPARTMENT OF CORRECTIONS (FY2026-27 update)",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 9592.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 974906000
+        },
+        {
+          "name": "Private prison contracted services",
+          "2026-27": 273126400
+        },
+        {
+          "name": "Jensen v. Thornell compliance",
+          "2026-27": 451390400
+        }
+      ],
+      "total_appropriation": 1699422800,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 1659746100
+        },
+        {
+          "fund": "State education fund for correctional education",
+          "amount": 703200
+        },
+        {
+          "fund": "Alcohol abuse treatment fund",
+          "amount": 555800
+        },
+        {
+          "fund": "Penitentiary land fund",
+          "amount": 3472000
+        },
+        {
+          "fund": "State charitable, penal and reformatory institutions land fund",
+          "amount": 1670600
+        },
+        {
+          "fund": "Corrections fund",
+          "amount": 21218500
+        },
+        {
+          "fund": "Transition program fund",
+          "amount": 2400300
+        },
+        {
+          "fund": "Prison construction and operations fund",
+          "amount": 9656300
+        }
+      ]
+    },
+    {
+      "section": 24,
+      "agency": "ARIZONA CRIMINAL JUSTICE COMMISSION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 11.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 1505400
+        },
+        {
+          "name": "Major incident regional law enforcement task force",
+          "2026-27": 600000
+        },
+        {
+          "name": "State aid to county attorneys",
+          "2026-27": 973700
+        },
+        {
+          "name": "State aid to indigent defense",
+          "2026-27": 700000
+        },
+        {
+          "name": "State aid for juvenile dependency proceedings fund deposit",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Law enforcement crime victim notification fund deposit",
+          "2026-27": 2594800
+        },
+        {
+          "name": "Victim compensation and assistance",
+          "2026-27": 8469700
+        }
+      ],
+      "total_appropriation": 16843600,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 6850000
+        },
+        {
+          "fund": "Criminal justice enhancement fund",
+          "amount": 802100
+        },
+        {
+          "fund": "Resource center fund",
+          "amount": 646600
+        },
+        {
+          "fund": "State aid to county attorneys fund",
+          "amount": 973700
+        },
+        {
+          "fund": "State aid to indigent defense fund",
+          "amount": 700000
+        },
+        {
+          "fund": "Peace officer training equipment fund",
+          "amount": 32500
+        },
+        {
+          "fund": "Victim compensation and assistance fund",
+          "amount": 6838700
+        }
+      ]
+    },
+    {
+      "section": 25,
+      "agency": "ARIZONA STATE SCHOOLS FOR THE DEAF AND THE BLIND",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 562.2,
+      "line_items": [
+        {
+          "name": "Administration/statewide",
+          "2026-27": 7657200
+        },
+        {
+          "name": "Phoenix day school for the deaf",
+          "2026-27": 10277000
+        },
+        {
+          "name": "Tucson campus",
+          "2026-27": 12997100
+        },
+        {
+          "name": "Preschool/outreach programs",
+          "2026-27": 7200300
+        },
+        {
+          "name": "School bus/agency vehicle replacement",
+          "2026-27": 369000
+        },
+        {
+          "name": "Cooperative services",
+          "2026-27": 15346300
+        },
+        {
+          "name": "Supplemental early childhood services",
+          "2026-27": 50000
+        }
+      ],
+      "total_appropriation": 53896900,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 25545100
+        },
+        {
+          "fund": "Schools for the deaf and the blind fund",
+          "amount": 12955500
+        },
+        {
+          "fund": "Cooperative services fund",
+          "amount": 15346300
+        },
+        {
+          "fund": "Health services lottery monies fund",
+          "amount": 50000
+        }
+      ]
+    },
+    {
+      "section": 26,
+      "agency": "COMMISSION FOR THE DEAF AND THE HARD OF HEARING",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 21.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 4695800
+        },
+        {
+          "name": "Support services for the deaf-blind",
+          "2026-27": 350000
+        }
+      ],
+      "total_appropriation": 5045800,
+      "fund_sources": [
+        {
+          "fund": "Telecommunication fund for the deaf",
+          "amount": 5045800
+        }
+      ]
+    },
+    {
+      "section": 27,
+      "agency": "STATE BOARD OF DENTAL EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 13.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 2150900
+        }
+      ],
+      "total_appropriation": 2150900,
+      "fund_sources": [
+        {
+          "fund": "Dental board fund",
+          "amount": 2150900
+        }
+      ]
+    },
+    {
+      "section": 28,
+      "agency": "OFFICE OF ECONOMIC OPPORTUNITY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 5.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 531900
+        }
+      ],
+      "total_appropriation": 531900,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 531900
+        }
+      ]
+    },
+    {
+      "section": 29,
+      "agency": "DEPARTMENT OF ECONOMIC SECURITY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 5047.8,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 381228600
+        },
+        {
+          "name": "Attorney general legal services",
+          "2026-27": 13099900
+        },
+        {
+          "name": "Adult services",
+          "2026-27": 15731900
+        },
+        {
+          "name": "Civil legal aid",
+          "2026-27": 3000000
+        },
+        {
+          "name": "Community and emergency services",
+          "2026-27": 3724000
+        },
+        {
+          "name": "Coordinated homeless services",
+          "2026-27": 3522600
+        },
+        {
+          "name": "Coordinated hunger services",
+          "2026-27": 2254600
+        },
+        {
+          "name": "Domestic violence prevention",
+          "2026-27": 14004000
+        },
+        {
+          "name": "Long-term care ombudsman",
+          "2026-27": 1000000
+        },
+        {
+          "name": "Produce incentive program",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Public Law 119-21 implementation \u2013 SNAP",
+          "2026-27": 10800000
+        },
+        {
+          "name": "Summer food benefits administration",
+          "2026-27": 1767300
+        },
+        {
+          "name": "Temporary assistance for needy families \u2014 cash benefits",
+          "2026-27": 22736400
+        },
+        {
+          "name": "Tribal pass-through funding",
+          "2026-27": 4680300
+        },
+        {
+          "name": "Child support \u2014 clerk of the court and family law services",
+          "2026-27": 8539700
+        },
+        {
+          "name": "DDD premium tax payment",
+          "2026-27": 102012200
+        },
+        {
+          "name": "Case management \u2014 medicaid",
+          "2026-27": 132664700
+        },
+        {
+          "name": "Home and community based services \u2014 medicaid",
+          "2026-27": 3576435700
+        },
+        {
+          "name": "Institutional services \u2014 medicaid",
+          "2026-27": 53584900
+        },
+        {
+          "name": "Physical and behavioral health services \u2014 medicaid",
+          "2026-27": 1098810200
+        },
+        {
+          "name": "Medicare clawback payments",
+          "2026-27": 8888400
+        },
+        {
+          "name": "Targeted case management \u2014 medicaid",
+          "2026-27": 25383100
+        },
+        {
+          "name": "State match transfer from AHCCCS",
+          "2026-27": 1841698500
+        },
+        {
+          "name": "Case management \u2014 state-only",
+          "2026-27": 6446100
+        },
+        {
+          "name": "Home and community based services \u2014 state-only",
+          "2026-27": 14089000
+        },
+        {
+          "name": "High-need client supplement",
+          "2026-27": 26320000
+        },
+        {
+          "name": "Arizona early intervention program",
+          "2026-27": 16119000
+        },
+        {
+          "name": "Listening and spoken language - Arizona early intervention program",
+          "2026-27": 150000
+        },
+        {
+          "name": "State-funded long-term care services",
+          "2026-27": 46084300
+        },
+        {
+          "name": "Out-of-school time grant program fund deposit",
+          "2026-27": 3000000
+        },
+        {
+          "name": "JOBS",
+          "2026-27": 11005600
+        },
+        {
+          "name": "Child care subsidy",
+          "2026-27": 261837300
+        },
+        {
+          "name": "Independent living rehabilitation services",
+          "2026-27": 1289400
+        },
+        {
+          "name": "Reentry employment services",
+          "2026-27": 3000000
+        },
+        {
+          "name": "Rehabilitation services",
+          "2026-27": 7249100
+        },
+        {
+          "name": "Older individuals who are blind program",
+          "2026-27": 150000
+        },
+        {
+          "name": "Workforce innovation and opportunity act services",
+          "2026-27": 85824200
+        }
+      ],
+      "total_appropriation": 7810131000,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2143879400
+        },
+        {
+          "fund": "Federal child care and development fund block grant",
+          "amount": 229994900
+        },
+        {
+          "fund": "Federal temporary assistance for needy families block grant",
+          "amount": 66561100
+        },
+        {
+          "fund": "Health services lottery monies fund",
+          "amount": 1800000
+        },
+        {
+          "fund": "Long-term care system fund",
+          "amount": 35517100
+        },
+        {
+          "fund": "Public assistance collections fund",
+          "amount": 441800
+        },
+        {
+          "fund": "Special administration fund",
+          "amount": 4645400
+        },
+        {
+          "fund": "Spinal and head injuries trust fund",
+          "amount": 2385400
+        },
+        {
+          "fund": "Statewide cost allocation plan fund",
+          "amount": 1000000
+        },
+        {
+          "fund": "Child support enforcement administration fund",
+          "amount": 17615600
+        },
+        {
+          "fund": "Domestic violence services fund",
+          "amount": 4000300
+        },
+        {
+          "fund": "Workforce investment act grant",
+          "amount": 87109200
+        },
+        {
+          "fund": "Child support enforcement administration fund expenditure authority",
+          "amount": 45547500
+        },
+        {
+          "fund": "Developmental disabilities medicaid expenditure authority",
+          "amount": 5169633300
+        }
+      ]
+    },
+    {
+      "section": 30,
+      "agency": "STATE BOARD OF EDUCATION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 23.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 3224900
+        },
+        {
+          "name": "Arizona empowerment scholarship account appeals",
+          "2026-27": 237900
+        }
+      ],
+      "total_appropriation": 3462800,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 3462800
+        }
+      ]
+    },
+    {
+      "section": 31,
+      "agency": "SUPERINTENDENT OF PUBLIC INSTRUCTION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 232.9,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 15584600
+        },
+        {
+          "name": "Basic state aid",
+          "2026-27": 6988177800
+        },
+        {
+          "name": "Onetime additional assistance supplement",
+          "2026-27": 29000000
+        },
+        {
+          "name": "Onetime FRPL group B weight supplement",
+          "2026-27": 37000000
+        },
+        {
+          "name": "State aid supplement",
+          "2026-27": 75000000
+        },
+        {
+          "name": "Special education fund",
+          "2026-27": 36029200
+        },
+        {
+          "name": "Classroom site fund",
+          "2026-27": 1129954100
+        },
+        {
+          "name": "Instructional improvement fund",
+          "2026-27": 80425700
+        },
+        {
+          "name": "Additional state aid (property tax relief)",
+          "2026-27": 551969500
+        },
+        {
+          "name": "Accountability and achievement testing",
+          "2026-27": 16450300
+        },
+        {
+          "name": "Adult education",
+          "2026-27": 4912100
+        },
+        {
+          "name": "Alternative teacher development program",
+          "2026-27": 1000000
+        },
+        {
+          "name": "Arizona English language learner fund",
+          "2026-27": 4960400
+        },
+        {
+          "name": "College credit by examination incentive program",
+          "2026-27": 3772100
+        },
+        {
+          "name": "College placement exam fee waiver",
+          "2026-27": 1265800
+        },
+        {
+          "name": "Computer science professional development program",
+          "2026-27": 1000000
+        },
+        {
+          "name": "CTED certification exam fee reimbursement",
+          "2026-27": 1000000
+        },
+        {
+          "name": "CTED completion grants",
+          "2026-27": 1000000
+        },
+        {
+          "name": "CTED soft capital and equipment",
+          "2026-27": 1000000
+        },
+        {
+          "name": "Early literacy",
+          "2026-27": 17394000
+        },
+        {
+          "name": "Education learning and accountability system",
+          "2026-27": 5534100
+        },
+        {
+          "name": "English learner administration",
+          "2026-27": 11643000
+        },
+        {
+          "name": "Geographic literacy",
+          "2026-27": 100000
+        },
+        {
+          "name": "Gifted assessments",
+          "2026-27": 850000
+        },
+        {
+          "name": "Jobs for Arizona graduates",
+          "2026-27": 500000
+        },
+        {
+          "name": "Onetime school meal grants",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Public school campus community gardens",
+          "2026-27": 600000
+        },
+        {
+          "name": "School safety program",
+          "2026-27": 82036100
+        },
+        {
+          "name": "State block grant for vocational education",
+          "2026-27": 11861900
+        },
+        {
+          "name": "Student level data access",
+          "2026-27": 358900
+        },
+        {
+          "name": "Teacher certification",
+          "2026-27": 2416700
+        },
+        {
+          "name": "Tribal college dual enrollment program",
+          "2026-27": 325000
+        }
+      ],
+      "total_appropriation": 9115121300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 7649389900
+        },
+        {
+          "fund": "Education sales tax fund",
+          "amount": 7000000
+        },
+        {
+          "fund": "Permanent state school fund",
+          "amount": 80226500
+        },
+        {
+          "fund": "Special education fund",
+          "amount": 5000000
+        },
+        {
+          "fund": "Teacher certification fund",
+          "amount": 2560700
+        },
+        {
+          "fund": "Tribal college dual enrollment program fund",
+          "amount": 325000
+        },
+        {
+          "fund": "Department of education empowerment scholarship account fund",
+          "amount": 358900
+        },
+        {
+          "fund": "Expenditure authority",
+          "amount": 1370260300
+        }
+      ]
+    },
+    {
+      "section": 32,
+      "agency": "DEPARTMENT OF EMERGENCY AND MILITARY AFFAIRS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 68.1,
+      "line_items": [
+        {
+          "name": "Administration",
+          "2026-27": 2946000
+        },
+        {
+          "name": "Emergency management",
+          "2026-27": 902700
+        },
+        {
+          "name": "Emergency management matching funds",
+          "2026-27": 1563600
+        },
+        {
+          "name": "Military affairs",
+          "2026-27": 2157300
+        },
+        {
+          "name": "National guard matching funds",
+          "2026-27": 3533300
+        },
+        {
+          "name": "National guard tuition reimbursement",
+          "2026-27": 1000000
+        }
+      ],
+      "total_appropriation": 12102900,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 12102900
+        }
+      ]
+    },
+    {
+      "section": 33,
+      "agency": "DEPARTMENT OF ENVIRONMENTAL QUALITY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 360.7,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 73837600
+        },
+        {
+          "name": "Safe drinking water program",
+          "2026-27": 2027700
+        },
+        {
+          "name": "Geothermal energy research",
+          "2026-27": 1500000
+        },
+        {
+          "name": "Iron King mine Humboldt smelter cleanup",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Emissions control contractor payment",
+          "2026-27": 31989000
+        },
+        {
+          "name": "Voluntary vehicle repair program support",
+          "2026-27": 2170200
+        },
+        {
+          "name": "Air permit portal",
+          "2026-27": 371200
+        },
+        {
+          "name": "Water quality fee fund deposit",
+          "2026-27": 9500000
+        }
+      ],
+      "total_appropriation": 123395700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2000000
+        },
+        {
+          "fund": "Air quality fund",
+          "amount": 15320700
+        },
+        {
+          "fund": "Emergency response fund",
+          "amount": 132800
+        },
+        {
+          "fund": "Emissions inspection fund",
+          "amount": 36200000
+        },
+        {
+          "fund": "Hazardous waste management fund",
+          "amount": 2689300
+        },
+        {
+          "fund": "Indirect cost fund",
+          "amount": 19603200
+        },
+        {
+          "fund": "Permit administration fund",
+          "amount": 7536400
+        },
+        {
+          "fund": "Recycling fund",
+          "amount": 8242100
+        },
+        {
+          "fund": "Safe drinking water program fund",
+          "amount": 2027700
+        },
+        {
+          "fund": "Solid waste fee fund",
+          "amount": 3907600
+        },
+        {
+          "fund": "Underground storage tank fund",
+          "amount": 3700000
+        },
+        {
+          "fund": "Water quality fee fund",
+          "amount": 22035900
+        }
+      ]
+    },
+    {
+      "section": 34,
+      "agency": "GOVERNOR'S OFFICE OF EQUAL OPPORTUNITY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 5.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 317400
+        }
+      ],
+      "total_appropriation": 317400,
+      "fund_sources": [
+        {
+          "fund": "Personnel division fund",
+          "amount": 317400
+        }
+      ]
+    },
+    {
+      "section": 35,
+      "agency": "STATE BOARD OF EQUALIZATION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 7.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 734700
+        }
+      ],
+      "total_appropriation": 734700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 734700
+        }
+      ]
+    },
+    {
+      "section": 36,
+      "agency": "BOARD OF EXECUTIVE CLEMENCY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 15.5,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 1639300
+        }
+      ],
+      "total_appropriation": 1639300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 1639300
+        }
+      ]
+    },
+    {
+      "section": 37,
+      "agency": "ARIZONA EXPOSITION AND STATE FAIR BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 184.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 19762800
+        }
+      ],
+      "total_appropriation": 19762800,
+      "fund_sources": [
+        {
+          "fund": "Arizona exposition and state fair fund",
+          "amount": 19762800
+        }
+      ]
+    },
+    {
+      "section": 38,
+      "agency": "ARIZONA DEPARTMENT OF FORESTRY AND FIRE MANAGEMENT",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 215.5,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 6303100
+        },
+        {
+          "name": "Environmental county grants",
+          "2026-27": 250000
+        },
+        {
+          "name": "Inmate firefighting crews",
+          "2026-27": 902700
+        },
+        {
+          "name": "Postrelease firefighting crews",
+          "2026-27": 1332700
+        },
+        {
+          "name": "Fire suppression",
+          "2026-27": 10200000
+        },
+        {
+          "name": "State fire marshal",
+          "2026-27": 1844400
+        },
+        {
+          "name": "State fire school",
+          "2026-27": 291700
+        },
+        {
+          "name": "Hazardous vegetation removal",
+          "2026-27": 3039300
+        },
+        {
+          "name": "US forest service land thinning",
+          "2026-27": 1703400
+        },
+        {
+          "name": "Wildfire mitigation",
+          "2026-27": 27354900
+        }
+      ],
+      "total_appropriation": 53222200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 53222200
+        }
+      ]
+    },
+    {
+      "section": 39,
+      "agency": "ARIZONA GAME AND FISH DEPARTMENT",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 273.5,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 45460200
+        },
+        {
+          "name": "Pittman-Robertson/Dingell-Johnson act",
+          "2026-27": 3058000
+        }
+      ],
+      "total_appropriation": 48518200,
+      "fund_sources": [
+        {
+          "fund": "Capital improvement fund",
+          "amount": 1001200
+        },
+        {
+          "fund": "Game and fish fund",
+          "amount": 42033600
+        },
+        {
+          "fund": "Wildlife endowment fund",
+          "amount": 16200
+        },
+        {
+          "fund": "Watercraft licensing fund",
+          "amount": 5071100
+        },
+        {
+          "fund": "Game, nongame, fish and endangered species fund",
+          "amount": 396100
+        }
+      ]
+    },
+    {
+      "section": 40,
+      "agency": "DEPARTMENT OF GAMING",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 130.8,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 13590000
+        },
+        {
+          "name": "Arizona breeders' award",
+          "2026-27": 250000
+        },
+        {
+          "name": "Casino operations certification",
+          "2026-27": 2346100
+        },
+        {
+          "name": "County fairs livestock and agriculture promotion",
+          "2026-27": 6029500
+        },
+        {
+          "name": "Division of racing",
+          "2026-27": 2372700
+        },
+        {
+          "name": "Contract veterinarian",
+          "2026-27": 175000
+        },
+        {
+          "name": "Horseracing integrity and safety act assessment",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Racing regulation fund deposit",
+          "2026-27": 1900000
+        },
+        {
+          "name": "Problem gambling",
+          "2026-27": 4000000
+        }
+      ],
+      "total_appropriation": 32663300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 8104500
+        },
+        {
+          "fund": "Tribal-state compact fund",
+          "amount": 2346100
+        },
+        {
+          "fund": "Arizona benefits fund",
+          "amount": 17290000
+        },
+        {
+          "fund": "State lottery fund",
+          "amount": 300000
+        },
+        {
+          "fund": "Racing regulation fund",
+          "amount": 4622700
+        }
+      ]
+    },
+    {
+      "section": 41,
+      "agency": "OFFICE OF THE GOVERNOR",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": null,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 8144700
+        },
+        {
+          "name": "Foster youth education success fund deposit",
+          "2026-27": 1500000
+        }
+      ],
+      "total_appropriation": 9644700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 9644700
+        }
+      ]
+    },
+    {
+      "section": 42,
+      "agency": "GOVERNOR'S OFFICE OF STRATEGIC PLANNING AND BUDGETING",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 22.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 2854500
+        }
+      ],
+      "total_appropriation": 2854500,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2854500
+        }
+      ]
+    },
+    {
+      "section": 43,
+      "agency": "DEPARTMENT OF HEALTH SERVICES",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 1129.5,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 66388500
+        },
+        {
+          "name": "Adult cystic fibrosis care",
+          "2026-27": 105200
+        },
+        {
+          "name": "AIDS reporting and surveillance",
+          "2026-27": 1000000
+        },
+        {
+          "name": "Alzheimer's disease research",
+          "2026-27": 4125000
+        },
+        {
+          "name": "Behavioral health care provider loan repayment program",
+          "2026-27": 1000000
+        },
+        {
+          "name": "Biomedical research support",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Breast and cervical cancer and bone density screening",
+          "2026-27": 1369400
+        },
+        {
+          "name": "Cooling centers for heat relief",
+          "2026-27": 400000
+        },
+        {
+          "name": "County tuberculosis provider care and control",
+          "2026-27": 590700
+        },
+        {
+          "name": "Dementia services program and Alzheimer's disease state plan",
+          "2026-27": 700000
+        },
+        {
+          "name": "Enhanced residential treatment",
+          "2026-27": 250000
+        },
+        {
+          "name": "Folic acid program",
+          "2026-27": 400000
+        },
+        {
+          "name": "Funeral services regulation",
+          "2026-27": 460600
+        },
+        {
+          "name": "High-risk perinatal services",
+          "2026-27": 2343400
+        },
+        {
+          "name": "Newborn screening program",
+          "2026-27": 15967000
+        },
+        {
+          "name": "Nonrenal disease management",
+          "2026-27": 198000
+        },
+        {
+          "name": "Nursing care special projects",
+          "2026-27": 200000
+        },
+        {
+          "name": "Poison control centers funding",
+          "2026-27": 990000
+        },
+        {
+          "name": "Radiation protection system grants",
+          "2026-27": 1500000
+        },
+        {
+          "name": "Renal dental care and nutrition supplements",
+          "2026-27": 300000
+        },
+        {
+          "name": "Renal transplant drugs",
+          "2026-27": 183000
+        },
+        {
+          "name": "Arizona state hospital \u2014 operating",
+          "2026-27": 82070500
+        },
+        {
+          "name": "Arizona state hospital \u2014 restoration to competency",
+          "2026-27": 900000
+        },
+        {
+          "name": "Arizona state hospital \u2014 sexually violent persons",
+          "2026-27": 12940100
+        }
+      ],
+      "total_appropriation": 196381400,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 122263600
+        },
+        {
+          "fund": "Arizona state hospital fund",
+          "amount": 3395700
+        },
+        {
+          "fund": "Arizona state hospital land fund",
+          "amount": 1596600
+        },
+        {
+          "fund": "Child fatality review fund",
+          "amount": 196500
+        },
+        {
+          "fund": "Disease control research fund",
+          "amount": 1000000
+        },
+        {
+          "fund": "DHS indirect cost fund",
+          "amount": 13822200
+        },
+        {
+          "fund": "Emergency medical services operating fund",
+          "amount": 4278400
+        },
+        {
+          "fund": "Environmental laboratory licensure revolving fund",
+          "amount": 1013100
+        },
+        {
+          "fund": "Federal child care and development fund block grant",
+          "amount": 1286500
+        },
+        {
+          "fund": "Health services licensing fund",
+          "amount": 23641400
+        },
+        {
+          "fund": "Health services lottery monies fund",
+          "amount": 2600000
+        },
+        {
+          "fund": "Newborn screening program fund",
+          "amount": 16386100
+        },
+        {
+          "fund": "Nursing care institution resident protection revolving fund",
+          "amount": 238200
+        },
+        {
+          "fund": "Tobacco tax and health care fund \u2014 medically needy account",
+          "amount": 700000
+        },
+        {
+          "fund": "Vital records electronic systems fund",
+          "amount": 3963100
+        }
+      ]
+    },
+    {
+      "section": 44,
+      "agency": "ARIZONA HISTORICAL SOCIETY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 54.9,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 2394900
+        },
+        {
+          "name": "Field services and grants",
+          "2026-27": 66900
+        },
+        {
+          "name": "Papago park museum",
+          "2026-27": 572600
+        }
+      ],
+      "total_appropriation": 3034400,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 3034400
+        }
+      ]
+    },
+    {
+      "section": 45,
+      "agency": "PRESCOTT HISTORICAL SOCIETY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 13.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 1074300
+        }
+      ],
+      "total_appropriation": 1074300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 1074300
+        }
+      ]
+    },
+    {
+      "section": 46,
+      "agency": "ARIZONA DEPARTMENT OF HOMELAND SECURITY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 26.0,
+      "line_items": [
+        {
+          "name": "Statewide information security and privacy operations and controls",
+          "2026-27": 11145200
+        },
+        {
+          "name": "Multi-factor authentication",
+          "2026-27": 850000
+        },
+        {
+          "name": "Cyber ready Arizona",
+          "2026-27": 11500000
+        }
+      ],
+      "total_appropriation": 23495200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 10000000
+        },
+        {
+          "fund": "Information technology fund",
+          "amount": 11995200
+        },
+        {
+          "fund": "Highway patrol fund",
+          "amount": 1500000
+        }
+      ]
+    },
+    {
+      "section": 47,
+      "agency": "BOARD OF HOMEOPATHIC AND INTEGRATED MEDICINE EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 1.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 64200
+        }
+      ],
+      "total_appropriation": 64200,
+      "fund_sources": [
+        {
+          "fund": "Board of homeopathic and integrated medicine examiners' fund",
+          "amount": 64200
+        }
+      ]
+    },
+    {
+      "section": 48,
+      "agency": "ARIZONA DEPARTMENT OF HOUSING",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 3.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 360700
+        }
+      ],
+      "total_appropriation": 360700,
+      "fund_sources": [
+        {
+          "fund": "Housing trust fund",
+          "amount": 360700
+        }
+      ]
+    },
+    {
+      "section": 49,
+      "agency": "INDUSTRIAL COMMISSION OF ARIZONA",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 215.6,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 23213100
+        },
+        {
+          "name": "Municipal firefighter reimbursement administration",
+          "2026-27": 90100
+        }
+      ],
+      "total_appropriation": 23303200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 90100
+        },
+        {
+          "fund": "Administrative fund",
+          "amount": 23213100
+        }
+      ]
+    },
+    {
+      "section": 50,
+      "agency": "DEPARTMENT OF INSURANCE AND FINANCIAL INSTITUTIONS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 141.4,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 15451700
+        },
+        {
+          "name": "Arizona vehicle theft task force",
+          "2026-27": 4552600
+        },
+        {
+          "name": "Automobile theft authority operating budget",
+          "2026-27": 697100
+        },
+        {
+          "name": "Local grants",
+          "2026-27": 1388900
+        },
+        {
+          "name": "Reimbursable programs",
+          "2026-27": 50000
+        }
+      ],
+      "total_appropriation": 22140300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 1580300
+        },
+        {
+          "fund": "Automobile theft authority fund",
+          "amount": 6837300
+        },
+        {
+          "fund": "Financial services fund",
+          "amount": 6257500
+        },
+        {
+          "fund": "Financial surveillance fund",
+          "amount": 7414900
+        },
+        {
+          "fund": "Department revolving fund",
+          "amount": 50300
+        }
+      ]
+    },
+    {
+      "section": 51,
+      "agency": "ARIZONA JUDICIARY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": null,
+      "sub_agencies": [
+        {
+          "name": "Supreme Court",
+          "fte_positions": 208.0,
+          "line_items": [
+            {
+              "name": "Operating lump sum appropriation",
+              "2026-27": 19435000
+            },
+            {
+              "name": "Fair jury improvement fund deposit",
+              "2026-27": 1620000
+            },
+            {
+              "name": "Automation",
+              "2026-27": 25114100
+            },
+            {
+              "name": "County reimbursements",
+              "2026-27": 187900
+            },
+            {
+              "name": "Court appointed special advocate and vulnerable persons",
+              "2026-27": 6840800
+            },
+            {
+              "name": "Courthouse security",
+              "2026-27": 752100
+            },
+            {
+              "name": "Domestic relations",
+              "2026-27": 726700
+            },
+            {
+              "name": "State foster care review board",
+              "2026-27": 3680500
+            },
+            {
+              "name": "Commission on judicial conduct",
+              "2026-27": 802800
+            },
+            {
+              "name": "Judicial nominations and performance review",
+              "2026-27": 641900
+            },
+            {
+              "name": "Model court",
+              "2026-27": 660800
+            },
+            {
+              "name": "State aid",
+              "2026-27": 5962100
+            },
+            {
+              "name": "Probation electronic monitoring system operating costs",
+              "2026-27": 1300000
+            }
+          ],
+          "total_appropriation": 67724700,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 30599500
+            },
+            {
+              "fund": "Confidential intermediary and fiduciary fund",
+              "amount": 702400
+            },
+            {
+              "fund": "Court appointed special advocate and vulnerable persons fund",
+              "amount": 8348600
+            },
+            {
+              "fund": "Criminal justice enhancement fund",
+              "amount": 4779700
+            },
+            {
+              "fund": "Defensive driving school fund",
+              "amount": 4498500
+            },
+            {
+              "fund": "Judicial collection enhancement fund",
+              "amount": 15849400
+            },
+            {
+              "fund": "State aid to the courts fund",
+              "amount": 2946600
+            }
+          ]
+        },
+        {
+          "name": "Court of Appeals",
+          "fte_positions": 163.8,
+          "line_items": [
+            {
+              "name": "Division one",
+              "2026-27": 16988900
+            },
+            {
+              "name": "Division two",
+              "2026-27": 8805400
+            }
+          ],
+          "total_appropriation": 25794300,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 25794300
+            }
+          ]
+        },
+        {
+          "name": "Superior Court",
+          "fte_positions": 241.5,
+          "line_items": [
+            {
+              "name": "Operating lump sum appropriation",
+              "2026-27": 5308000
+            },
+            {
+              "name": "Judges' compensation",
+              "2026-27": 34092000
+            },
+            {
+              "name": "Centralized service payments",
+              "2026-27": 4687600
+            },
+            {
+              "name": "Adult standard probation",
+              "2026-27": 29108300
+            },
+            {
+              "name": "Adult intensive probation",
+              "2026-27": 16362300
+            },
+            {
+              "name": "Community punishment",
+              "2026-27": 2310300
+            },
+            {
+              "name": "Court-ordered removals",
+              "2026-27": 315000
+            },
+            {
+              "name": "Interstate compact",
+              "2026-27": 605100
+            },
+            {
+              "name": "Drug court",
+              "2026-27": 1096400
+            },
+            {
+              "name": "General adjudication personnel and support fund deposit",
+              "2026-27": 2000000
+            },
+            {
+              "name": "Juvenile standard probation",
+              "2026-27": 4001500
+            },
+            {
+              "name": "Juvenile intensive probation",
+              "2026-27": 6087200
+            },
+            {
+              "name": "Juvenile treatment services",
+              "2026-27": 20803000
+            },
+            {
+              "name": "Juvenile family counseling",
+              "2026-27": 500000
+            },
+            {
+              "name": "Juvenile crime reduction",
+              "2026-27": 3313000
+            },
+            {
+              "name": "Juvenile diversion consequences",
+              "2026-27": 9215300
+            },
+            {
+              "name": "Probation incentive payments",
+              "2026-27": 1000000
+            },
+            {
+              "name": "Special water master",
+              "2026-27": 511100
+            }
+          ],
+          "total_appropriation": 141316100,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 129301600
+            },
+            {
+              "fund": "Criminal justice enhancement fund",
+              "amount": 5494900
+            },
+            {
+              "fund": "Drug treatment and education fund",
+              "amount": 504200
+            },
+            {
+              "fund": "Judicial collection enhancement fund",
+              "amount": 6015400
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section": 52,
+      "agency": "DEPARTMENT OF JUVENILE CORRECTIONS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 583.5,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 46105800
+        }
+      ],
+      "total_appropriation": 46105800,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 32808000
+        },
+        {
+          "fund": "State charitable, penal and reformatory institutions land fund",
+          "amount": 4054400
+        },
+        {
+          "fund": "Criminal justice enhancement fund",
+          "amount": 1028000
+        },
+        {
+          "fund": "State education fund for committed youth",
+          "amount": 1491400
+        },
+        {
+          "fund": "Department of juvenile corrections local cost sharing fund",
+          "amount": 6724000
+        }
+      ]
+    },
+    {
+      "section": 53,
+      "agency": "STATE LAND DEPARTMENT",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 145.7,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 19861000
+        },
+        {
+          "name": "CAP user fees",
+          "2026-27": 1408000
+        },
+        {
+          "name": "Due diligence program",
+          "2026-27": 5000000
+        }
+      ],
+      "total_appropriation": 26269000,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 12030000
+        },
+        {
+          "fund": "Off-highway vehicle recreation fund",
+          "amount": 177600
+        },
+        {
+          "fund": "Due diligence fund",
+          "amount": 5000000
+        },
+        {
+          "fund": "Trust land management fund",
+          "amount": 9061400
+        }
+      ]
+    },
+    {
+      "section": 54,
+      "agency": "LEGISLATURE",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "sub_agencies": [
+        {
+          "name": "Senate",
+          "line_items": [
+            {
+              "name": "Lump sum appropriation",
+              "2026-27": 18064300
+            }
+          ],
+          "total_appropriation": 18064300,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 18064300
+            }
+          ]
+        },
+        {
+          "name": "House of Representatives",
+          "line_items": [
+            {
+              "name": "Lump sum appropriation",
+              "2026-27": 21795300
+            }
+          ],
+          "total_appropriation": 21795300,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 21795300
+            }
+          ]
+        },
+        {
+          "name": "Legislative Council",
+          "fte_positions": 63.0,
+          "line_items": [
+            {
+              "name": "Lump sum appropriation",
+              "2026-27": 9422400
+            }
+          ],
+          "total_appropriation": 9422400,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 9422400
+            }
+          ]
+        },
+        {
+          "name": "Ombudsman-Citizens Aide Office",
+          "fte_positions": 12.0,
+          "line_items": [
+            {
+              "name": "Lump sum appropriation",
+              "2026-27": 1608900
+            }
+          ],
+          "total_appropriation": 1608900,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 1608900
+            }
+          ]
+        },
+        {
+          "name": "Joint Legislative Budget Committee",
+          "fte_positions": 29.0,
+          "line_items": [
+            {
+              "name": "Lump sum appropriation",
+              "2026-27": 3071000
+            }
+          ],
+          "total_appropriation": 3071000,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 3071000
+            }
+          ]
+        },
+        {
+          "name": "Auditor General",
+          "fte_positions": 236.8,
+          "line_items": [
+            {
+              "name": "Operating lump sum appropriation",
+              "2026-27": 26709000
+            },
+            {
+              "name": "State employee health plan special audit",
+              "2026-27": 500000
+            }
+          ],
+          "total_appropriation": 27209000,
+          "fund_sources": [
+            {
+              "fund": "State general fund",
+              "amount": 26709000
+            },
+            {
+              "fund": "Special employee health insurance trust fund",
+              "amount": 500000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section": 55,
+      "agency": "DEPARTMENT OF LIQUOR LICENSES AND CONTROL",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 59.2,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 7052800
+        }
+      ],
+      "total_appropriation": 7052800,
+      "fund_sources": [
+        {
+          "fund": "Liquor licenses fund",
+          "amount": 7052800
+        }
+      ]
+    },
+    {
+      "section": 56,
+      "agency": "ARIZONA STATE LOTTERY COMMISSION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 98.8,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 10153900
+        },
+        {
+          "name": "Advertising",
+          "2026-27": 15500000
+        }
+      ],
+      "total_appropriation": 25653900,
+      "fund_sources": [
+        {
+          "fund": "State lottery fund",
+          "amount": 25653900
+        }
+      ]
+    },
+    {
+      "section": 57,
+      "agency": "BOARD OF MASSAGE THERAPY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 5.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 601200
+        }
+      ],
+      "total_appropriation": 601200,
+      "fund_sources": [
+        {
+          "fund": "Board of massage therapy fund",
+          "amount": 601200
+        }
+      ]
+    },
+    {
+      "section": 58,
+      "agency": "ARIZONA MEDICAL BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 63.5,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 8307100
+        },
+        {
+          "name": "Employee performance incentive program",
+          "2026-27": 165600
+        }
+      ],
+      "total_appropriation": 8472700,
+      "fund_sources": [
+        {
+          "fund": "Arizona medical board fund",
+          "amount": 8472700
+        }
+      ]
+    },
+    {
+      "section": 59,
+      "agency": "STATE MINE INSPECTOR",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 22.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 1587400
+        },
+        {
+          "name": "Abandoned mines",
+          "2026-27": 844000
+        },
+        {
+          "name": "Aggregate mining land reclamation",
+          "2026-27": 112800
+        }
+      ],
+      "total_appropriation": 2544200,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 2431400
+        },
+        {
+          "fund": "Aggregate mining reclamation fund",
+          "amount": 112800
+        }
+      ]
+    },
+    {
+      "section": 60,
+      "agency": "STATE NATURAL RESOURCE CONSERVATION BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": null,
+      "line_items": [
+        {
+          "name": "Natural resource conservation district fund deposit",
+          "2026-27": 650000
+        }
+      ],
+      "total_appropriation": 650000,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 389400
+        },
+        {
+          "fund": "Environmental special plate fund",
+          "amount": 260600
+        }
+      ]
+    },
+    {
+      "section": 61,
+      "agency": "NATUROPATHIC PHYSICIANS MEDICAL BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 221800
+        }
+      ],
+      "total_appropriation": 221800,
+      "fund_sources": [
+        {
+          "fund": "Naturopathic physicians medical board fund",
+          "amount": 221800
+        }
+      ]
+    },
+    {
+      "section": 62,
+      "agency": "ARIZONA NAVIGABLE STREAM ADJUDICATION COMMISSION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 343900
+        }
+      ],
+      "total_appropriation": 343900,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 143900
+        },
+        {
+          "fund": "Arizona water banking fund",
+          "amount": 200000
+        }
+      ]
+    },
+    {
+      "section": 63,
+      "agency": "ARIZONA STATE BOARD OF NURSING",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 70.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 7158000
+        },
+        {
+          "name": "Certified nursing assistant credentialing program",
+          "2026-27": 557000
+        }
+      ],
+      "total_appropriation": 7715000,
+      "fund_sources": [
+        {
+          "fund": "Board of nursing fund",
+          "amount": 7715000
+        }
+      ]
+    },
+    {
+      "section": 64,
+      "agency": "BOARD OF EXAMINERS OF NURSING CARE INSTITUTION ADMINISTRATORS AND ASSISTED LIVING FACILITY MANAGERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 7.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 611600
+        }
+      ],
+      "total_appropriation": 611600,
+      "fund_sources": [
+        {
+          "fund": "Nursing care institution administrators' licensing and assisted living facility managers' certification fund",
+          "amount": 611600
+        }
+      ]
+    },
+    {
+      "section": 65,
+      "agency": "BOARD OF OCCUPATIONAL THERAPY EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 298000
+        }
+      ],
+      "total_appropriation": 298000,
+      "fund_sources": [
+        {
+          "fund": "Occupational therapy fund",
+          "amount": 298000
+        }
+      ]
+    },
+    {
+      "section": 66,
+      "agency": "STATE BOARD OF DISPENSING OPTICIANS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 1.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 229700
+        }
+      ],
+      "total_appropriation": 229700,
+      "fund_sources": [
+        {
+          "fund": "Board of dispensing opticians fund",
+          "amount": 229700
+        }
+      ]
+    },
+    {
+      "section": 67,
+      "agency": "STATE BOARD OF OPTOMETRY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 288000
+        }
+      ],
+      "total_appropriation": 288000,
+      "fund_sources": [
+        {
+          "fund": "Board of optometry fund",
+          "amount": 288000
+        }
+      ]
+    },
+    {
+      "section": 68,
+      "agency": "ARIZONA BOARD OF OSTEOPATHIC EXAMINERS IN MEDICINE AND SURGERY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 15.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 1926100
+        }
+      ],
+      "total_appropriation": 1926100,
+      "fund_sources": [
+        {
+          "fund": "Arizona board of osteopathic examiners in medicine and surgery fund",
+          "amount": 1926100
+        }
+      ]
+    },
+    {
+      "section": 69,
+      "agency": "ARIZONA STATE PARKS BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 180.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 18443100
+        },
+        {
+          "name": "Broadband infrastructure operations and maintenance",
+          "2026-27": 242100
+        },
+        {
+          "name": "State parks store",
+          "2026-27": 1530200
+        },
+        {
+          "name": "Kartchner caverns state park",
+          "2026-27": 2587700
+        },
+        {
+          "name": "Water and wastewater infrastructure operations and maintenance",
+          "2026-27": 541000
+        }
+      ],
+      "total_appropriation": 23344100,
+      "fund_sources": [
+        {
+          "fund": "State parks revenue fund",
+          "amount": 21797200
+        },
+        {
+          "fund": "State parks store fund",
+          "amount": 1530200
+        },
+        {
+          "fund": "Off-highway vehicle recreation fund",
+          "amount": 16700
+        }
+      ]
+    },
+    {
+      "section": 70,
+      "agency": "STATE PERSONNEL BOARD",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 369900
+        }
+      ],
+      "total_appropriation": 369900,
+      "fund_sources": [
+        {
+          "fund": "Personnel division fund \u2014 personnel board subaccount",
+          "amount": 369900
+        }
+      ]
+    },
+    {
+      "section": 71,
+      "agency": "ARIZONA STATE BOARD OF PHARMACY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 26.4,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 3693900
+        },
+        {
+          "name": "Prescriber report card",
+          "2026-27": 50000
+        }
+      ],
+      "total_appropriation": 3743900,
+      "fund_sources": [
+        {
+          "fund": "Arizona state board of pharmacy fund",
+          "amount": 3743900
+        }
+      ]
+    },
+    {
+      "section": 72,
+      "agency": "BOARD OF PHYSICAL THERAPY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 4.5,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 624400
+        }
+      ],
+      "total_appropriation": 624400,
+      "fund_sources": [
+        {
+          "fund": "Board of physical therapy fund",
+          "amount": 624400
+        }
+      ]
+    },
+    {
+      "section": 73,
+      "agency": "ARIZONA PIONEERS' HOME",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 107.3,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 9160800
+        }
+      ],
+      "total_appropriation": 9160800,
+      "fund_sources": [
+        {
+          "fund": "Miners' hospital for miners with disabilities land fund",
+          "amount": 2897000
+        },
+        {
+          "fund": "State charitable fund",
+          "amount": 6263800
+        }
+      ]
+    },
+    {
+      "section": 74,
+      "agency": "STATE BOARD OF PODIATRY EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 1.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 204200
+        }
+      ],
+      "total_appropriation": 204200,
+      "fund_sources": [
+        {
+          "fund": "Podiatry fund",
+          "amount": 204200
+        }
+      ]
+    },
+    {
+      "section": 75,
+      "agency": "STATE BOARD FOR PRIVATE POSTSECONDARY EDUCATION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 4.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 557500
+        }
+      ],
+      "total_appropriation": 557500,
+      "fund_sources": [
+        {
+          "fund": "Board for private postsecondary education fund",
+          "amount": 557500
+        }
+      ]
+    },
+    {
+      "section": 76,
+      "agency": "STATE BOARD OF PSYCHOLOGIST EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 5.5,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 872600
+        }
+      ],
+      "total_appropriation": 872600,
+      "fund_sources": [
+        {
+          "fund": "Behavioral analyst licensing and regulation account",
+          "amount": 396400
+        },
+        {
+          "fund": "Board of psychologist examiners fund",
+          "amount": 476200
+        }
+      ]
+    },
+    {
+      "section": 77,
+      "agency": "DEPARTMENT OF PUBLIC SAFETY",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 2192.7,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 297214000
+        },
+        {
+          "name": "ACTIC",
+          "2026-27": 2132700
+        },
+        {
+          "name": "AZPOST",
+          "2026-27": 8145000
+        },
+        {
+          "name": "Border drug interdiction",
+          "2026-27": 18103200
+        },
+        {
+          "name": "Local border support",
+          "2026-27": 13232900
+        },
+        {
+          "name": "Civil air patrol maintenance and operations",
+          "2026-27": 250000
+        },
+        {
+          "name": "GIITEM",
+          "2026-27": 26014800
+        },
+        {
+          "name": "GIITEM subaccount",
+          "2026-27": 2396400
+        },
+        {
+          "name": "Major incident division",
+          "2026-27": 16197700
+        },
+        {
+          "name": "Motor vehicle fuel",
+          "2026-27": 5454600
+        },
+        {
+          "name": "Onetime vehicle replacement",
+          "2026-27": 15540300
+        },
+        {
+          "name": "Pharmaceutical diversion and drug theft task force",
+          "2026-27": 668400
+        },
+        {
+          "name": "Public safety equipment",
+          "2026-27": 2890000
+        },
+        {
+          "name": "Scrap metal dealer enforcement and compliance",
+          "2026-27": 250000
+        },
+        {
+          "name": "Victims of crimes grants",
+          "2026-27": 9300000
+        }
+      ],
+      "total_appropriation": 417790000,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 305292600
+        },
+        {
+          "fund": "State highway fund",
+          "amount": 10000000
+        },
+        {
+          "fund": "Arizona highway patrol fund",
+          "amount": 59418600
+        },
+        {
+          "fund": "Criminal justice enhancement fund",
+          "amount": 2964300
+        },
+        {
+          "fund": "Department of public safety forensics fund",
+          "amount": 22512400
+        },
+        {
+          "fund": "Gang and immigration intelligence team enforcement mission border security and law enforcement subaccount",
+          "amount": 2396400
+        },
+        {
+          "fund": "Motorcycle safety fund",
+          "amount": 198900
+        },
+        {
+          "fund": "Motor vehicle liability insurance enforcement fund",
+          "amount": 968300
+        },
+        {
+          "fund": "Risk management revolving fund",
+          "amount": 1155200
+        },
+        {
+          "fund": "Parity compensation fund",
+          "amount": 4549000
+        },
+        {
+          "fund": "Public safety equipment fund",
+          "amount": 2894000
+        },
+        {
+          "fund": "Concealed weapons permit fund",
+          "amount": 3393900
+        },
+        {
+          "fund": "Fingerprint clearance card fund",
+          "amount": 2046400
+        }
+      ]
+    },
+    {
+      "section": 78,
+      "agency": "STATE REAL ESTATE DEPARTMENT",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 37.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 3259400
+        }
+      ],
+      "total_appropriation": 3259400,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 3259400
+        }
+      ]
+    },
+    {
+      "section": 79,
+      "agency": "RESIDENTIAL UTILITY CONSUMER OFFICE",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 14.5,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 1806200
+        },
+        {
+          "name": "Professional witnesses",
+          "2026-27": 145000
+        }
+      ],
+      "total_appropriation": 1951200,
+      "fund_sources": [
+        {
+          "fund": "Residential utility consumer office revolving fund",
+          "amount": 1951200
+        }
+      ]
+    },
+    {
+      "section": 80,
+      "agency": "BOARD OF RESPIRATORY CARE EXAMINERS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 4.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 420500
+        }
+      ],
+      "total_appropriation": 420500,
+      "fund_sources": [
+        {
+          "fund": "Board of respiratory care examiners fund",
+          "amount": 420500
+        }
+      ]
+    },
+    {
+      "section": 81,
+      "agency": "ARIZONA STATE RETIREMENT SYSTEM",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 222.9,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 28966100
+        }
+      ],
+      "total_appropriation": 28966100,
+      "fund_sources": [
+        {
+          "fund": "Arizona state retirement system administration account",
+          "amount": 27166100
+        },
+        {
+          "fund": "Long-term disability trust fund administration account",
+          "amount": 1800000
+        }
+      ]
+    },
+    {
+      "section": 82,
+      "agency": "DEPARTMENT OF REVENUE",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 892.8,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 74388200
+        },
+        {
+          "name": "BRITS operational support",
+          "2026-27": 8005200
+        },
+        {
+          "name": "E-commerce compliance and outreach",
+          "2026-27": 981200
+        },
+        {
+          "name": "Unclaimed property administration and audit",
+          "2026-27": 1473900
+        },
+        {
+          "name": "TPT simplification",
+          "2026-27": 1085400
+        },
+        {
+          "name": "Tax fraud prevention",
+          "2026-27": 3170800
+        }
+      ],
+      "total_appropriation": 89104700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 60371900
+        },
+        {
+          "fund": "Department of revenue administrative fund",
+          "amount": 27077000
+        },
+        {
+          "fund": "Liability setoff program revolving fund",
+          "amount": 939100
+        },
+        {
+          "fund": "Tobacco tax and health care fund",
+          "amount": 716700
+        }
+      ]
+    },
+    {
+      "section": 83,
+      "agency": "DEPARTMENT OF STATE \u2014 SECRETARY OF STATE",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 144.1,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 15339400
+        },
+        {
+          "name": "Access voter information database",
+          "2026-27": 2000000
+        },
+        {
+          "name": "Address confidentiality program fund deposit",
+          "2026-27": 400000
+        },
+        {
+          "name": "Election services",
+          "2026-27": 4000000
+        },
+        {
+          "name": "Electronic records repository",
+          "2026-27": 70300
+        },
+        {
+          "name": "Library grants-in-aid",
+          "2026-27": 651400
+        },
+        {
+          "name": "Statewide radio reading service for the blind",
+          "2026-27": 97000
+        }
+      ],
+      "total_appropriation": null,
+      "fund_sources": null
+    },
+    {
+      "section": 84,
+      "agency": "STATE BOARD OF TAX APPEALS",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 4.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 319300
+        }
+      ],
+      "total_appropriation": 319300,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 319300
+        }
+      ]
+    },
+    {
+      "section": 85,
+      "agency": "STATE BOARD OF TECHNICAL REGISTRATION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 26.0,
+      "line_items": [
+        {
+          "name": "Lump sum appropriation",
+          "2026-27": 2812900
+        }
+      ],
+      "total_appropriation": 2812900,
+      "fund_sources": [
+        {
+          "fund": "Technical registration fund",
+          "amount": 2812900
+        }
+      ]
+    },
+    {
+      "section": 86,
+      "agency": "OFFICE OF TOURISM",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 31.0,
+      "line_items": [
+        {
+          "name": "Tourism fund deposit",
+          "2026-27": 7283700
+        },
+        {
+          "name": "Arizona promotion",
+          "2026-27": 819000
+        },
+        {
+          "name": "Wine promotion",
+          "2026-27": 100000
+        }
+      ],
+      "total_appropriation": 8202700,
+      "fund_sources": [
+        {
+          "fund": "State general fund",
+          "amount": 8202700
+        }
+      ]
+    },
+    {
+      "section": 87,
+      "agency": "DEPARTMENT OF TRANSPORTATION",
+      "fiscal_years": [
+        "2026-27"
+      ],
+      "fte_positions": 4096.0,
+      "line_items": [
+        {
+          "name": "Operating lump sum appropriation",
+          "2026-27": 272540000
+        },
+        {
+          "name": "Attorney general legal services",
+          "2026-27": 3940400
+        },
+        {
+          "name": "Highway maintenance",
+          "2026-27": 198687500
+        },
+        {
+          "name": "ADOT fleet vehicles and heavy equipment maintenance",
+          "2026-27": 26814600
+        },
+        {
+          "name": "ADOT fleet vehicles and heavy equipment maintenance contingency",
+          "2026-27": 1000000
+        },
+        {
+          "name": "State fleet operations",
+          "2026-27": 38350500
+        },
+        {
+          "name": "State fleet vehicle replacement",
+          "2026-27": 13611300
+        },
+        {
+          "name": "Livestock control and wildlife crossing",
+          "2026-27": 1500000
+        },
+        {
+          "name": "Construction management system replacement",
+          "2026-27": 6844600
+        },
+        {
+          "name": "ADOT fleet vehicle and heavy equipment replacement",
+          "2026-27": 22400000
+        },
+        {
+          "name": "Highway damage recovery account",
+          "2026-27": 7999000
+        },
+        {
+          "name": "Statewide litter removal",
+          "2026-27": 3106800
+        },
+        {
+          "name": "Radio lifecycle replacement",
+          "2026-27": 1656100
+        },
+        {
+          "name": "Preventive surface treatments",
+          "2026-27": 36142000
+        },
+        {
+          "name": "Authorized third parties",
+          "2026-27": 2252700
+        }
+      ],
+      "total_appropriation": 636845500,
+      "fund_sources": null
+    }
+  ]
+}
