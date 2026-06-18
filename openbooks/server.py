@@ -35,6 +35,23 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+# ── .env loading ──────────────────────────────────────────────────────
+# Load ~/.hermes/.env (where Hermes stores secrets like ANTHROPIC_API_KEY)
+# and a local .env in the project root, if either exists.  This lets the
+# Ask (NL query) layer pick up provider credentials without manual exports.
+for _env_path in (
+    os.path.expanduser("~/.hermes/.env"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"),
+):
+    if os.path.isfile(_env_path):
+        with open(_env_path) as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if not _line or _line.startswith("#") or "=" not in _line:
+                    continue
+                _k, _, _v = _line.partition("=")
+                os.environ.setdefault(_k.strip(), _v.strip())
+
 from openbooks.queries import OpenBooks
 
 log = logging.getLogger("openbooks.server")
@@ -235,6 +252,7 @@ def _triangulation_data(ob) -> dict:
 
     # Summary stats
     total_authorized = sum(r["authorized"] for r in results)
+    total_authorized_matched = sum(r["authorized"] for r in results if r["matched"])
     total_spend = sum(r["actual_spend_fy25"] for r in results if r["matched"])
     total_questioned = sum(r["questioned_cost"] for r in results)
     total_adverse = sum(r["n_adverse"] for r in results)
@@ -246,13 +264,18 @@ def _triangulation_data(ob) -> dict:
             "n_budget_agencies": len(results),
             "n_matched": n_matched,
             "total_authorized": total_authorized,
+            "total_authorized_matched": total_authorized_matched,
             "total_actual_spend_fy25": total_spend,
             "total_questioned_cost": total_questioned,
             "total_adverse_findings": total_adverse,
-            "overall_variance": total_spend - total_authorized if total_spend else None,
+            # Statewide variance uses matched-only authorized so the
+            # comparison is apples-to-apples (spend is only available
+            # for matched agencies).  total_authorized (all agencies)
+            # is still surfaced separately for the budget headline.
+            "overall_variance": total_spend - total_authorized_matched if total_spend else None,
             "overall_variance_pct": (
-                (total_spend - total_authorized) / total_authorized * 100
-                if total_spend and total_authorized
+                (total_spend - total_authorized_matched) / total_authorized_matched * 100
+                if total_spend and total_authorized_matched
                 else None
             ),
         },
