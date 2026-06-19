@@ -1,0 +1,362 @@
+{
+  "_meta": {
+    "generated_at": "2026-06-19T00:30:54.919146+00:00",
+    "model": "grok-4.3",
+    "provider": "xai",
+    "auth_source": "hermes:xai-oauth",
+    "top_n": 10,
+    "method": "Grok adjudication grounded in per-agency category/fund evidence from the checkbook warehouse; statutory basis is model-asserted and should be spot-checked against A.R.S. before publication."
+  },
+  "agencies": {
+    "DEPT OF ECONOMIC SECURITY": {
+      "unattributed_usd": 38204734086.0,
+      "unattributed_pct": 89.2,
+      "top_categories": [
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 24887537315.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 7253799715.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 3900084006.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 1657155631.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 609608833.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 12582863.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Dominant spend is AID TO ORGANIZATIONS AND INDIVIDUALS (DES client benefits redacted by confidentiality statute) plus PERSONAL SERVICES/EMPLOYEE RELATED (standard payroll reporting) and TRANSFERS OUT (vendor often omitted).",
+      "statutory_basis": "A.R.S. confidentiality statutes for DES/AHCCCS benefits recipients",
+      "notes": null
+    },
+    "DEPT OF CHILD SAFETY": {
+      "unattributed_usd": 8940486911.0,
+      "unattributed_pct": 82.3,
+      "top_categories": [
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 6487923350.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 1369307907.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 554651889.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 275631048.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 135027449.0
+        },
+        {
+          "category": null,
+          "usd": 107875947.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Dominant categories are AID TO ORGANIZATIONS AND INDIVIDUALS (confidential DCS client benefits) plus PERSONAL SERVICES/EMPLOYEE RELATED (payroll) and TRANSFERS OUT, all standard reasons for redacted payees.",
+      "statutory_basis": "A.R.S. \u00a7 8-807 (DCS records confidentiality)",
+      "notes": "null"
+    },
+    "DEPT OF TRANSPORTATION": {
+      "unattributed_usd": 7749015851.0,
+      "unattributed_pct": 20.2,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 4020505177.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 2060221097.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 872134991.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 499944409.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 136278309.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 63406882.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Dominant categories are TRANSFERS OUT plus payroll (PERSONAL SERVICES + EMPLOYEE RELATED EXPENDITURES), both of which routinely appear without named payees in state checkbooks.",
+      "statutory_basis": null,
+      "notes": null
+    },
+    "DEPT OF CORRECTIONS": {
+      "unattributed_usd": 7221003071.0,
+      "unattributed_pct": 52.5,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 4749860803.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 1793296591.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 411704315.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 249701581.0
+        },
+        {
+          "category": "CAPITAL OUTLAY",
+          "usd": 8721688.0
+        },
+        {
+          "category": "CAPITAL EQUIPMENT",
+          "usd": 3318350.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "Dominant categories are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll), which are standardly reported without individual payee names; TRANSFERS OUT also commonly lack named vendors.",
+      "statutory_basis": null,
+      "notes": "Mix aligns with routine corrections agency operations; no client-benefit confidentiality statutes apply."
+    },
+    "DEPT OF PUBLIC SAFETY": {
+      "unattributed_usd": 5596429283.0,
+      "unattributed_pct": 79.2,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 2861643511.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 1542282712.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 1099680934.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 75400203.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 12266345.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 7435129.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Unattributed total is driven by TRANSFERS OUT plus PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, both of which routinely appear without named payees under standard state reporting.",
+      "statutory_basis": null,
+      "notes": "DPS is not a benefits agency; no confidentiality statute applies."
+    },
+    "DEPT OF EDUCATION": {
+      "unattributed_usd": 4540538858.0,
+      "unattributed_pct": 5.3,
+      "top_categories": [
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 2636124951.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 1348186939.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 366497936.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 139341083.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 37639191.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 5156305.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Dominant categories are AID TO ORGANIZATIONS AND INDIVIDUALS plus TRANSFERS OUT (common for education aid and intergovernmental flows) alongside PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (standard payroll reporting without named payees).",
+      "statutory_basis": null,
+      "notes": null
+    },
+    "GOVERNOR'S OFFICE": {
+      "unattributed_usd": 3859653070.0,
+      "unattributed_pct": 64.2,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 3723094681.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 98353142.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 32738087.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 12566256.0
+        },
+        {
+          "category": "TRAVEL - OUT-OF-STATE",
+          "usd": 481170.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 362935.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Dominant TRANSFERS OUT from COVID relief funds align with intergovernmental pass-throughs that routinely lack named vendors; PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES match standard payroll reporting without individual names.",
+      "statutory_basis": "A.R.S. \u00a7 41-741 et seq. (payroll confidentiality); intergovernmental transfer practices under A.R.S. \u00a7 35-142",
+      "notes": "COVID fund transfers constitute ~92% of unattributed total; no client-benefit programs involved."
+    },
+    "DEPT OF HEALTH SERVICES": {
+      "unattributed_usd": 3507242374.0,
+      "unattributed_pct": 38.0,
+      "top_categories": [
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 1141623191.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 939843439.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 925709078.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 362822382.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 107956333.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 16768658.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "Dominant categories are AID TO ORGANIZATIONS AND INDIVIDUALS (confidential benefits), PERSONAL SERVICES/EMPLOYEE RELATED EXPENDITURES (payroll), and TRANSFERS OUT (intergovernmental), all standard reasons for unattributed payees.",
+      "statutory_basis": null,
+      "notes": null
+    },
+    "LOTTERY COMMISSION": {
+      "unattributed_usd": 3409264475.0,
+      "unattributed_pct": 53.7,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 2379942714.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 852094540.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 114422400.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 43695580.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 17494707.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 1177699.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "Dominant TRANSFERS OUT and payroll categories (PERSONAL SERVICES, EMPLOYEE RELATED) routinely lack named payees under standard state accounting practices; remaining categories are minor.",
+      "statutory_basis": null,
+      "notes": "Lottery transfers to state funds are operational outflows without individual vendors."
+    },
+    "DEPT OF ADMINISTRATION": {
+      "unattributed_usd": 2463720858.0,
+      "unattributed_pct": 14.2,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 1707039212.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 395669920.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 147063885.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 142108801.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 71061513.0
+        },
+        {
+          "category": "CAPITAL EQUIPMENT",
+          "usd": 6432274.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "Dominant categories are TRANSFERS OUT plus PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, both of which routinely appear without named payees in state checkbooks.",
+      "statutory_basis": null,
+      "notes": "No indication of client-benefit confidentiality statutes; pattern matches standard payroll and inter-fund transfer reporting."
+    }
+  }
+}

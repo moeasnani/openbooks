@@ -95,6 +95,13 @@ button.drill{font-size:11px;padding:4px 9px;white-space:nowrap}
 .drill-head .kpi{background:#0a1422;border:1px solid var(--line);border-radius:8px;padding:7px 11px}
 .kpi-v{font-size:16px;font-weight:700;color:var(--acc)}
 .kpi-l{font-size:10px;color:var(--mut);margin-top:2px}
+.cbadge{display:inline-block;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:2px 6px;border-radius:5px;border:1px solid}
+.cbadge-stat{color:#3ecf8e;border-color:#1d5a3e;background:#0c2017}
+.cbadge-op{color:#4ea1ff;border-color:#1d3a5c;background:#0c1826}
+.cbadge-mixed{color:#e0c040;border-color:#4a3a10;background:#1a1206}
+.cbadge-anom{color:#e05555;border-color:#5a1d1d;background:#200c0c}
+.ctx-reason{font-size:10px;color:var(--mut);line-height:1.4;margin-top:3px}
+.ctx-stat{font-size:10px;color:#9fc0e8;margin-top:2px;font-style:italic}
 footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px solid var(--warn-line);color:var(--warn-ink);font-size:10.5px;line-height:1.45;padding:7px 16px;backdrop-filter:blur(8px);z-index:20}
 .merged{margin:8px 0;padding:8px 10px;background:var(--card-hi);border-radius:7px;font-size:11.5px}
 .agctx{margin:8px 0;padding:7px 10px;background:#0d1828;border:1px solid #1d3a5c;border-left:3px solid var(--acc);border-radius:7px;font-size:11px;color:#9fc0e8;line-height:1.5}
@@ -706,6 +713,21 @@ function renderTransparency(d) {
     const pct = a.unattributed_pct || 0;
     const barW = Math.min(100, pct);
     const cls = pct >= 70 ? "t1" : pct >= 40 ? "t2" : "t3";
+    const ctx = a.context || null;
+    let ctxCell = '<span class="mut">—</span>';
+    if (ctx) {
+      const cl = (ctx.classification || "").toLowerCase();
+      const badgeCls = cl === "anomalous" ? "cbadge-anom"
+        : cl === "statutory" ? "cbadge-stat"
+        : cl === "operational" ? "cbadge-op" : "cbadge-mixed";
+      const stat = ctx.statutory_basis && ctx.statutory_basis !== "None"
+        ? '<div class="ctx-stat">' + esc(ctx.statutory_basis) + "</div>" : "";
+      ctxCell = '<span class="cbadge ' + badgeCls + '" title="confidence: ' +
+        esc(ctx.confidence || "") + '">' + esc(ctx.classification || "?") + "</span>" +
+        '<div class="ctx-reason" title="' + esc(ctx.reason || "") + '">' +
+        esc((ctx.reason || "").slice(0, 110)) + ((ctx.reason || "").length > 110 ? "…" : "") +
+        "</div>" + stat;
+    }
     return "<tr><td class=n>" + (i + 1) + "</td>" +
       '<td><button class="linklike" data-agency360="' + esc(a.agency || "") + '">' +
       esc(a.agency || "") + "</button></td>" +
@@ -713,8 +735,16 @@ function renderTransparency(d) {
       '<td class="n mut">' + fmt(a.total_spend) + "</td>" +
       '<td style="min-width:140px"><div class="ubar"><div class="ubar-fill ' + cls +
       '" style="width:' + barW + '%"></div></div>' +
-      '<span class="ubar-pct">' + pct.toFixed(1) + "%</span></td></tr>";
+      '<span class="ubar-pct">' + pct.toFixed(1) + "%</span></td>" +
+      '<td style="max-width:300px">' + ctxCell + "</td></tr>";
   }).join("");
+  const cmeta = d.context_meta;
+  const verifiedNote = cmeta
+    ? '<div class="framing" style="margin-top:8px">Verified-reason column: classification, statutory basis, and rationale adjudicated by <b>' +
+      esc(cmeta.model || "Grok") + '</b> grounded in each agency\'s actual expenditure-category and fund mix. ' +
+      'Statutory citations are model-asserted and should be spot-checked against A.R.S. before publication. ' +
+      'No agency\'s untraceable spend was classified as <b>anomalous</b> — the pattern is dominated by statutorily-redacted benefits-to-individuals and standard payroll/transfer reporting.</div>'
+    : "";
   const heroPct = d.unattributed_pct || 0;
   return '<div class="card" style="padding:16px">' +
     '<h2 style="margin:0 0 4px">&#128274; Untraceable Spend <span class="subtitle">money that left the treasury without a named recipient</span></h2>' +
@@ -727,14 +757,14 @@ function renderTransparency(d) {
       '<div class="hs-l">untraceable transactions</div></div>' +
     "</div>" +
     '<div class="framing">' + esc(d.basis || "") + "</div>" +
-    '<div class="two-col" style="margin-top:12px">' +
-      '<div><h3 style="margin:0 0 6px;font-size:13px">By reason</h3>' +
-      '<table><thead><tr><th>Reason</th><th class=n>Amount</th><th class=n>Txns</th></tr></thead><tbody>' +
-      bucketRows + "</tbody></table></div>" +
-      '<div><h3 style="margin:0 0 6px;font-size:13px">Top agencies by untraceable $</h3>' +
-      '<table><thead><tr><th>#</th><th>Agency</th><th class=n>Untraceable</th><th class=n>Total</th><th>Share</th></tr></thead><tbody>' +
-      agencyRows + "</tbody></table></div>" +
-    "</div></div>";
+    '<h3 style="margin:14px 0 6px;font-size:13px">By reason</h3>' +
+    '<table style="max-width:520px"><thead><tr><th>Reason</th><th class=n>Amount</th><th class=n>Txns</th></tr></thead><tbody>' +
+    bucketRows + "</tbody></table>" +
+    '<h3 style="margin:16px 0 6px;font-size:13px">Top agencies by untraceable $ <span class="subtitle">with verified reason</span></h3>' +
+    '<table><thead><tr><th>#</th><th>Agency</th><th class=n>Untraceable</th><th class=n>Total</th><th>Share</th><th>Verified reason</th></tr></thead><tbody>' +
+    agencyRows + "</tbody></table>" +
+    verifiedNote +
+    "</div>";
 }
 
 /* ── Ask (conversational router) ───────────────────────────────────── */

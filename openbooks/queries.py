@@ -32,6 +32,7 @@ The database must be bootstrapped once before use (creates the
 from __future__ import annotations
 
 import csv
+import json
 import os
 from typing import Any
 
@@ -99,6 +100,10 @@ class OpenBooks:
             base_dir = os.path.dirname(db_path)
 
         self.mart_dir = mart_dir if mart_dir is not None else os.path.join(base_dir, "mart")
+        # Directory holding committed enrichment JSONs (alongside the DB by
+        # default). Used for the Grok-adjudicated untraceable-spend context.
+        self._enrich_dir = base_dir
+        self._unattr_enrich: dict | None = None  # lazy cache
 
     @classmethod
     def from_postgres(cls, dsn: str, *, mart_dir: str | None = None) -> OpenBooks:
@@ -1328,6 +1333,17 @@ class OpenBooks:
                     100.0 * (r.get("unattributed") or 0) / ts, 1
                 ) if ts else 0.0
 
+        # Attach Grok-adjudicated, statute-grounded context where available.
+        enrich = self._unattributed_enrichment()
+        if enrich:
+            for r in by_agency:
+                ctx = enrich.get(r.get("agency"))
+                if ctx:
+                    r["context"] = ctx
+        agency_context = None
+        if resolved_agency and enrich:
+            agency_context = enrich.get(resolved_agency)
+
         return {
             "agency": resolved_agency or agency,
             "fiscal_year": fiscal_year,
@@ -1341,6 +1357,9 @@ class OpenBooks:
             ) if total_spend else 0.0,
             "by_bucket": by_bucket,
             "by_agency": by_agency,
+            "agency_context": agency_context,
+            "context_meta": (self._unattr_enrich or {}).get("_meta")
+            if self._unattr_enrich else None,
             "basis": (
                 "complete ledger (all transaction sizes), cash-basis. "
                 "Unattributed = payee blank, 'N/A', redacted, or confidential. "
@@ -1348,6 +1367,23 @@ class OpenBooks:
                 "this is a transparency metric, NOT an allegation of wrongdoing."
             ),
         }
+
+    def _unattributed_enrichment(self) -> dict:
+        """Lazy-load the committed Grok untraceable-spend adjudications.
+
+        Returns a dict mapping agency name -> verified context
+        (classification, confidence, reason, statutory_basis, notes).
+        Degrades to an empty dict when the JSON is absent (so the metric
+        still works on deployments built before enrichment ran).
+        """
+        if self._unattr_enrich is None:
+            path = os.path.join(self._enrich_dir, "unattributed_enrichment.json")
+            try:
+                with open(path) as f:
+                    self._unattr_enrich = json.load(f)
+            except (OSError, ValueError):
+                self._unattr_enrich = {}
+        return (self._unattr_enrich or {}).get("agencies", {})
 
     def finding_transactions(
         self,
