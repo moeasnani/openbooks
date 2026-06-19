@@ -104,6 +104,7 @@ class OpenBooks:
         # default). Used for the Grok-adjudicated untraceable-spend context.
         self._enrich_dir = base_dir
         self._unattr_enrich: dict | None = None  # lazy cache
+        self._entity_enrich: dict | None = None  # lazy cache (Grok entity ctx)
 
     @classmethod
     def from_postgres(cls, dsn: str, *, mart_dir: str | None = None) -> OpenBooks:
@@ -222,6 +223,12 @@ class OpenBooks:
                 summary["agency"] = agency_name
                 summary["relation"] = "primary_agency"
                 s["primary_agency_ag"] = summary
+
+        # Grok-verified real-world context (identity, arizona_role, verdict,
+        # reason, confidence, real source citations). Decision-support overlay
+        # built by scripts/enrich_entities.py via xAI's Agent Tools API; absent
+        # for un-enriched entities and on pre-enrichment deployments.
+        s["grok_context"] = self._entity_enrichment().get(ek)
         return s
 
     def leads(
@@ -1384,6 +1391,23 @@ class OpenBooks:
             except (OSError, ValueError):
                 self._unattr_enrich = {}
         return (self._unattr_enrich or {}).get("agencies", {})
+
+    def _entity_enrichment(self) -> dict:
+        """Lazy-load the committed Grok entity-context adjudications.
+
+        Returns a dict mapping entity_key -> verified real-world context
+        (identity, arizona_role, verdict, reason, confidence, citations),
+        built by scripts/enrich_entities.py against xAI's Agent Tools API.
+        Degrades to an empty dict when the JSON is absent.
+        """
+        if self._entity_enrich is None:
+            path = os.path.join(self._enrich_dir, "entity_enrichment.json")
+            try:
+                with open(path) as f:
+                    self._entity_enrich = json.load(f)
+            except (OSError, ValueError):
+                self._entity_enrich = {}
+        return (self._entity_enrich or {}).get("entities", {})
 
     def finding_transactions(
         self,

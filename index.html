@@ -102,6 +102,15 @@ button.drill{font-size:11px;padding:4px 9px;white-space:nowrap}
 .cbadge-anom{color:#e05555;border-color:#5a1d1d;background:#200c0c}
 .ctx-reason{font-size:10px;color:var(--mut);line-height:1.4;margin-top:3px}
 .ctx-stat{font-size:10px;color:#9fc0e8;margin-top:2px;font-style:italic}
+.gkctx{margin:8px 0;padding:9px 11px;background:#10131f;border:1px solid #2a2f4a;border-left:3px solid #7c5cff;border-radius:8px;font-size:11.5px;color:#c8cce0;line-height:1.55}
+.gk-hd{margin-bottom:5px;color:#cfd2e8}
+.gk-conf{display:inline-block;margin-left:6px;font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;color:#9aa0c0}
+.gk-row{margin:3px 0}
+.gk-k{display:inline-block;min-width:74px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:#8b8fb0;vertical-align:top}
+.gk-cites{margin-top:5px}
+.gk-cite{display:inline-block;margin:2px 5px 0 0;padding:1px 6px;font-size:10px;color:#a99cff;border:1px solid #2f2a55;border-radius:5px;background:#161427;text-decoration:none}
+.gk-cite:hover{border-color:#7c5cff;color:#c4baff}
+.gk-foot{margin-top:6px;font-size:9.5px;color:#777c9a;font-style:italic;line-height:1.4}
 footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px solid var(--warn-line);color:var(--warn-ink);font-size:10.5px;line-height:1.45;padding:7px 16px;backdrop-filter:blur(8px);z-index:20}
 .merged{margin:8px 0;padding:8px 10px;background:var(--card-hi);border-radius:7px;font-size:11.5px}
 .agctx{margin:8px 0;padding:7px 10px;background:#0d1828;border:1px solid #1d3a5c;border-left:3px solid var(--acc);border-radius:7px;font-size:11px;color:#9fc0e8;line-height:1.5}
@@ -417,6 +426,35 @@ function agContextNote(pa) {
     (est ? " * includes estimates/projections." : "") + "</div>";
 }
 
+function grokContextNote(gc) {
+  if (!gc) return "";
+  const v = (gc.verdict || "").toLowerCase();
+  const badgeCls = v === "anomalous" || v === "suspicious" ? "cbadge-anom"
+    : v === "explained_benign" ? "cbadge-stat"
+    : v === "mostly_benign" ? "cbadge-op" : "cbadge-mixed";
+  const label = (gc.verdict || "?").replace(/_/g, " ");
+  const cites = (gc.citations || []).slice(0, 6).map((u, i) => {
+    let host = u; try { host = new URL(u).hostname.replace(/^www\./, ""); } catch (e) {}
+    return '<a class="gk-cite" href="' + esc(u) + '" target="_blank" rel="noopener" title="' +
+      esc(u) + '">[' + (i + 1) + "] " + esc(host) + "</a>";
+  }).join(" ");
+  const nCites = (gc.citations || []).length;
+  const more = nCites > 6 ? '<span class="mut"> +' + (nCites - 6) + " more</span>" : "";
+  return '<div class="gkctx">' +
+    '<div class="gk-hd">🛰️ <b>Grok-verified real-world context</b> ' +
+    '<span class="cbadge ' + badgeCls + '" title="confidence: ' + esc(gc.confidence || "") + '">' +
+    esc(label) + "</span>" +
+    (gc.confidence ? '<span class="gk-conf">' + esc(gc.confidence) + " confidence</span>" : "") +
+    "</div>" +
+    (gc.identity ? '<div class="gk-row"><span class="gk-k">Identity</span> ' + esc(gc.identity) + "</div>" : "") +
+    (gc.arizona_role ? '<div class="gk-row"><span class="gk-k">AZ role</span> ' + esc(gc.arizona_role) + "</div>" : "") +
+    (gc.reason ? '<div class="gk-row"><span class="gk-k">Why flagged</span> ' + esc(gc.reason) + "</div>" : "") +
+    (cites ? '<div class="gk-cites"><span class="gk-k">Sources</span> ' + cites + more + "</div>" : "") +
+    '<div class="gk-foot">Decision-support overlay — Grok (grok-4.3) grounded each verdict in live web + X search; ' +
+    "citations are real source URLs. Not a finding of wrongdoing; a human reviewer keeps the final call.</div>" +
+    "</div>";
+}
+
 function renderVendor(d) {
   const mk = (d.top_markers || []).slice(0, 5).map(m => '<span class="chip">' + esc(m) + "</span>").join("");
   const merged = d.n_names_merged > 0
@@ -432,6 +470,7 @@ function renderVendor(d) {
     '<div class="right"><div class="usd">' + fmt(d.usd_tier1 || d.hv_exposure) + "</div></div></div>" +
     '<div class="cbody">' +
     (d.public_context ? '<div class="ctx">' + esc(d.public_context) + "</div>" : "") + merged +
+    grokContextNote(d.grok_context) +
     agContextNote(d.primary_agency_ag) +
     txnTable(d.transactions) +
     (d.n_txn_displayed >= 30 ? '<div class="meta">Showing top 30 of ' + d.hv_txn + " transactions by risk score</div>" : "") +
