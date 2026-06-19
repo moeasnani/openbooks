@@ -1393,21 +1393,74 @@ class OpenBooks:
         return (self._unattr_enrich or {}).get("agencies", {})
 
     def _entity_enrichment(self) -> dict:
-        """Lazy-load the committed Grok entity-context adjudications.
+        """Lazy-load the Grok entity-context adjudications.
 
         Returns a dict mapping entity_key -> verified real-world context
         (identity, arizona_role, verdict, reason, confidence, citations),
         built by scripts/enrich_entities.py against xAI's Agent Tools API.
-        Degrades to an empty dict when the JSON is absent.
+
+        Prefers the materialized ``entity_grok_context`` warehouse table
+        (built by scripts/load_entity_enrichment.py; carried to Postgres by
+        the push script) so deployments serve it without the JSON on disk.
+        Falls back to the committed ``entity_enrichment.json`` for databases
+        built before the table existed. Degrades to an empty dict when
+        neither is present.
         """
         if self._entity_enrich is None:
-            path = os.path.join(self._enrich_dir, "entity_enrichment.json")
-            try:
-                with open(path) as f:
-                    self._entity_enrich = json.load(f)
-            except (OSError, ValueError):
-                self._entity_enrich = {}
+            self._entity_enrich = {"entities": self._entity_enrichment_from_db()}
+            if not self._entity_enrich["entities"]:
+                path = os.path.join(self._enrich_dir, "entity_enrichment.json")
+                try:
+                    with open(path) as f:
+                        self._entity_enrich = json.load(f)
+                except (OSError, ValueError):
+                    self._entity_enrich = {}
         return (self._entity_enrich or {}).get("entities", {})
+
+    def _entity_enrichment_from_db(self) -> dict:
+        """Read the ``entity_grok_context`` table into the JSON-shaped dict.
+
+        Returns ``{}`` when the table is absent (older warehouse) so the
+        caller falls back to the committed JSON. List columns (markers,
+        agencies, citations) are stored as JSON strings and parsed back here.
+        """
+        if not self._table_exists("entity_grok_context"):
+            return {}
+        try:
+            rows = self._query(
+                """
+                SELECT entity_key, entity_name, verdict, confidence, identity,
+                       arizona_role, reason, notes, flagged_exposure, top_tier,
+                       markers, agencies, citations
+                FROM entity_grok_context
+                """
+            )
+        except Exception:
+            return {}
+        out: dict = {}
+        for r in rows:
+            def _parse(v):
+                if isinstance(v, (list, dict)):
+                    return v
+                try:
+                    return json.loads(v) if v else []
+                except (TypeError, ValueError):
+                    return []
+            out[r["entity_key"]] = {
+                "entity_name": r.get("entity_name"),
+                "verdict": r.get("verdict"),
+                "confidence": r.get("confidence"),
+                "identity": r.get("identity"),
+                "arizona_role": r.get("arizona_role"),
+                "reason": r.get("reason"),
+                "notes": r.get("notes"),
+                "flagged_exposure": r.get("flagged_exposure"),
+                "top_tier": r.get("top_tier"),
+                "markers": _parse(r.get("markers")),
+                "agencies": _parse(r.get("agencies")),
+                "citations": _parse(r.get("citations")),
+            }
+        return out
 
     def finding_transactions(
         self,

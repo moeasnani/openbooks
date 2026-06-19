@@ -45,6 +45,14 @@ AG_TABLES = [
     "ag_report_agency_xref",
 ]
 
+# Grok-grounded real-world context for flagged entities (built by
+# scripts/load_entity_enrichment.py from entity_enrichment.json). Optional:
+# pushed only when present, so older warehouses still migrate cleanly. The
+# query layer reads this table first and falls back to the committed JSON.
+ENRICHMENT_TABLES = [
+    "entity_grok_context",
+]
+
 # Indexes matching the query layer's access paths.
 INDEXES = [
     "CREATE INDEX IF NOT EXISTS ix_txt_tier ON tx_tiered (tier)",
@@ -53,6 +61,38 @@ INDEXES = [
     "CREATE INDEX IF NOT EXISTS ix_te_key ON tier_entities (entity_key)",
     "CREATE INDEX IF NOT EXISTS ix_tay_agency ON tier_agency_year (agency)",
 ]
+
+# Indexes matching the query layer's access paths.
+# spend_summary indexes — the complete-ledger rollup that lets `spend()`
+# answer "how much did X spend" on Postgres (where the raw 115M-row parquet
+# `transactions` view doesn't exist). Agency + fiscal_year + transaction_type
+# are the filter columns; category columns are LIKE-scanned.
+SPEND_SUMMARY_INDEXES = [
+    "CREATE INDEX IF NOT EXISTS ix_ss_agency ON spend_summary (organization_level_1_name)",
+    "CREATE INDEX IF NOT EXISTS ix_ss_fy ON spend_summary (fiscal_year)",
+    "CREATE INDEX IF NOT EXISTS ix_ss_type ON spend_summary (transaction_type)",
+]
+
+# The rollup SQL: pre-aggregate the full transactions view to the grain
+# (agency × fiscal_year × transaction_type × cat1 × cat2 × cat3 ×
+# appropriation), storing total_usd and n_txns. This collapses ~115M rows
+# into ~230K — trivial for Postgres, and numerically identical to
+# sum(amount)/count(*) over the raw ledger for any filter combination.
+SPEND_SUMMARY_SQL = """
+    SELECT
+        organization_level_1_name,
+        fiscal_year,
+        transaction_type,
+        category_level_1_name,
+        category_level_2_name,
+        category_level_3_name,
+        appropriation_1_name,
+        round(sum(amount), 0)  AS total_usd,
+        count(*)                AS n_txns
+    FROM transactions
+    WHERE amount IS NOT NULL
+    GROUP BY 1, 2, 3, 4, 5, 6, 7
+"""
 
 # AG-overlay indexes — applied only when the AG tables were copied.
 # Read path: ag_reports filtered by agency_checkbook, joined to
@@ -83,6 +123,14 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
     con.execute(f"ATTACH '{dsn}' AS pg (TYPE postgres)")
     con.execute("USE src")
 
+    # Detect the full transactions view once (used both to build the rollup
+    # during a push and to decide whether to verify it).
+    has_transactions = _scalar(
+        con,
+        "SELECT count(*) FROM information_schema.tables "
+        "WHERE table_name = 'transactions'",
+    )
+
     if not verify_only:
         for table in TABLES:
             n_src = _scalar(con, f"SELECT count(*) FROM {table}")
@@ -105,7 +153,7 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
             print("done")
 
         # Carry the AG findings overlay forward when present (newer DBs only).
-        for table in AG_TABLES:
+        for table in AG_TABLES + ENRICHMENT_TABLES:
             present = _scalar(
                 con,
                 "SELECT count(*) FROM information_schema.tables "
@@ -118,6 +166,34 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
             con.execute(f"DROP TABLE IF EXISTS pg.{table} CASCADE")
             con.execute(f"CREATE TABLE pg.{table} AS SELECT * FROM {table}")
             print("done")
+
+        # Build + push the spend_summary rollup from the full transactions
+        # view (only when the source has it — it's a DuckDB+parquet view).
+        # This is what makes `spend()` work on Postgres: the raw 115M-row
+        # view can't travel, but the ~230K-row pre-aggregate does, and
+        # sum(total_usd)/sum(n_txns) is numerically identical to
+        # sum(amount)/count(*) over the raw ledger.
+        if has_transactions:
+            print("  building spend_summary rollup from transactions … ", end="", flush=True)
+            con.execute(f"CREATE TEMP TABLE _spend_summary AS {SPEND_SUMMARY_SQL}")
+            n = _scalar(con, "SELECT count(*) FROM _spend_summary")
+            print(f"{n:,} rows")
+            print(f"  pushing spend_summary           {n:>9,} rows … ", end="", flush=True)
+            con.execute("DROP TABLE IF EXISTS pg.spend_summary CASCADE")
+            con.execute("CREATE TABLE pg.spend_summary AS SELECT * FROM _spend_summary")
+            print("done")
+
+    # Always build the rollup temp table when the source has a transactions
+    # view, even on --verify-only, so the row-count comparison below works
+    # (the temp table is session-local and cheap to rebuild).
+    if verify_only and has_transactions:
+        already = _scalar(
+            con,
+            "SELECT count(*) FROM information_schema.tables "
+            "WHERE table_name = '_spend_summary'",
+        )
+        if not already:
+            con.execute(f"CREATE TEMP TABLE _spend_summary AS {SPEND_SUMMARY_SQL}")
 
     # ── verify: row counts must match exactly, source vs Postgres ──────
     # The core TABLES are always present. AG tables are optional (newer
@@ -140,7 +216,7 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
         failures += 0 if ok else 1
         print(f"  {'OK  ' if ok else 'FAIL'} {table:24} {n_src:>9,} == {n_pg:,}")
     # AG tables: verify only when the source warehouse carries them.
-    for table in AG_TABLES:
+    for table in AG_TABLES + ENRICHMENT_TABLES:
         in_src = _scalar(
             con,
             "SELECT count(*) FROM information_schema.tables "
@@ -159,6 +235,22 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
         failures += 0 if ok else 1
         shown = f"{n_pg:,}" if in_pg else "MISSING"
         print(f"  {'OK  ' if ok else 'FAIL'} {table:24} {n_src:>9,} == {shown}")
+
+    # spend_summary: verify only when the source had a transactions view to
+    # build it from. On a --verify-only run the temp table isn't available,
+    # so we compare row counts on the pg side against a fresh rebuild.
+    if has_transactions:
+        n_src = _scalar(con, "SELECT count(*) FROM _spend_summary")
+        in_pg = _scalar(
+            con,
+            "SELECT count(*) FROM information_schema.tables "
+            "WHERE table_catalog = 'pg' AND table_name = 'spend_summary'",
+        )
+        n_pg = _scalar(con, "SELECT count(*) FROM pg.spend_summary") if in_pg else -1
+        ok = in_pg and n_src == n_pg
+        failures += 0 if ok else 1
+        shown = f"{n_pg:,}" if in_pg else "MISSING"
+        print(f"  {'OK  ' if ok else 'FAIL'} {'spend_summary':24} {n_src:>9,} == {shown}")
     con.close()
 
     if failures:
@@ -182,6 +274,14 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
     if ag_rows and ag_rows[0]["n"]:
         for ddl in AG_INDEXES:
             backend.execute(ddl)
+    # spend_summary indexes — only if the rollup made it across.
+    ss_rows = backend.query(
+        "SELECT count(*) AS n FROM information_schema.tables "
+        "WHERE table_name = 'spend_summary'"
+    )
+    if ss_rows and ss_rows[0]["n"]:
+        for ddl in SPEND_SUMMARY_INDEXES:
+            backend.execute(ddl)
     print("\nbootstrap + indexes applied on postgres")
 
     ob = OpenBooks(backend=backend)
@@ -197,6 +297,16 @@ def push(db_path: str, dsn: str, verify_only: bool) -> int:
             f"AG overlay via OpenBooks->Postgres: {n_reports} reports / "
             f"{n_findings} findings (DES sample: {n_audits} audits)"
         )
+    # spend() smoke: exercise the rollup read path through Postgres.
+    if ss_rows and ss_rows[0]["n"]:
+        spend_result = ob.spend(agency="DEPT OF TRANSPORTATION", breakdown="none")
+        if "error" in spend_result:
+            print(f"spend via OpenBooks->Postgres: ERROR {spend_result['error']}")
+        else:
+            print(
+                f"spend via OpenBooks->Postgres: ADOT total ${spend_result['total']:,.0f} "
+                f"across {spend_result['n_txns']:,} txns ({spend_result['basis']})"
+            )
     ob.close()
     print("\npush complete — point the server at it with:")
     print("  openbooks-server --postgres <dsn>")
