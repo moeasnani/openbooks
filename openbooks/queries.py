@@ -1183,6 +1183,316 @@ class OpenBooks:
             "breakdown": breakdown_rows,
         }
 
+    #: SQL CASE expression that classifies a payee column into an
+    #: "attributed" vs "unattributed" bucket. Centralized so the
+    #: agency-level and statewide paths stay numerically identical.
+    #: ``{col}`` is substituted with the payee column name per table.
+    _UNATTRIBUTED_BUCKET_SQL = (
+        "CASE "
+        "WHEN {col} IS NULL OR trim({col}) = '' THEN 'blank' "
+        "WHEN upper({col}) IN ('N/A','NA','NONE','NOT APPLICABLE','UNKNOWN') THEN 'na' "
+        "WHEN upper({col}) LIKE '%REDACT%' THEN 'redacted' "
+        "WHEN upper({col}) LIKE '%CONFIDENTIAL%' THEN 'confidential' "
+        "ELSE 'named' END"
+    )
+
+    #: Human-readable labels for each unattributed sub-bucket.
+    _UNATTRIBUTED_LABELS = {
+        "blank": "Blank / null payee",
+        "na": "Marked 'N/A'",
+        "redacted": "Redacted",
+        "confidential": "Confidential",
+    }
+
+    def unattributed_spend(
+        self,
+        agency: str | None = None,
+        *,
+        fiscal_year: int | None = None,
+        transaction_type: str = "EX",
+        limit: int = 25,
+    ) -> dict:
+        '''Quantify spending that cannot be traced to a named payee.
+
+        For a transparency / due-diligence product, spend booked to a blank,
+        "N/A", redacted, or confidential payee *is itself a finding* -- it is
+        money that left the treasury without a publicly attributable
+        recipient. This method makes that "dark spend" a first-class metric
+        rather than noise at the top of vendor lists.
+
+        Parameters
+        ----------
+        agency:
+            Restrict to one agency (fuzzy-resolved). None = statewide, with a
+            per-agency leaderboard in ``by_agency``.
+        fiscal_year:
+            Restrict to one fiscal year. None = all years.
+        transaction_type:
+            ``EX`` (default), ``RV``, or ``ALL``.
+        limit:
+            Max agency rows in the statewide leaderboard (clamped [1, 200]).
+
+        Returns a dict with the grand ``total_spend``, ``unattributed_total``,
+        ``unattributed_pct``, a ``by_bucket`` split (blank/na/redacted/...), and
+        -- when no single agency is requested -- a ``by_agency`` leaderboard
+        ranked by unattributed dollars. Returns an ``error`` key when the full
+        ledger is unavailable.
+        '''
+        tt = (transaction_type or "EX").upper()
+        if tt not in ("EX", "RV", "ALL"):
+            raise ValueError(
+                f"transaction_type must be EX, RV, or ALL; got {tt!r}"
+            )
+        limit = max(1, min(int(limit), 200))
+
+        if not self._table_exists("transactions"):
+            return {
+                "error": (
+                    "the complete-ledger 'transactions' view is not available "
+                    "in this deployment; unattributed-spend analysis requires "
+                    "per-payee grain (DuckDB+parquet)."
+                ),
+                "agency": agency, "fiscal_year": fiscal_year,
+            }
+
+        col = "payee_customer_vendor_name"
+        bucket_sql = self._UNATTRIBUTED_BUCKET_SQL.format(col=col)
+
+        where = ["amount IS NOT NULL"]
+        params: list[Any] = []
+        if tt != "ALL":
+            where.append("transaction_type = ?")
+            params.append(tt)
+        resolved_agency = None
+        if agency:
+            res = self.resolve_agency(agency)
+            if res["confidence"] in ("exact", "strong"):
+                resolved_agency = res["match"]
+                where.append("organization_level_1_name = ?")
+                params.append(resolved_agency)
+            else:
+                where.append("upper(organization_level_1_name) LIKE ?")
+                params.append(f"%{agency.upper()}%")
+        if fiscal_year is not None:
+            where.append("fiscal_year = ?")
+            params.append(int(fiscal_year))
+        where_sql = " AND ".join(where)
+
+        # Per-bucket split (named vs each unattributed reason).
+        bucket_rows = self._query(
+            f"""
+            SELECT {bucket_sql} AS bucket,
+                   count(*) AS n, round(sum(amount), 0) AS usd
+            FROM transactions WHERE {where_sql}
+            GROUP BY bucket
+            """,
+            tuple(params),
+        )
+        total_spend = sum(r["usd"] or 0 for r in bucket_rows)
+        total_n = sum(r["n"] or 0 for r in bucket_rows)
+        by_bucket = [
+            {
+                "bucket": r["bucket"],
+                "label": self._UNATTRIBUTED_LABELS.get(r["bucket"], "Named payee"),
+                "n_txns": r["n"],
+                "usd": r["usd"],
+            }
+            for r in bucket_rows
+            if r["bucket"] != "named"
+        ]
+        by_bucket.sort(key=lambda x: x["usd"] or 0, reverse=True)
+        unattributed_total = sum(b["usd"] or 0 for b in by_bucket)
+        unattributed_n = sum(b["n_txns"] or 0 for b in by_bucket)
+
+        # Statewide leaderboard (only when no single agency is pinned).
+        by_agency: list[dict] = []
+        if not resolved_agency:
+            by_agency = self._query(
+                f"""
+                SELECT organization_level_1_name AS agency,
+                       round(sum(amount), 0) AS total_spend,
+                       round(sum(CASE WHEN {bucket_sql} <> 'named'
+                                      THEN amount ELSE 0 END), 0) AS unattributed,
+                       count(*) AS n_txns
+                FROM transactions WHERE {where_sql}
+                GROUP BY organization_level_1_name
+                HAVING sum(amount) > 0
+                ORDER BY unattributed DESC
+                LIMIT ?
+                """,
+                tuple(params) + (limit,),
+            )
+            for r in by_agency:
+                ts = r.get("total_spend") or 0
+                r["unattributed_pct"] = round(
+                    100.0 * (r.get("unattributed") or 0) / ts, 1
+                ) if ts else 0.0
+
+        return {
+            "agency": resolved_agency or agency,
+            "fiscal_year": fiscal_year,
+            "transaction_type": tt,
+            "total_spend": total_spend,
+            "n_txns": total_n,
+            "unattributed_total": unattributed_total,
+            "unattributed_n_txns": unattributed_n,
+            "unattributed_pct": round(
+                100.0 * unattributed_total / total_spend, 1
+            ) if total_spend else 0.0,
+            "by_bucket": by_bucket,
+            "by_agency": by_agency,
+            "basis": (
+                "complete ledger (all transaction sizes), cash-basis. "
+                "Unattributed = payee blank, 'N/A', redacted, or confidential. "
+                "Some redaction is statutory (e.g. benefits to individuals); "
+                "this is a transparency metric, NOT an allegation of wrongdoing."
+            ),
+        }
+
+    def finding_transactions(
+        self,
+        finding_id: str,
+        *,
+        limit: int = 50,
+        window_years: int = 1,
+    ) -> dict | None:
+        '''Surface checkbook transactions implicated by an AG finding.
+
+        This is the core triangulation payoff: given an Auditor-General
+        finding (e.g. "$950K across 309 contracts lacked procurement
+        documentation"), pull the matching checkbook transactions so a
+        reviewer can go from the audited finding straight to the underlying
+        spend.
+
+        The match is deterministic and *contextual*, not an accusation:
+          1. Same agency (via ``agency_checkbook`` on the report).
+          2. Fiscal-year window: the audit FY +/- ``window_years`` (audits
+             review a period, and posting dates straddle FY boundaries).
+          3. Optional narrowing by the finding's ``fund_keyword`` and
+             ``program_area`` when present (matched against the fund and
+             category columns).
+
+        Returns ``None`` when the AG tables are absent or the finding id is
+        unknown. The returned ``transactions`` are *context for the finding*,
+        never themselves "flagged" -- the disclaimer travels in ``basis``.
+        '''
+        if not (self._table_exists("ag_findings")
+                and self._table_exists("ag_reports")
+                and self._table_exists("transactions")):
+            return None
+        limit = max(1, min(int(limit), 200))
+        window_years = max(0, min(int(window_years), 3))
+
+        # Resolve the finding + its report context. Prefer ag_finding_context
+        # (carries program_area / fund_keyword) and fall back to the raw join.
+        ctx = None
+        if self._table_exists("ag_finding_context"):
+            rows = self._query(
+                """
+                SELECT finding_id, report_id, agency, fiscal_year,
+                       substring(finding_text, 1, 600) AS finding_text_preview,
+                       questioned_cost_usd, questioned_cost_confidence,
+                       questioned_cost_basis, has_adverse_findings,
+                       program_area, fund_keyword
+                FROM ag_finding_context WHERE finding_id = ?
+                """,
+                (finding_id,),
+            )
+            ctx = rows[0] if rows else None
+        if ctx is None:
+            rows = self._query(
+                """
+                SELECT f.finding_id, f.report_id,
+                       r.agency_checkbook AS agency, r.fiscal_year,
+                       substring(f.finding_text, 1, 600) AS finding_text_preview,
+                       f.questioned_cost_usd, f.questioned_cost_confidence,
+                       f.questioned_cost_basis, f.has_adverse_findings,
+                       NULL AS program_area, NULL AS fund_keyword
+                FROM ag_findings f
+                JOIN ag_reports r ON r.report_id = f.report_id
+                WHERE f.finding_id = ?
+                """,
+                (finding_id,),
+            )
+            ctx = rows[0] if rows else None
+        if ctx is None or not ctx.get("agency"):
+            return None
+
+        agency = ctx["agency"]
+        fy = ctx.get("fiscal_year")
+        fund_kw = (ctx.get("fund_keyword") or "").strip()
+        prog = (ctx.get("program_area") or "").strip()
+
+        where = ["amount IS NOT NULL", "transaction_type = 'EX'",
+                 "organization_level_1_name = ?"]
+        params: list[Any] = [agency]
+
+        if fy:
+            where.append("fiscal_year BETWEEN ? AND ?")
+            params.extend([int(fy) - window_years, int(fy) + window_years])
+
+        # Narrow by fund keyword when the finding names a specific fund.
+        narrowed_by = []
+        if fund_kw:
+            where.append(
+                "(upper(fund_1_name) LIKE ? OR upper(fund_2_name) LIKE ?)"
+            )
+            kw = f"%{fund_kw.upper()}%"
+            params.extend([kw, kw])
+            narrowed_by.append(f"fund~'{fund_kw}'")
+
+        where_sql = " AND ".join(where)
+
+        total_row = self._query(
+            f"SELECT round(sum(amount), 0) AS total, count(*) AS n "
+            f"FROM transactions WHERE {where_sql}",
+            tuple(params),
+        )[0]
+
+        txns = self._query(
+            f"""
+            SELECT posting_date, fiscal_year,
+                   payee_customer_vendor_name AS payee,
+                   category_level_2_name AS category,
+                   fund_1_name AS fund,
+                   contract_number, contract_name,
+                   round(amount, 0) AS amount,
+                   transaction_id
+            FROM transactions WHERE {where_sql}
+            ORDER BY amount DESC
+            LIMIT ?
+            """,
+            tuple(params) + (limit,),
+        )
+
+        return {
+            "finding_id": finding_id,
+            "report_id": ctx.get("report_id"),
+            "agency": agency,
+            "audit_fiscal_year": fy,
+            "fiscal_year_window": (
+                [int(fy) - window_years, int(fy) + window_years] if fy else None
+            ),
+            "finding_text_preview": ctx.get("finding_text_preview"),
+            "questioned_cost_usd": ctx.get("questioned_cost_usd"),
+            "questioned_cost_confidence": ctx.get("questioned_cost_confidence"),
+            "questioned_cost_basis": ctx.get("questioned_cost_basis"),
+            "has_adverse_findings": ctx.get("has_adverse_findings"),
+            "program_area": prog or None,
+            "fund_keyword": fund_kw or None,
+            "narrowed_by": narrowed_by,
+            "matched_total": total_row["total"],
+            "matched_n_txns": total_row["n"],
+            "transactions": txns,
+            "basis": (
+                "Transactions are checkbook spend by the SAME AGENCY within the "
+                "audit's fiscal-year window (cash-basis), provided as CONTEXT "
+                "for the audited finding. They are NOT themselves audit findings "
+                "or allegations -- the AG finding concerns the agency's "
+                "operations, not any individual payee listed here."
+            ),
+        }
+
     def verdicts_pending(self, tier: int = 1, limit: int = 50) -> list[dict]:
         """Tier-1 entities awaiting human curation (the reviewer's queue)."""
         return self._query(

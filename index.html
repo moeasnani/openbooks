@@ -75,6 +75,26 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .slbl{color:var(--mut);font-size:11px}
 .subtitle{color:var(--mut);font-weight:400;font-size:12px}
 .framing{font-size:11px;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:7px;padding:6px 10px;margin:10px 0 2px}
+/* transparency + drill-down */
+.hero-stat-row{display:flex;gap:14px;flex-wrap:wrap}
+.hero-stat{flex:1 1 160px;background:var(--card-hi);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.hero-stat .hs-v{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.5px}
+.hero-stat:first-child .hs-v{color:var(--t1)}
+.hero-stat .hs-l{font-size:11px;color:var(--mut);margin-top:3px}
+.two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px}
+@media(max-width:760px){.two-col{grid-template-columns:1fr}}
+.ubar{display:inline-block;width:78px;height:7px;background:var(--line);border-radius:4px;overflow:hidden;vertical-align:middle}
+.ubar-fill{height:100%;border-radius:4px}
+.ubar-fill.t1{background:var(--t1)}.ubar-fill.t2{background:var(--t2)}.ubar-fill.t3{background:var(--t3)}
+.ubar-pct{font-size:10.5px;color:var(--mut);margin-left:6px}
+.linklike{background:none;border:none;color:var(--acc);cursor:pointer;padding:0;font:inherit;text-align:left}
+.linklike:hover{text-decoration:underline}
+button.drill{font-size:11px;padding:4px 9px;white-space:nowrap}
+.drill-box{background:#0d1828;border:1px solid #1d3a5c;border-left:3px solid var(--acc);border-radius:8px;padding:10px 12px;margin:4px 0 8px}
+.drill-head{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.drill-head .kpi{background:#0a1422;border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+.kpi-v{font-size:16px;font-weight:700;color:var(--acc)}
+.kpi-l{font-size:10px;color:var(--mut);margin-top:2px}
 footer.disclaimer{position:sticky;bottom:0;background:#0d0a04f5;border-top:1px solid var(--warn-line);color:var(--warn-ink);font-size:10.5px;line-height:1.45;padding:7px 16px;backdrop-filter:blur(8px);z-index:20}
 .merged{margin:8px 0;padding:8px 10px;background:var(--card-hi);border-radius:7px;font-size:11.5px}
 .agctx{margin:8px 0;padding:7px 10px;background:#0d1828;border:1px solid #1d3a5c;border-left:3px solid var(--acc);border-radius:7px;font-size:11px;color:#9fc0e8;line-height:1.5}
@@ -247,6 +267,7 @@ table.aitbl{margin:8px 0;width:100%}
     <div class="tabmenu" id="menu-audit">
       <button data-p="findings">AG Findings Search</button>
       <button data-p="agleaders">AG Leaderboard</button>
+      <button data-p="transparency">Untraceable Spend</button>
     </div>
   </div>
   <button class="tab" data-p="ask" role="tab">&#128172; Ask</button>
@@ -265,7 +286,7 @@ table.aitbl{margin:8px 0;width:100%}
 </div>
 
 <footer class="disclaimer">
-<b>Data contract:</b> every tier, marker, and flag is a <b>lead warranting confirmation — never a finding of fraud, misconduct, or illegality</b>. No individual or entity is accused. Figures are cash-basis checkbook data and differ from audited GAAP (the ACFR governs). Authorized amounts are FY2026–27 appropriations (SB1847); actual spend is FY2025 checkbook — fiscal-year and basis differences mean variance is directional context, not a deficit calculation. FY2022 is absent from source data; FY2019–2020 lack vendor/appropriation identifiers and under-flag by construction. "Machine-screened" means <i>not yet reviewed</i> — never clean. Analytics only; State of Arizona spending.
+<b>Data contract:</b> every tier, marker, and flag is a <b>lead warranting confirmation — never a finding of fraud, misconduct, or illegality</b>. No individual or entity is accused. Figures are cash-basis checkbook data and differ from audited GAAP (the ACFR governs). Authorized amounts are FY2025-26 appropriations (SB1847, first year of the biennium); actual spend is FY2025 checkbook (prior year) — fiscal-year and basis differences mean variance is a directional YoY signal, not a deficit or overage calculation. FY2022 is absent from source data; FY2019–2020 lack vendor/appropriation identifiers and under-flag by construction. "Machine-screened" means <i>not yet reviewed</i> — never clean. Analytics only; State of Arizona spending.
 </footer>
 
 <script>
@@ -561,20 +582,74 @@ function renderFindings(d) {
         esc(f.questioned_cost_confidence) + "</span>" : '<span class="mut">—</span>';
     const preview = (f.finding_text_preview || f.finding_text || "")
       .replace(/\s+/g, " ").slice(0, 220);
-    return "<tr><td>" + esc(f.finding_id) + adv + "</td>" +
+    const drill = f.finding_id
+      ? '<button class="ghost drill" data-finding-tx="' + esc(f.finding_id) +
+        '" title="Show checkbook transactions implicated by this finding">&#128269; Trace spend</button>'
+      : "";
+    return '<tr><td>' + esc(f.finding_id) + adv + "</td>" +
       "<td>" + esc(f.agency || "") + "</td>" +
       '<td class="mut">' + (f.fiscal_year ? "FY" + f.fiscal_year : "—") + "</td>" +
       '<td class="n">' + qc + "</td>" +
       "<td>" + conf + "</td>" +
-      '<td class="mut" style="font-size:10.5px;max-width:380px">' + esc(preview) +
+      '<td class="mut" style="font-size:10.5px;max-width:340px">' + esc(preview) +
       (f.report_id ? ' <span class="mut">[' + esc(f.report_id) + "]</span>" : "") +
-      "</td></tr>";
+      "</td><td>" + drill + "</td></tr>" +
+      '<tr class="drill-slot"><td colspan="7"><div id="ftx-' + esc(f.finding_id) + '"></div></td></tr>';
   }).join("");
-  return '<div class="framing">Full-text search across Arizona Auditor-General audit findings (finding text, recommendations, report titles). These are <b>audited findings</b>, distinct from the warehouse tier "leads."</div>' +
+  return '<div class="framing">Full-text search across Arizona Auditor-General audit findings (finding text, recommendations, report titles). These are <b>audited findings</b>, distinct from the warehouse tier "leads." Click <b>Trace spend</b> to see the checkbook transactions the finding covers.</div>' +
     '<div class="meta">' + d.n + ' matching finding' + (d.n === 1 ? "" : "s") +
     ' for <b>' + esc(d.query) + "</b></div>" +
-    '<table><thead><tr><th>Finding</th><th>Agency</th><th>FY</th><th class=n>Questioned $</th><th>Conf.</th><th>Preview</th></tr></thead><tbody>' +
+    '<table><thead><tr><th>Finding</th><th>Agency</th><th>FY</th><th class=n>Questioned $</th><th>Conf.</th><th>Preview</th><th></th></tr></thead><tbody>' +
     rows + "</tbody></table>";
+}
+
+/* ── Finding → implicated transactions (triangulation drill-down) ───── */
+
+async function loadFindingTx(findingId) {
+  const slot = el("ftx-" + findingId);
+  if (!slot) return;
+  if (slot.dataset.loaded === "1") {   // toggle closed
+    slot.innerHTML = ""; slot.dataset.loaded = "";
+    return;
+  }
+  slot.innerHTML = spinner;
+  try {
+    const d = await api("/api/finding-transactions?id=" +
+      encodeURIComponent(findingId) + "&limit=25");
+    slot.innerHTML = renderFindingTx(d);
+    slot.dataset.loaded = "1";
+  } catch (e) { slot.innerHTML = errBox(e); }
+}
+
+function renderFindingTx(d) {
+  if (!d) return '<div class="empty">No transaction context available for this finding.</div>';
+  const win = d.fiscal_year_window
+    ? "FY" + d.fiscal_year_window[0] + "–FY" + d.fiscal_year_window[1] : "all years";
+  const qc = d.questioned_cost_usd != null
+    ? '<div class="kpi"><div class="kpi-v">' + fmt(d.questioned_cost_usd) +
+      '</div><div class="kpi-l">AG questioned cost</div></div>' : "";
+  const narrowed = (d.narrowed_by && d.narrowed_by.length)
+    ? ' · narrowed by ' + d.narrowed_by.map(esc).join(", ")
+    : ' · agency-wide (no fund narrowing)';
+  const rows = (d.transactions || []).map(t =>
+    "<tr><td class=\"mut\">" + esc(String(t.posting_date || "")) + "</td>" +
+    "<td>" + esc(t.payee || "(unattributed)") + "</td>" +
+    '<td class="mut" style="font-size:10.5px">' + esc(t.category || "") + "</td>" +
+    '<td class="mut" style="font-size:10.5px">' + esc(t.fund || "") + "</td>" +
+    '<td class="mut">' + (t.contract_number ? esc(t.contract_number) : "—") + "</td>" +
+    '<td class="n">' + fmt(t.amount) + "</td></tr>"
+  ).join("");
+  return '<div class="drill-box">' +
+    '<div class="drill-head">' + qc +
+    '<div class="kpi"><div class="kpi-v">' + fmt(d.matched_total) + '</div>' +
+    '<div class="kpi-l">matched spend · ' + (d.matched_n_txns || 0).toLocaleString() + ' txns</div></div>' +
+    '<div class="kpi"><div class="kpi-v">' + esc(win) + '</div>' +
+    '<div class="kpi-l">' + esc(d.agency || "") + narrowed + '</div></div></div>' +
+    '<div class="framing" style="margin:6px 0">' + esc(d.basis || "") + "</div>" +
+    (rows
+      ? '<table style="margin-top:4px"><thead><tr><th>Date</th><th>Payee</th><th>Category</th><th>Fund</th><th>Contract</th><th class=n>Amount</th></tr></thead><tbody>' + rows + "</tbody></table>"
+      : '<div class="mut" style="font-size:11px">No matching transactions in the window.</div>') +
+    "</div>";
 }
 
 /* ── AG Leaderboard ────────────────────────────────────────────────── */
@@ -609,8 +684,60 @@ function renderAgLeaders(d) {
     "</tbody></table></div>";
 }
 
-/* ── Ask (conversational router) ───────────────────────────────────── */
+/* ── Untraceable / unattributed spend (transparency) ───────────────── */
 
+async function loadTransparency() {
+  const out = el("out");
+  if (out) out.innerHTML = spinner;
+  try {
+    const d = await api("/api/unattributed?limit=20");
+    if (out) out.innerHTML = renderTransparency(d);
+  } catch (e) { if (out) out.innerHTML = errBox(e); }
+}
+
+function renderTransparency(d) {
+  if (!d || d.error) return '<div class="empty">' + esc((d && d.error) || "No data") + "</div>";
+  const bucketRows = (d.by_bucket || []).map(b =>
+    "<tr><td>" + esc(b.label) + "</td>" +
+    '<td class="n">' + fmt(b.usd) + "</td>" +
+    '<td class="n mut">' + (b.n_txns || 0).toLocaleString() + "</td></tr>"
+  ).join("");
+  const agencyRows = (d.by_agency || []).map((a, i) => {
+    const pct = a.unattributed_pct || 0;
+    const barW = Math.min(100, pct);
+    const cls = pct >= 70 ? "t1" : pct >= 40 ? "t2" : "t3";
+    return "<tr><td class=n>" + (i + 1) + "</td>" +
+      '<td><button class="linklike" data-agency360="' + esc(a.agency || "") + '">' +
+      esc(a.agency || "") + "</button></td>" +
+      '<td class="n">' + fmt(a.unattributed) + "</td>" +
+      '<td class="n mut">' + fmt(a.total_spend) + "</td>" +
+      '<td style="min-width:140px"><div class="ubar"><div class="ubar-fill ' + cls +
+      '" style="width:' + barW + '%"></div></div>' +
+      '<span class="ubar-pct">' + pct.toFixed(1) + "%</span></td></tr>";
+  }).join("");
+  const heroPct = d.unattributed_pct || 0;
+  return '<div class="card" style="padding:16px">' +
+    '<h2 style="margin:0 0 4px">&#128274; Untraceable Spend <span class="subtitle">money that left the treasury without a named recipient</span></h2>' +
+    '<div class="hero-stat-row" style="margin:12px 0">' +
+      '<div class="hero-stat"><div class="hs-v">' + fmt(d.unattributed_total) + '</div>' +
+      '<div class="hs-l">unattributed (' + heroPct.toFixed(1) + '% of all spend)</div></div>' +
+      '<div class="hero-stat"><div class="hs-v">' + fmt(d.total_spend) + '</div>' +
+      '<div class="hs-l">total expenditure</div></div>' +
+      '<div class="hero-stat"><div class="hs-v">' + (d.unattributed_n_txns || 0).toLocaleString() + '</div>' +
+      '<div class="hs-l">untraceable transactions</div></div>' +
+    "</div>" +
+    '<div class="framing">' + esc(d.basis || "") + "</div>" +
+    '<div class="two-col" style="margin-top:12px">' +
+      '<div><h3 style="margin:0 0 6px;font-size:13px">By reason</h3>' +
+      '<table><thead><tr><th>Reason</th><th class=n>Amount</th><th class=n>Txns</th></tr></thead><tbody>' +
+      bucketRows + "</tbody></table></div>" +
+      '<div><h3 style="margin:0 0 6px;font-size:13px">Top agencies by untraceable $</h3>' +
+      '<table><thead><tr><th>#</th><th>Agency</th><th class=n>Untraceable</th><th class=n>Total</th><th>Share</th></tr></thead><tbody>' +
+      agencyRows + "</tbody></table></div>" +
+    "</div></div>";
+}
+
+/* ── Ask (conversational router) ───────────────────────────────────── */
 const ASK_EXAMPLES = [
   "Which agencies spent the most over budget?",
   "Tell me about Fondomonte",
@@ -685,7 +812,7 @@ async function answerVariance(slot) {
     const d = await loadTriangulation();
     const matched = d.agencies.filter(a => a.matched && a.variance != null);
     const over = matched.filter(a => a.variance > 0).sort((a, b) => b.variance - a.variance).slice(0, 12);
-    slot.innerHTML = '<div class="meta">Agencies spending the most above their FY2026–27 authorization (FY2025 actual). Click any row for the 360° view.</div>' +
+    slot.innerHTML = '<div class="meta">Agencies where FY2025 actual spend most exceeds FY2025-26 budget authorization — a YoY directional signal, not an overage. Click any row for the 360° view.</div>' +
       varianceTable(over, "over");
   } catch (e) { slot.innerHTML = errBox(e); }
 }
@@ -841,7 +968,10 @@ async function renderDashboard() {
   catch (e) { m.innerHTML = errBox(e); return; }
   const s = d.summary;
 
-  const auth = s.total_authorized, actual = s.total_actual_spend_fy25;
+  // Use matched-only authorized for the variance bar so the comparison
+  // is apples-to-apples (spend is only available for matched agencies).
+  const authMatched = s.total_authorized_matched || s.total_authorized;
+  const auth = authMatched, actual = s.total_actual_spend_fy25;
   const max = Math.max(auth, actual);
   const authW = (auth / max * 100), actualPos = (actual / max * 100);
   const overPct = s.overall_variance_pct;
@@ -852,7 +982,7 @@ async function renderDashboard() {
   // hero pillars
   html += '<div class="dash-hero">';
   html += '<div class="pillar budget"><div class="picon">📜</div><div class="plbl">Authorized · Budget</div>' +
-    '<div class="pval">' + fmt(auth) + '</div><div class="psub">FY2026–27 appropriations across ' + s.n_budget_agencies + ' agencies</div></div>';
+    '<div class="pval">' + fmt(s.total_authorized) + '</div><div class="psub">FY2025-26 appropriations across ' + s.n_budget_agencies + ' agencies</div></div>';
   html += '<div class="pillar actual"><div class="picon">💸</div><div class="plbl">Actual · Checkbook</div>' +
     '<div class="pval">' + fmt(actual) + '</div><div class="psub">FY2025 spend across ' + s.n_matched + ' matched agencies</div></div>';
   html += '<div class="pillar audit"><div class="picon">⚖️</div><div class="plbl">Flagged · Audit</div>' +
@@ -861,17 +991,17 @@ async function renderDashboard() {
 
   // variance bar
   html += '<div class="varbar-wrap">';
-  html += '<div class="varbar-title"><span>Statewide: Authorized vs. Actual</span>' +
-    '<span class="varbar-pct ' + overCls + '">' + pct1(overPct) + (overPct >= 0 ? " over authorization" : " under") + '</span></div>';
+  html += '<div class="varbar-title"><span>Statewide: Budget Authorization vs. Prior-Year Spend</span>' +
+    '<span class="varbar-pct ' + overCls + '">' + pct1(overPct) + (overPct >= 0 ? " above authorization" : " below") + '</span></div>';
   html += '<div class="varbar-track">';
   html += '<div class="varbar-auth" style="width:' + authW.toFixed(1) + '%">Authorized ' + fmt(auth) + '</div>';
   html += '<div class="varbar-actual-line" style="left:' + actualPos.toFixed(1) + '%"></div>';
   html += '<div class="varbar-actual-flag" style="left:' + actualPos.toFixed(1) + '%">Actual ' + fmt(actual) + '</div>';
   html += '</div>';
   html += '<div class="varbar-legend">' +
-    '<span><span class="dot" style="background:var(--budget)"></span>Authorized (FY2026–27 budget)</span>' +
+    '<span><span class="dot" style="background:var(--budget)"></span>Authorized (FY2025-26 budget)</span>' +
     '<span><span class="dot" style="background:var(--actual)"></span>Actual (FY2025 checkbook)</span>' +
-    '<span class="mut">Δ ' + fmt(s.overall_variance) + ' — directional, not a deficit (basis &amp; FY differ)</span></div>';
+    '<span class="mut">Δ ' + fmt(s.overall_variance) + ' — YoY directional signal, not a deficit (basis &amp; FY differ; matched agencies only)</span></div>';
   html += '</div>';
 
   // top variance dual-bar chart
@@ -920,7 +1050,7 @@ async function renderDashboard() {
   const unmatched = s.n_budget_agencies - s.n_matched;
   html += '<div class="framing" style="margin-top:18px">Coverage: <b>' + s.n_matched + ' of ' + s.n_budget_agencies +
     '</b> budget agencies matched to checkbook spend (' + unmatched + ' unmatched — typically pass-through, aid, or differently-named entities, shown with “—” actuals). ' +
-    'Risk score blends budget overage with AG audit exposure; it is a triage signal, <b>not</b> a finding of wrongdoing.</div>';
+    'Risk score blends budget variance with AG audit exposure; it is a triage signal, <b>not</b> a finding of wrongdoing.</div>';
 
   m.innerHTML = html;
 }
@@ -953,10 +1083,10 @@ function openAgency360(name) {
   let lampCls = "tri-grey", lampTxt = "Not matched to checkbook spend — variance unavailable.";
   if (a.matched && a.variance_pct != null) {
     const v = a.variance_pct;
-    if (v > 25) { lampCls = "tri-red"; lampTxt = "Actual spend " + pct1(v) + " above authorization — high variance."; }
-    else if (v > 10) { lampCls = "tri-yellow"; lampTxt = "Actual spend " + pct1(v) + " above authorization — moderate variance."; }
-    else if (v >= -10) { lampCls = "tri-green"; lampTxt = "Actual spend within ±10% of authorization (" + pct1(v) + ")."; }
-    else { lampCls = "tri-green"; lampTxt = "Actual spend " + pct1(v) + " — well under authorization."; }
+    if (v > 25) { lampCls = "tri-red"; lampTxt = "Prior-year spend " + pct1(v) + " above new budget — high YoY variance."; }
+    else if (v > 10) { lampCls = "tri-yellow"; lampTxt = "Prior-year spend " + pct1(v) + " above new budget — moderate YoY variance."; }
+    else if (v >= -10) { lampCls = "tri-green"; lampTxt = "Prior-year spend within ±10% of new budget (" + pct1(v) + ")."; }
+    else { lampCls = "tri-green"; lampTxt = "Prior-year spend " + pct1(v) + " — well under new budget."; }
   }
 
   el("modal-meta").innerHTML =
@@ -992,7 +1122,7 @@ function openAgency360(name) {
     const yoy = (a.actual_spend_fy24 && a.actual_spend_fy24 !== 0) ? ((a.actual_spend_fy25 - a.actual_spend_fy24) / a.actual_spend_fy24 * 100) : null;
     body += '<div class="tp-line"><span class="k">YoY change</span><span class="v ' + (yoy != null && yoy > 0 ? "var-up" : yoy != null ? "var-down" : "") + '">' + (yoy != null ? pct1(yoy) : "—") + '</span></div>';
     body += '<div class="tp-line"><span class="k">FY25 transactions</span><span class="v">' + (a.n_txn_fy25 != null ? a.n_txn_fy25.toLocaleString() : "—") + '</span></div>';
-    body += '<div class="tp-line"><span class="k">vs. authorized</span><span class="v ' + (a.variance > 0 ? "var-up" : "var-down") + '">' + (a.variance > 0 ? "+" : "") + fmt(a.variance) + ' (' + pct1(a.variance_pct) + ')</span></div>';
+    body += '<div class="tp-line"><span class="k">vs. new budget</span><span class="v ' + (a.variance > 0 ? "var-up" : "var-down") + '">' + (a.variance > 0 ? "+" : "") + fmt(a.variance) + ' (' + pct1(a.variance_pct) + ')</span></div>';
   } else {
     body += '<div class="mut" style="padding:16px 0;font-size:12px">No checkbook match for this budget entity. May be pass-through funding, aid, or recorded under a different agency name.</div>';
   }
@@ -1028,9 +1158,9 @@ function renderBudgetOverview(d) {
   const s = d.summary;
   const ags = d.agencies;
   let html = '<div class="bdg-grid">';
-  html += '<div class="bdg-stat acc"><span class="sval">' + fmt(s.total_authorized) + '</span><span class="slbl">Authorized (FY2026–27)</span></div>';
+  html += '<div class="bdg-stat acc"><span class="sval">' + fmt(s.total_authorized_matched) + '</span><span class="slbl">Authorized · Matched (FY2025-26)</span></div>';
   html += '<div class="bdg-stat grn"><span class="sval">' + fmt(s.total_actual_spend_fy25) + '</span><span class="slbl">Actual Spend (FY2025)</span></div>';
-  html += '<div class="bdg-stat t1"><span class="sval">' + pct1(s.overall_variance_pct) + '</span><span class="slbl">Statewide Variance</span></div>';
+  html += '<div class="bdg-stat t1"><span class="sval">' + pct1(s.overall_variance_pct) + '</span><span class="slbl">YoY Δ (matched ' + s.n_matched + ')</span></div>';
   html += '<div class="bdg-stat"><span class="sval">' + s.n_budget_agencies + '</span><span class="slbl">Agencies</span></div>';
   html += '<div class="bdg-stat yel"><span class="sval">' + s.n_matched + '</span><span class="slbl">Matched to Spend</span></div>';
   html += '</div>';
@@ -1068,11 +1198,11 @@ function renderBudgetVariance(d) {
   const matched = d.agencies.filter(a => a.matched && a.variance != null);
   const over = matched.filter(a => a.variance > 0).sort((a, b) => b.variance - a.variance);
   const under = matched.filter(a => a.variance <= 0).sort((a, b) => a.variance - b.variance);
-  let html = '<div class="sec-title" style="margin-top:6px">🔺 Spending Above Authorization</div>';
-  html += '<div class="sec-sub">FY2025 actual exceeds FY2026–27 authorization. Directional — basis &amp; fiscal year differ.</div>';
+  let html = '<div class="sec-title" style="margin-top:6px">🔺 Prior-Year Spend Above New Budget</div>';
+  html += '<div class="sec-sub">FY2025 actual spend exceeds FY2025-26 budget authorization — a YoY directional signal (basis &amp; fiscal year differ).</div>';
   html += over.length ? varianceTable(over.slice(0, 25), "over") : '<div class="empty">None</div>';
-  html += '<div class="sec-title">🔻 Spending Below Authorization</div>';
-  html += '<div class="sec-sub">FY2025 actual under authorization (or near it).</div>';
+  html += '<div class="sec-title">🔻 Prior-Year Spend Below New Budget</div>';
+  html += '<div class="sec-sub">FY2025 actual spend under FY2025-26 budget authorization (or near it).</div>';
   html += under.length ? varianceTable(under.slice(0, 25), "under") : '<div class="empty">None</div>';
   return html;
 }
@@ -1242,6 +1372,9 @@ async function render() {
     case "pending": case "waterfall":
       m.innerHTML = '<div id="out">' + spinner + "</div>";
       break;
+    case "transparency":
+      m.innerHTML = '<div id="out">' + spinner + "</div>";
+      break;
   }
   if (panel === "ask") {
     const ex = el("askex");
@@ -1283,12 +1416,14 @@ async function render() {
     try { el("out").innerHTML = renderWaterfall(await api("/api/waterfall")); }
     catch (e) { el("out").innerHTML = errBox(e); }
   }
+  if (panel === "transparency") { loadTransparency(); }
 }
 
 /* ── tab + menu wiring ─────────────────────────────────────────────── */
 
 const PANEL_PARENT = { vendor: "investigate", leads: "investigate", agency: "investigate",
-  pending: "investigate", waterfall: "investigate", findings: "audit", agleaders: "audit" };
+  pending: "investigate", waterfall: "investigate", findings: "audit", agleaders: "audit",
+  transparency: "audit" };
 
 function closeAllMenus() {
   document.querySelectorAll(".tabwrap.open").forEach(w => w.classList.remove("open"));
@@ -1334,6 +1469,8 @@ el("main").addEventListener("click", e => {
   if (pa) { renderAgencyInto(pa.closest(".aslot") || pa.parentElement, pa.dataset.askAgency); return; }
   const x = e.target.closest("[data-explain]");
   if (x) { e.stopPropagation(); loadExplain(x.dataset.explain, x.dataset.slot); return; }
+  const ftx = e.target.closest("[data-finding-tx]");
+  if (ftx) { e.stopPropagation(); loadFindingTx(ftx.dataset.findingTx); return; }
   const c = e.target.closest(".chd");
   if (c) c.parentElement.classList.toggle("open");
 });

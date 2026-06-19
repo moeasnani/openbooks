@@ -88,6 +88,17 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("ask", help="natural-language question (via LLM tool-calling)")
     p.add_argument("question")
 
+    p = sub.add_parser("unattributed", help="spend that cannot be traced to a named payee")
+    p.add_argument("agency", nargs="?", default=None, help="optional agency filter")
+    p.add_argument("--fy", type=int, default=None, help="restrict to a fiscal year")
+    p.add_argument("--limit", type=int, default=25)
+
+    p = sub.add_parser("finding-transactions",
+                       help="checkbook transactions implicated by an AG finding")
+    p.add_argument("finding_id", help="e.g. 19-109-F01")
+    p.add_argument("--limit", type=int, default=50)
+    p.add_argument("--window", type=int, default=1, help="fiscal-year window (+/-)")
+
     args = parser.parse_args(argv)
 
     if args.postgres:
@@ -131,6 +142,14 @@ def main(argv: list[str] | None = None) -> int:
             result = ob.search_findings(args.text, limit=args.limit)
         elif args.command == "rank-ag-findings":
             result = ob.rank_ag_findings(metric=args.metric, limit=args.limit)
+        elif args.command == "unattributed":
+            result = ob.unattributed_spend(
+                args.agency, fiscal_year=args.fy, limit=args.limit,
+            )
+        elif args.command == "finding-transactions":
+            result = ob.finding_transactions(
+                args.finding_id, limit=args.limit, window_years=args.window,
+            )
         else:  # pending
             result = ob.verdicts_pending(limit=args.limit)
     finally:

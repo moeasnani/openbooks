@@ -334,6 +334,19 @@ def make_handler(ob: OpenBooks, *, cors: str | None, static_dir: str):
                 "/api/health": lambda: {"status": "ok"},
                 "/api/budget": _load_budget_json,
                 "/api/triangulation": lambda: _triangulation_data(ob),
+                "/api/unattributed": lambda: ob.unattributed_spend(
+                    _first(params, "agency") or None,
+                    fiscal_year=(
+                        _int_param(params, "fy", 0, lo=1990, hi=2100)
+                        if _first(params, "fy") else None
+                    ),
+                    limit=_int_param(params, "limit", 25, hi=200),
+                ),
+                "/api/finding-transactions": lambda: ob.finding_transactions(
+                    _first(params, "id", "") or "",
+                    limit=_int_param(params, "limit", 50, hi=200),
+                    window_years=_int_param(params, "window", 1, lo=0, hi=3),
+                ),
             }
             fn = routes.get(path)
             if fn is None:

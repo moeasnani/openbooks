@@ -524,6 +524,68 @@ def _tool_specs() -> list[dict]:
                 },
             },
         },
+        {
+            "type": "function",
+            "function": {
+                "name": "unattributed_spend",
+                "description": (
+                    "TRANSPARENCY metric: how much spending cannot be traced "
+                    "to a named payee (payee is blank, 'N/A', redacted, or "
+                    "confidential). Use for 'how much spending is "
+                    "untraceable/dark/unattributed', 'which agencies hide the "
+                    "most spending', 'redacted spending'. Statewide by default; "
+                    "pass an agency to scope it. Returns a per-bucket split and "
+                    "an agency leaderboard. NOTE: some redaction is statutory "
+                    "(benefits to individuals) — this is a transparency metric, "
+                    "NOT an allegation of wrongdoing."
+                ),
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "agency": {
+                            "type": "string",
+                            "description": "optional agency filter; omit for statewide",
+                        },
+                        "fiscal_year": {"type": "integer"},
+                        "limit": {"type": "integer", "default": 25},
+                    },
+                },
+            },
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "finding_transactions",
+                "description": (
+                    "TRIANGULATION drill-down: given an Auditor-General "
+                    "finding id (e.g. '19-109-F01'), pull the checkbook "
+                    "transactions implicated by that finding — same agency, "
+                    "within the audit's fiscal-year window, optionally narrowed "
+                    "by the finding's fund. Use AFTER search_findings or "
+                    "rank_ag_findings to go from an audited finding to the "
+                    "underlying spend ('show me the transactions behind that "
+                    "finding', 'what spending does this finding cover'). The "
+                    "transactions are CONTEXT for the finding, not themselves "
+                    "flagged or accused."
+                ),
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "finding_id": {
+                            "type": "string",
+                            "description": "AG finding id, e.g. '19-109-F01'",
+                        },
+                        "limit": {"type": "integer", "default": 50},
+                        "window_years": {
+                            "type": "integer",
+                            "default": 1,
+                            "description": "fiscal-year window around the audit FY (+/-)",
+                        },
+                    },
+                    "required": ["finding_id"],
+                },
+            },
+        },
     ]
 
 
@@ -573,6 +635,16 @@ def _dispatch_tool(ob: Any, name: str, args: dict) -> Any:
             metric=args.get("metric", "total_questioned_cost"),
             limit=int(args.get("limit", 10)),
         ),
+        "unattributed_spend": lambda: ob.unattributed_spend(
+            args.get("agency") or None,
+            fiscal_year=(int(args["fiscal_year"]) if args.get("fiscal_year") not in (None, "") else None),
+            limit=int(args.get("limit", 25)),
+        ),
+        "finding_transactions": lambda: ob.finding_transactions(
+            args.get("finding_id", ""),
+            limit=int(args.get("limit", 50)),
+            window_years=int(args.get("window_years", 1)),
+        ),
     }
     fn = table.get(name)
     if fn is None:
@@ -596,9 +668,58 @@ def _truncate(result: Any) -> Any:
 # LLM transport (stdlib urllib)
 # --------------------------------------------------------------------------
 
-SYSTEM_PROMPT = """You are the OpenBooks analyst assistant. You answer \
-questions about Arizona state spending using ONLY the OpenBooks query \
-tools provided. Rules:
+SYSTEM_PROMPT = """You are the OpenBooks analyst assistant for Arizona \
+state fiscal oversight. You answer questions using ONLY the OpenBooks \
+query tools provided.
+
+──────── DATASET CONTEXT (what the warehouse actually holds) ────────
+This is a three-way TRIANGULATION platform. Every answer should be
+framed against these three data universes, because the analytical value
+comes from cross-referencing them:
+
+  BUDGET  — what the legislature AUTHORIZED.
+    Source: SB 1847 General Appropriations Act (structured extraction).
+    The authorized figures are the FY2025-26 current-year appropriation
+    (NOT FY2026-27). 86 agencies; ~$47.4B total authorized. Each agency
+    entry carries line items, fund sources, and FTE positions.
+
+  CHECKBOOK — what was ACTUALLY SPENT.
+    Source: Arizona state open checkbook (cash-basis, NOT audited GAAP).
+    The `spend` tool reads the COMPLETE ledger — every transaction of
+    every size. Actual-spend figures used for variance are FY2025 (the
+    most recent completed fiscal year in the checkbook). Note: checkbook
+    amounts are classified by the state's own category codes, not by
+    audited budget lines; the State ACFR governs for GAAP figures.
+
+  AG FINDINGS — what auditors FLAGGED.
+    Source: Arizona Auditor-General (AG) performance-audit reports.
+    Official, audited results: questioned costs, adverse findings,
+    recommendations. Distinct from the warehouse's own tier "leads".
+
+Because authorized = FY2025-26 budget and actual = FY2025 checkbook
+(prior completed year), the variance between them is a YEAR-OVER-YEAR
+DIRECTIONAL indicator — it is NOT an "overage", "deficit", or "overspend"
+in the current year. 80 of 86 budget agencies match to a checkbook
+agency; the apples-to-apples matched authorized total is ~$47.3B and
+the statewide matched variance is roughly +35%. Always state the
+fiscal-year basis when you cite a variance.
+
+  FORENSIC TIERING (the `leads`/`rank_*`/`entity`/`agency_card` tools).
+    The ≥ $100K expenditure population (≈306,600 transactions carrying
+    ~83% of all state spending) is scored on ten forensic marker families
+    and assigned Tier 1-4 review priority. Tier 1 = highest scrutiny.
+    Tiers and markers are REVIEW-PRIORITIZATION LEADS, never findings of
+    fraud or wrongdoing — no entity is accused. These tools see ONLY the
+    high-value flagged subset and UNDERCOUNT real spending; use `spend`
+    for any total-spending question.
+
+When an answer touches more than one universe, connect them explicitly —
+e.g. note when a high-variance agency also carries AG adverse findings,
+or when a tier-1 lead sits inside a program the budget authorized. That
+cross-referencing is the point of the platform.
+──────── end dataset context ────────
+
+Rules:
 
 1. NEVER invent numbers, vendor names, agencies, or amounts. Every figure \
 in your answer must come from a tool result you actually received.

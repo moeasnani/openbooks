@@ -456,3 +456,60 @@ def test_rank_ag_findings_all_metrics(ob):
         out = ob.rank_ag_findings(metric, limit=3)
         assert out is not None
         assert out["ranked_by"] == metric
+
+
+# ── unattributed spend (transparency metric) ──────────────────────────
+
+def test_unattributed_spend_statewide(ob):
+    """Statewide untraceable-spend rollup: buckets + agency leaderboard."""
+    if not ob._table_exists("transactions"):
+        return
+    out = ob.unattributed_spend()
+    assert "error" not in out
+    # totals are internally consistent
+    assert out["unattributed_total"] <= out["total_spend"]
+    assert 0 <= out["unattributed_pct"] <= 100
+    # bucket dollars sum to the unattributed total
+    bucket_sum = sum(b["usd"] or 0 for b in out["by_bucket"])
+    assert bucket_sum == out["unattributed_total"]
+    # leaderboard is present and descending by unattributed $
+    vals = [a["unattributed"] for a in out["by_agency"]]
+    assert vals == sorted(vals, reverse=True)
+
+
+def test_unattributed_spend_agency_scoped(ob):
+    """Scoping to one agency drops the statewide leaderboard."""
+    if not ob._table_exists("transactions"):
+        return
+    out = ob.unattributed_spend("DEPT OF HEALTH SERVICES")
+    assert "error" not in out
+    assert out["by_agency"] == []          # no leaderboard when pinned
+    assert out["unattributed_total"] >= 0
+
+
+def test_unattributed_spend_bad_tt_raises(ob):
+    import pytest
+    with pytest.raises(ValueError):
+        ob.unattributed_spend(transaction_type="BOGUS")
+
+
+# ── finding → implicated transactions (triangulation drill-down) ───────
+
+def test_finding_transactions_known_finding(ob):
+    """The DHS $950K procurement finding maps to same-agency spend."""
+    if not (ob._table_exists("ag_findings") and ob._table_exists("transactions")):
+        return
+    out = ob.finding_transactions("19-109-F01")
+    if out is None:                         # finding id not in this build
+        return
+    assert out["agency"] == "DEPT OF HEALTH SERVICES"
+    assert out["audit_fiscal_year"] == 2019
+    assert out["fiscal_year_window"] == [2018, 2020]
+    assert out["matched_n_txns"] >= 0
+    assert isinstance(out["transactions"], list)
+
+
+def test_finding_transactions_unknown_returns_none(ob):
+    if not (ob._table_exists("ag_findings") and ob._table_exists("transactions")):
+        return
+    assert ob.finding_transactions("99-999-F99") is None
