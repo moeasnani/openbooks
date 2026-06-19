@@ -504,7 +504,21 @@ def main() -> None:  # pragma: no cover - CLI wrapper
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s")
 
     if args.postgres:
-        ob = OpenBooks.from_postgres(args.postgres)
+        try:
+            ob = OpenBooks.from_postgres(args.postgres)
+            # Probe the connection so an unreachable/misconfigured Postgres
+            # falls back to DuckDB instead of crashing the server at boot.
+            ob._query("SELECT 1")
+            logging.getLogger("openbooks.server").info(
+                "serving from Postgres: %s", args.postgres.rsplit("@", 1)[-1]
+            )
+        except Exception as exc:
+            fallback = args.db or os.path.join(_REPO_ROOT, "warehouse.duckdb")
+            logging.getLogger("openbooks.server").warning(
+                "Postgres unavailable (%s); falling back to DuckDB at %s",
+                exc, fallback,
+            )
+            ob = OpenBooks(fallback, writable=args.writable)
     else:
         db_path = args.db or os.path.join(_REPO_ROOT, "warehouse.duckdb")
         ob = OpenBooks(db_path, writable=args.writable)

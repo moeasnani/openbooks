@@ -28,13 +28,30 @@ openbooks/        ← the Python package (this is what you embed)
 index.html        ← single-file SPA consuming /api/*
 ```
 
-## Quick start (local, DuckDB)
+## Quick start
+
+DuckDB is the **build/ingestion engine** (it chews through the 115M-row
+`transactions` parquet); Postgres is the **default serving backend**. Build
+the warehouse once with DuckDB, push to Postgres, then serve.
 
 ```bash
-pip install -e .                                    # or: pip install -r requirements.txt
-python -m openbooks.bootstrap --duckdb warehouse.duckdb   # once per database
-python -m openbooks.server                          # → http://127.0.0.1:8765
+pip install -e '.[postgres]'                        # or: pip install -r requirements.txt
+python -m openbooks.bootstrap --duckdb warehouse.duckdb         # build once
+python scripts/load_entity_enrichment.py                       # Grok context -> tables
+python scripts/push_to_postgres.py --pg "$OPENBOOKS_PG_DSN"    # DuckDB -> Postgres
+python -m openbooks.server                          # → http://127.0.0.1:8765 (Postgres)
 ```
+
+The server reads `OPENBOOKS_PG_DSN` (from the environment or a project-root
+`.env`) and serves from Postgres by default. If Postgres is unreachable at
+boot it logs a warning and **falls back to the DuckDB warehouse**, so the
+dashboard never goes dark. Force DuckDB explicitly with `--db warehouse.duckdb`
+(or by unsetting `OPENBOOKS_PG_DSN`).
+
+> Note: the per-payee `transactions` grain (115M rows) lives only in DuckDB.
+> On Postgres, `spend()` uses the `spend_summary` rollup and
+> `unattributed_spend()` serves the `unattributed_context` snapshot
+> (flagged `snapshot: true`). Everything else is identical across backends.
 
 CLI queries:
 
@@ -49,7 +66,12 @@ Library use:
 ```python
 from openbooks import OpenBooks
 
-with OpenBooks("warehouse.duckdb") as ob:          # read-only by default
+# Serving (default): Postgres
+ob = OpenBooks.from_postgres("postgresql://app@dbhost/openbooks",
+                             mart_dir="/srv/openbooks/mart")
+
+# Build / local analysis: DuckDB (read-only by default)
+with OpenBooks("warehouse.duckdb") as ob:
     ob.entity("FONDOMONTE")
     ob.agency_card("DEPT OF TRANSPORTATION")
 
@@ -75,7 +97,9 @@ ob = OpenBooks.from_postgres("postgresql://app@dbhost/openbooks",
 ### Migration steps
 
 1. **Move the tables.** The read path needs: `tx_tiered`, `tier_entities`,
-   `tier_agency_summary`, `tier_agency_year`, `tier_program_summary`.
+   `tier_agency_summary`, `tier_agency_year`, `tier_program_summary`,
+   `agency_summary` (+ optional overlays: `ag_*`, `entity_grok_context`,
+   `unattributed_context`, and the `spend_summary` rollup).
    Easiest path — DuckDB's Postgres extension pushes them directly:
 
    ```sql
