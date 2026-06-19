@@ -1258,14 +1258,14 @@ class OpenBooks:
         limit = max(1, min(int(limit), 200))
 
         if not self._table_exists("transactions"):
-            return {
-                "error": (
-                    "the complete-ledger 'transactions' view is not available "
-                    "in this deployment; unattributed-spend analysis requires "
-                    "per-payee grain (DuckDB+parquet)."
-                ),
-                "agency": agency, "fiscal_year": fiscal_year,
-            }
+            # Postgres / rollup deployments don't carry the per-payee grain
+            # 'transactions' view (115M rows). Fall back to the committed
+            # unattributed_context snapshot, which holds the per-agency
+            # unattributed totals + Grok-verified statutory context. This is
+            # a point-in-time snapshot (not live re-computed), so we flag it.
+            return self._unattributed_spend_from_snapshot(
+                agency=agency, fiscal_year=fiscal_year, tt=tt, limit=limit
+            )
 
         col = "payee_customer_vendor_name"
         bucket_sql = self._UNATTRIBUTED_BUCKET_SQL.format(col=col)
@@ -1372,6 +1372,75 @@ class OpenBooks:
                 "Unattributed = payee blank, 'N/A', redacted, or confidential. "
                 "Some redaction is statutory (e.g. benefits to individuals); "
                 "this is a transparency metric, NOT an allegation of wrongdoing."
+            ),
+        }
+
+    def _unattributed_spend_from_snapshot(
+        self,
+        *,
+        agency: str | None,
+        fiscal_year: int | None,
+        tt: str,
+        limit: int,
+    ) -> dict:
+        """Serve unattributed-spend from the ``unattributed_context`` snapshot.
+
+        Used on deployments without the per-payee ``transactions`` view
+        (Postgres / rollup). The snapshot holds per-agency unattributed
+        totals + Grok-verified statutory context, computed once from the full
+        ledger at enrichment time. It is NOT live re-computed, and it does not
+        carry the per-bucket (blank/N-A/redacted) split, so those fields are
+        empty and ``snapshot: True`` is set so the UI can flag provenance.
+        """
+        enrich = self._unattributed_enrichment()
+        rows = []
+        resolved_agency = None
+        if agency:
+            res = self.resolve_agency(agency)
+            if res["confidence"] in ("exact", "strong"):
+                resolved_agency = res["match"]
+
+        for name, ctx in enrich.items():
+            if resolved_agency and name != resolved_agency:
+                continue
+            rows.append(
+                {
+                    "agency": name,
+                    "total_spend": None,
+                    "unattributed": ctx.get("unattributed_usd"),
+                    "unattributed_pct": ctx.get("unattributed_pct"),
+                    "n_txns": None,
+                    "context": ctx,
+                }
+            )
+        rows.sort(key=lambda r: r.get("unattributed") or 0, reverse=True)
+        by_agency = rows[:limit] if not resolved_agency else rows
+        unattributed_total = sum(r.get("unattributed") or 0 for r in by_agency)
+        agency_context = enrich.get(resolved_agency) if resolved_agency else None
+
+        return {
+            "agency": resolved_agency or agency,
+            "fiscal_year": fiscal_year,
+            "transaction_type": tt,
+            "total_spend": None,
+            "n_txns": None,
+            "unattributed_total": unattributed_total,
+            "unattributed_n_txns": None,
+            "unattributed_pct": None,
+            "by_bucket": [],
+            "by_agency": by_agency,
+            "agency_context": agency_context,
+            "context_meta": (self._unattr_enrich or {}).get("_meta")
+            if self._unattr_enrich else None,
+            "snapshot": True,
+            "basis": (
+                "SNAPSHOT — per-agency unattributed totals from the committed "
+                "unattributed_context enrichment (computed once from the full "
+                "ledger at adjudication time, not live re-computed). The "
+                "per-payee 'transactions' grain is unavailable in this "
+                "deployment (Postgres/rollup), so the bucket split is omitted. "
+                "Unattributed = payee blank, 'N/A', redacted, or confidential; "
+                "a transparency metric, NOT an allegation of wrongdoing."
             ),
         }
 

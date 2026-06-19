@@ -217,6 +217,8 @@ def test_push_to_postgres_ag_missing_regression():
     con.execute("CREATE TABLE ag_reports (report_id VARCHAR)")
     con.execute("CREATE TABLE ag_findings (finding_id VARCHAR)")
     con.execute("CREATE TABLE ag_report_agency_xref (agency_key VARCHAR)")
+    con.execute("CREATE TABLE ag_agency_spending (agency VARCHAR)")
+    con.execute("CREATE TABLE ag_finding_context (finding_id VARCHAR)")
 
     # Exact presence check the script performs on the src con.
     for table in ag_tables:
@@ -491,6 +493,27 @@ def test_unattributed_spend_bad_tt_raises(ob):
     import pytest
     with pytest.raises(ValueError):
         ob.unattributed_spend(transaction_type="BOGUS")
+
+
+def test_unattributed_spend_snapshot_fallback(ob):
+    """Without the per-payee 'transactions' view (Postgres/rollup deploys),
+    unattributed_spend() degrades to the unattributed_context snapshot rather
+    than erroring — serving a per-agency leaderboard + verified context."""
+    # Only meaningful when the enrichment snapshot is available.
+    if not ob._unattributed_enrichment():
+        return
+    out = ob._unattributed_spend_from_snapshot(
+        agency=None, fiscal_year=None, tt="EX", limit=25
+    )
+    assert "error" not in out
+    assert out.get("snapshot") is True
+    assert out["by_bucket"] == []  # no per-payee grain in snapshot mode
+    # leaderboard present and descending by unattributed $
+    vals = [a["unattributed"] or 0 for a in out["by_agency"]]
+    assert vals == sorted(vals, reverse=True)
+    # verified context rides along on each row
+    assert all("context" in a for a in out["by_agency"])
+    assert out["unattributed_total"] >= 0
 
 
 # ── finding → implicated transactions (triangulation drill-down) ───────

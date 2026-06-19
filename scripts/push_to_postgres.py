@@ -32,6 +32,7 @@ TABLES = [
     "tier_agency_summary",
     "tier_agency_year",
     "tier_program_summary",
+    "agency_summary",
 ]
 
 # Optional tables: copied only when present in the source warehouse, so the
@@ -39,10 +40,14 @@ TABLES = [
 # (vendor_verdicts is handled separately because it carries curation.)
 #   ag_reports / ag_findings / ag_report_agency_xref — the Arizona
 #   Auditor-General findings overlay (see openbooks.queries._ag_audit).
+#   ag_agency_spending / ag_finding_context — the enriched AG layer that
+#   _ag_audit() and findings() prefer when present (guarded by _table_exists).
 AG_TABLES = [
     "ag_reports",
     "ag_findings",
     "ag_report_agency_xref",
+    "ag_agency_spending",
+    "ag_finding_context",
 ]
 
 # Grok-grounded real-world context for flagged entities (built by
@@ -61,6 +66,7 @@ INDEXES = [
     "CREATE INDEX IF NOT EXISTS ix_txt_agency ON tx_tiered (agency)",
     "CREATE INDEX IF NOT EXISTS ix_te_key ON tier_entities (entity_key)",
     "CREATE INDEX IF NOT EXISTS ix_tay_agency ON tier_agency_year (agency)",
+    "CREATE INDEX IF NOT EXISTS ix_as_agency_fy ON agency_summary (agency, fiscal_year, transaction_type)",
 ]
 
 # Indexes matching the query layer's access paths.
