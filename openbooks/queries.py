@@ -1376,21 +1376,66 @@ class OpenBooks:
         }
 
     def _unattributed_enrichment(self) -> dict:
-        """Lazy-load the committed Grok untraceable-spend adjudications.
+        """Lazy-load the Grok untraceable-spend adjudications.
 
         Returns a dict mapping agency name -> verified context
         (classification, confidence, reason, statutory_basis, notes).
-        Degrades to an empty dict when the JSON is absent (so the metric
-        still works on deployments built before enrichment ran).
+
+        Prefers the materialized ``unattributed_context`` warehouse table
+        (built by scripts/load_entity_enrichment.py; carried to Postgres by
+        the push script), falling back to the committed
+        ``unattributed_enrichment.json``. Degrades to an empty dict when
+        neither is present (so the metric still works on un-enriched builds).
         """
         if self._unattr_enrich is None:
-            path = os.path.join(self._enrich_dir, "unattributed_enrichment.json")
-            try:
-                with open(path) as f:
-                    self._unattr_enrich = json.load(f)
-            except (OSError, ValueError):
-                self._unattr_enrich = {}
+            self._unattr_enrich = {"agencies": self._unattributed_enrichment_from_db()}
+            if not self._unattr_enrich["agencies"]:
+                path = os.path.join(self._enrich_dir, "unattributed_enrichment.json")
+                try:
+                    with open(path) as f:
+                        self._unattr_enrich = json.load(f)
+                except (OSError, ValueError):
+                    self._unattr_enrich = {}
         return (self._unattr_enrich or {}).get("agencies", {})
+
+    def _unattributed_enrichment_from_db(self) -> dict:
+        """Read the ``unattributed_context`` table into the JSON-shaped dict.
+
+        Returns ``{}`` when the table is absent so the caller falls back to
+        the committed JSON. ``top_categories`` is stored as a JSON string and
+        parsed back here.
+        """
+        if not self._table_exists("unattributed_context"):
+            return {}
+        try:
+            rows = self._query(
+                """
+                SELECT agency, unattributed_usd, unattributed_pct, classification,
+                       confidence, reason, statutory_basis, notes, top_categories
+                FROM unattributed_context
+                """
+            )
+        except Exception:
+            return {}
+        out: dict = {}
+        for r in rows:
+            tc = r.get("top_categories")
+            if not isinstance(tc, list):
+                try:
+                    tc = json.loads(tc) if tc else []
+                except (TypeError, ValueError):
+                    tc = []
+            out[r["agency"]] = {
+                "unattributed_usd": r.get("unattributed_usd"),
+                "unattributed_pct": r.get("unattributed_pct"),
+                "classification": r.get("classification"),
+                "confidence": r.get("confidence"),
+                "reason": r.get("reason"),
+                "statutory_basis": r.get("statutory_basis"),
+                "notes": r.get("notes"),
+                "top_categories": tc,
+            }
+        return out
 
     def _entity_enrichment(self) -> dict:
         """Lazy-load the Grok entity-context adjudications.

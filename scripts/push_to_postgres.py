@@ -51,6 +51,7 @@ AG_TABLES = [
 # query layer reads this table first and falls back to the committed JSON.
 ENRICHMENT_TABLES = [
     "entity_grok_context",
+    "unattributed_context",
 ]
 
 # Indexes matching the query layer's access paths.
