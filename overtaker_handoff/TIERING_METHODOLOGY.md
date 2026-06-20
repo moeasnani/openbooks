@@ -123,7 +123,7 @@ capitation, pension paydowns, inter-fund transfers, debt service) so they are vi
 - **`contract_number`** is populated on only ~2–6 % of rows. The off-contract markers use a *structural
   dark-switch*: they do not fire for any agency-year that populates `contract_number` on 0 % of its rows
   (universities, ASRS, courts, ADOT capital), where the field is uninformative.
-- **FY2022** is excluded (incomplete source). **`hourly_rate`** is 100 % empty (no pay-rate analysis).
+- **FY2022** is included (both shards recovered 2026-06-16). **`hourly_rate`** is 100 % empty (no pay-rate analysis).
 
 ---
 

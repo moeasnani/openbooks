@@ -57,6 +57,7 @@ AG_TABLES = [
 ENRICHMENT_TABLES = [
     "entity_grok_context",
     "unattributed_context",
+    "ag_finding_grok_context",
 ]
 
 # Indexes matching the query layer's access paths.

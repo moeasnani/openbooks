@@ -1,28 +1,28 @@
-229 multi-name parent groups merged from 4543 names
+246 multi-name parent groups merged from 4771 names
 
-=> MERCY CARE  [token_subset/high]  $35548.7M
-     . MERCY CARE                                  $20872.6M  5747 txns
-     . MERCY CARE PLAN - LTC                       $ 6564.5M  1190 txns
+=> MERCY CARE  [token_subset/high]  $40247.5M
+     . MERCY CARE                                  $24710.9M  6745 txns
+     . MERCY CARE PLAN - LTC                       $ 7425.0M  1340 txns
      . MERCY CARE PLAN                             $ 4224.9M  1530 txns
      . MERCY MARICOPA INTEGRATED CARE              $ 2811.4M  1008 txns
      . MERCY MARICOPA INTERGRATED CARE             $ 1075.3M  208 txns
 
-=> ARIZONA PHYSICIANS IPA, INC.  [token_jaccard+token_subset/high]  $21959.6M
-     . ARIZONA PHYSICIANS IPA, INC.                $21007.3M  5256 txns
+=> ARIZONA PHYSICIANS IPA, INC.  [token_jaccard+token_subset/high]  $25136.9M
+     . ARIZONA PHYSICIANS IPA, INC.                $24184.7M  5915 txns
      . ARIZONA PHYSICIANS IPA/UHC-CRS FI           $  606.4M  255 txns
      . ARIZONA PHYSICIANS IPA/UHC-CRS PBH          $  212.1M  84 txns
      . ARIZONA PHYSICIANS IPA/UHC-CRS RI ONLY      $  112.1M  180 txns
      . ARIZONA PHYSICIANS IPA/UHC-CRS ONLY         $   20.3M  77 txns
      . ARIZONA PHYSICIANS IPA/UHC-CRS PA           $    1.3M  12 txns
 
-=> HEALTH NET ACCESS INC  [norm_exact+token_subset/high]  $11849.1M
-     . HEALTH NET ACCESS INC                       $11103.5M  3664 txns
+=> HEALTH NET ACCESS INC  [norm_exact+token_subset/high]  $14280.9M
+     . HEALTH NET ACCESS INC                       $13535.3M  4435 txns
      . HEALTH NET ACCESS                           $  745.4M  514 txns
        HEALTH ACCESS LLC                           $    0.2M  2 txns
 
-=> UNITED HEALTHCARE  [token_subset/high]  $3281.3M
+=> UNITED HEALTHCARE  [token_subset/high]  $3631.1M
        UNITED HEALTHCARE                           $ 1803.1M  360 txns
-       UNITED HEALTHCARE SERVICES INC              $ 1407.4M  494 txns
+       UNITED HEALTHCARE SERVICES INC              $ 1757.2M  595 txns
        UNITED HEALTHCARE OF ARIZONA                $   70.9M  63 txns
 
 => BRIDGEWAY HEALTH SOLUTIONS OF ARIZONA, INC.  [token_subset/high]  $2505.3M
@@ -30,13 +30,13 @@
      . BRIDGEWAY HEALTH SOLUTIONS                  $  513.8M  173 txns
      . BRIDGEWAY HEALTH SOLUTIONS OF AZ            $    0.3M  1 txns
 
-=> MEDIMPACT HEALTHCARE SYSTEMS INC  [norm_exact/high]  $2073.3M
-       MEDIMPACT HEALTHCARE SYSTEMS INC            $ 2070.3M  1369 txns
-     . MEDIMPACT HEALTHCARE SYSTEMS, INC           $    3.0M  20 txns
+=> BANK OF AMERICA - AZ  [token_subset/high]  $2385.4M
+       BANK OF AMERICA - AZ                        $ 2343.7M  2094 txns
+       BANK OF AMERICA                             $   41.7M  24 txns
 
-=> BANK OF AMERICA - AZ  [token_subset/high]  $1861.4M
-       BANK OF AMERICA - AZ                        $ 1824.6M  1852 txns
-       BANK OF AMERICA                             $   36.7M  20 txns
+=> MEDIMPACT HEALTHCARE SYSTEMS INC  [norm_exact/high]  $2300.3M
+       MEDIMPACT HEALTHCARE SYSTEMS INC            $ 2297.3M  1484 txns
+     . MEDIMPACT HEALTHCARE SYSTEMS, INC           $    3.0M  20 txns
 
 => CENPATICO OF ARIZONA, INC.  [norm_exact/high]  $1427.3M
      . CENPATICO OF ARIZONA, INC.                  $  534.0M  200 txns
@@ -44,263 +44,292 @@
      . CENPATICO OF ARIZONA INC                    $  303.2M  212 txns
      . CENPATICO OF ARIZONA LLC                    $   60.8M  107 txns
 
-=> BANK OF NEW YORK MELLON TRUST COMPANY NA  [norm_exact+token_subset/high]  $1036.0M
-       BANK OF NEW YORK MELLON TRUST COMPANY NA    $  943.2M  109 txns
-       BANK OF NEW YORK MELLON TRUST CO NA         $   75.8M  34 txns
+=> BANK OF NEW YORK MELLON TRUST COMPANY NA  [norm_exact+token_subset/high]  $1062.2M
+       BANK OF NEW YORK MELLON TRUST COMPANY NA    $  956.6M  115 txns
+       BANK OF NEW YORK MELLON TRUST CO NA         $   87.3M  38 txns
      . BANK OF NEW YORK                            $   12.1M  3 txns
-       THE BANK OF NEW YORK MELLON                 $    5.0M  12 txns
+       THE BANK OF NEW YORK MELLON                 $    6.2M  15 txns
+
+=> PUBLIC CONSULTING GROUP.INC  [norm_exact/high]  $736.7M
+       PUBLIC CONSULTING GROUP.INC                 $  606.5M  873 txns
+     * PUBLIC CONSULTING GROUP INC                 $  109.3M  76 txns
+     * PUBLIC CONSULTING GROUP LLC                 $   20.9M  13 txns
 
 => HEALTH CHOICE INTEGRATED CARE  [norm_exact/high]  $667.6M
      . HEALTH CHOICE INTEGRATED CARE               $  482.2M  579 txns
      . HEALTH CHOICE INTEGRATED CARE, LLC          $  185.4M  149 txns
 
-=> PUBLIC CONSULTING GROUP.INC  [norm_exact/high]  $658.1M
-       PUBLIC CONSULTING GROUP.INC                 $  540.1M  769 txns
-     * PUBLIC CONSULTING GROUP INC                 $   97.1M  72 txns
-     * PUBLIC CONSULTING GROUP LLC                 $   20.9M  13 txns
-
 => CORIZON INC  [norm_exact/high]  $654.1M
      * CORIZON INC                                 $  528.3M  714 txns
      * CORIZON, INC.                               $  125.8M  86 txns
 
-=> RBC CAPITAL MARKETS CORP  [norm_exact/high]  $572.9M
-     . RBC CAPITAL MARKETS CORP                    $  572.0M  13 txns
-     . RBC CAPITAL MARKETS CORPORATION             $    1.0M  4 txns
-
-=> VALLEY OF THE SUN-UNITED WAY  [norm_exact/high]  $551.5M
-     * VALLEY OF THE SUN-UNITED WAY                $  347.9M  514 txns
+=> VALLEY OF THE SUN-UNITED WAY  [norm_exact/high]  $614.8M
+     * VALLEY OF THE SUN-UNITED WAY                $  411.1M  622 txns
      . VALLEY OF THE SUN - UNITED WAY              $  119.2M  247 txns
      . VALLEY OF THE SUN UNITED WAY                $   84.4M  196 txns
 
-=> BANNER HEALTH  [token_subset/high]  $526.1M
-     * BANNER HEALTH                               $  517.7M  20 txns
+=> RBC CAPITAL MARKETS CORP  [norm_exact/high]  $573.2M
+     . RBC CAPITAL MARKETS CORP                    $  572.2M  15 txns
+     . RBC CAPITAL MARKETS CORPORATION             $    1.0M  4 txns
+
+=> ST JOSEPHS HOSPITAL-PHX  [token_subset/high]  $569.1M
+     . ST JOSEPHS HOSPITAL-PHX                     $  559.7M  631 txns
+     . ST JOSEPHS HOSPITAL                         $    7.5M  9 txns
+       ST JOSEPHS HOSPITAL AND MEDICAL CENTER      $    1.9M  14 txns
+
+=> BANNER HEALTH  [token_subset/high]  $526.3M
+     * BANNER HEALTH                               $  517.9M  21 txns
      * BANNER HEALTH FOUNDATION                    $    4.9M  12 txns
      . BANNER BEHAVORIAL HEALTH                    $    3.5M  12 txns
-
-=> ST JOSEPHS HOSPITAL-PHX  [token_subset/high]  $511.6M
-     . ST JOSEPHS HOSPITAL-PHX                     $  503.1M  567 txns
-     . ST JOSEPHS HOSPITAL                         $    6.9M  8 txns
-       ST JOSEPHS HOSPITAL AND MEDICAL CENTER      $    1.5M  11 txns
 
 => AETNA LIFE INSURANCE COMPANY  [norm_exact/high]  $336.1M
        AETNA LIFE INSURANCE COMPANY                $  301.9M  379 txns
      . AETNA LIFE INSURANCE CO                     $   34.2M  62 txns
 
-=> CONNECTICUT GENERAL LIFE INSURANCE COMPANY  [norm_exact/high]  $310.9M
+=> CONNECTICUT GENERAL LIFE INSURANCE COMPANY  [norm_exact/high]  $315.5M
      . CONNECTICUT GENERAL LIFE INSURANCE COMPANY  $  195.3M  252 txns
-       CONNECTICUT GENERAL LIFE INSURANCE CO       $  115.6M  209 txns
+       CONNECTICUT GENERAL LIFE INSURANCE CO       $  120.2M  222 txns
 
-=> GRANITE CONSTRUCTION CO  [norm_exact/high]  $262.4M
-     * GRANITE CONSTRUCTION CO                     $  198.5M  185 txns
-       GRANITE CONSTRUCTION COMPANY                $   34.0M  90 txns
-       GRANITE CONSTRUCTION                        $   29.9M  57 txns
+=> GRANITE CONSTRUCTION CO  [norm_exact/high]  $281.8M
+     * GRANITE CONSTRUCTION CO                     $  208.3M  203 txns
+       GRANITE CONSTRUCTION COMPANY                $   41.2M  104 txns
+       GRANITE CONSTRUCTION                        $   32.3M  67 txns
 
-=> TRINITY SERVICES GROUP INC  [token_subset/high]  $254.4M
-       TRINITY SERVICES GROUP INC                  $  254.1M  1372 txns
-     . TRINITY CARE SERVICES LLC                   $    0.4M  1 txns
+=> TRINITY SERVICES GROUP INC  [token_subset/high]  $277.4M
+       TRINITY SERVICES GROUP INC                  $  276.9M  1514 txns
+     . TRINITY CARE SERVICES LLC                   $    0.5M  2 txns
 
-=> SUNLAND ASPHALT & CONSTRUCTION INC  [norm_exact/high]  $216.3M
-     * SUNLAND ASPHALT & CONSTRUCTION INC          $  204.8M  375 txns
+=> SUNLAND ASPHALT & CONSTRUCTION INC  [norm_exact/high]  $251.9M
+     * SUNLAND ASPHALT & CONSTRUCTION INC          $  240.4M  440 txns
        SUNLAND ASPHALT & CONSTRUCTION LLC          $   11.6M  19 txns
+
+=> SCIENTIFIC GAMES INTERNATIONAL  [norm_exact+token_subset/high]  $195.3M
+     * SCIENTIFIC GAMES INTERNATIONAL              $  115.7M  325 txns
+       SCIENTIFIC GAMES LLC                        $   68.6M  229 txns
+       SCIENTIFIC GAMES INC                        $   11.0M  45 txns
 
 => GEO CORRECTIONS AND DETENTION, LLC  [norm_exact/high]  $193.5M
      * GEO CORRECTIONS AND DETENTION, LLC          $  130.4M  95 txns
        GEO CORRECTIONS AND DETENTION LLC           $   63.1M  81 txns
 
-=> SCIENTIFIC GAMES INTERNATIONAL  [norm_exact+token_subset/high]  $171.6M
-     * SCIENTIFIC GAMES INTERNATIONAL              $   92.0M  255 txns
-       SCIENTIFIC GAMES LLC                        $   68.6M  229 txns
-       SCIENTIFIC GAMES INC                        $   11.0M  45 txns
-
-=> WELLS FARGO BANK NA  [norm_exact+token_subset/high]  $169.8M
-       WELLS FARGO BANK NA                         $  110.1M  82 txns
-     . WELLS FARGO BANK, N.A.                      $   47.1M  16 txns
+=> WELLS FARGO BANK NA  [norm_exact+token_subset/high]  $175.3M
+       WELLS FARGO BANK NA                         $  114.9M  86 txns
+     . WELLS FARGO BANK, N.A.                      $   47.9M  17 txns
      . WELLS FARGO BANK\, N.A.                     $   12.2M  4 txns
      . WELLS FARGO & CO                            $    0.3M  1 txns
 
-=> CARAHSOFT TECHNOLOGY CORP  [norm_exact/high]  $153.5M
-     * CARAHSOFT TECHNOLOGY CORP                   $  152.7M  501 txns
+=> CARAHSOFT TECHNOLOGY CORP  [norm_exact/high]  $161.1M
+     * CARAHSOFT TECHNOLOGY CORP                   $  160.3M  545 txns
        CARAHSOFT TECHNOLOGY CORPORATION            $    0.8M  4 txns
+
+=> THE NAVAJO NATION  [norm_exact/high]  $128.0M
+     . THE NAVAJO NATION                           $   90.2M  207 txns
+     . NAVAJO NATION                               $   37.9M  256 txns
 
 => COFFMAN SPECIALTIES INC  [norm_exact/high]  $127.1M
      * COFFMAN SPECIALTIES INC                     $   89.4M  30 txns
        COFFMAN SPECIALTIES, INC.                   $   37.7M  39 txns
 
-=> THE NAVAJO NATION  [norm_exact/high]  $118.6M
-     . THE NAVAJO NATION                           $   84.1M  182 txns
-     . NAVAJO NATION                               $   34.5M  230 txns
-
-=> OWENS HARKEY & ASSOCIATES LLC  [norm_exact/high]  $103.4M
-       OWENS HARKEY & ASSOCIATES LLC               $   88.7M  299 txns
+=> OWENS HARKEY & ASSOCIATES LLC  [norm_exact/high]  $124.3M
+       OWENS HARKEY & ASSOCIATES LLC               $  109.5M  365 txns
        OWENS, HARKEY & ASSOCIATES, LLC             $   14.7M  82 txns
+
+=> PASCUA YAQUI TRIBE  [token_subset/high]  $99.4M
+     . PASCUA YAQUI TRIBE                          $   82.7M  495 txns
+     . PASCUA YAQUI TRIBE HLTH C                   $    9.1M  59 txns
+     . PASCUA YAQUI INDIAN TRIBE                   $    7.6M  41 txns
 
 => HARTFORD LIFE AND ACCIDENT INSURANCE COMPANY  [norm_exact/high]  $98.9M
      . HARTFORD LIFE AND ACCIDENT INSURANCE COMPANY  $   77.3M  180 txns
        HARTFORD LIFE AND ACCIDENT INSURANCE CO     $   21.6M  56 txns
 
-=> PASCUA YAQUI TRIBE  [token_subset/high]  $92.4M
-     . PASCUA YAQUI TRIBE                          $   76.5M  451 txns
-     . PASCUA YAQUI TRIBE HLTH C                   $    8.9M  57 txns
-     . PASCUA YAQUI INDIAN TRIBE                   $    7.0M  37 txns
-
-=> TELESOFT LLC  [norm_exact/high]  $80.7M
-       TELESOFT LLC                                $   65.7M  216 txns
+=> TELESOFT LLC  [norm_exact/high]  $94.9M
+     * TELESOFT LLC                                $   79.9M  258 txns
        TELESOFT CORP                               $   15.0M  41 txns
 
-=> ASHTON COMPANY INC  [norm_exact/high]  $78.3M
-     * ASHTON COMPANY INC                          $   71.5M  123 txns
-       ASHTON CO INC                               $    6.9M  22 txns
-
-=> THE SJ ANDERSON CO  [norm_exact/high]  $71.7M
-       THE SJ ANDERSON CO                          $   52.2M  204 txns
-       THE SJ ANDERSON COMPANY                     $   19.4M  92 txns
-
-=> PITNEY BOWES  [token_subset/high]  $67.5M
-     * PITNEY BOWES                                $   56.1M  170 txns
-       PITNEY BOWES PRESORT SERVICES               $   10.7M  29 txns
+=> PITNEY BOWES  [token_subset/high]  $80.1M
+     * PITNEY BOWES                                $   67.3M  206 txns
+     . PITNEY BOWES PRESORT SERVICES               $   12.2M  34 txns
        THE PITNEY BOWES BANK INC                   $    0.4M  3 txns
      . PITNEY BOWES CREDIT CORP                    $    0.2M  2 txns
 
-=> CORVEL CORPORATION  [norm_exact/high]  $60.8M
-     * CORVEL CORPORATION                          $   43.2M  277 txns
-       CORVEL CORP                                 $   17.6M  120 txns
+=> ASHTON COMPANY INC  [norm_exact/high]  $79.9M
+     * ASHTON COMPANY INC                          $   73.1M  126 txns
+       ASHTON CO INC                               $    6.9M  22 txns
 
-=> RAMSELL CORP  [norm_exact/high]  $54.5M
-     . RAMSELL CORP                                $   40.4M  131 txns
+=> THE SJ ANDERSON CO  [norm_exact/high]  $78.4M
+       THE SJ ANDERSON CO                          $   59.0M  236 txns
+       THE SJ ANDERSON COMPANY                     $   19.4M  92 txns
+
+=> CORVEL CORPORATION  [norm_exact/high]  $62.0M
+     * CORVEL CORPORATION                          $   44.0M  283 txns
+       CORVEL CORP                                 $   18.0M  123 txns
+
+=> RAMSELL CORP  [norm_exact/high]  $60.3M
+     . RAMSELL CORP                                $   46.3M  153 txns
      . RAMSELL CORPORATION                         $   14.1M  66 txns
 
-=> J BANICKI CONSTRUCTION INC  [norm_exact/high]  $51.4M
-       J BANICKI CONSTRUCTION INC                  $   26.1M  58 txns
+=> MAXIMUS HUMAN SERVICES INC  [norm_exact/high]  $59.0M
+     * MAXIMUS HUMAN SERVICES INC                  $   57.5M  68 txns
+     . MAXIMUS HUMAN SERVICES, INC.                $    1.5M  3 txns
+
+=> J BANICKI CONSTRUCTION INC  [norm_exact/high]  $58.2M
+       J BANICKI CONSTRUCTION INC                  $   33.0M  79 txns
        J. BANICKI CONSTRUCTION, INC.               $   25.2M  55 txns
+
+=> HOLY CROSS HOSPITAL  [token_subset/high]  $54.3M
+     . HOLY CROSS HOSPITAL                         $   28.0M  32 txns
+     . HOLY CROSS HOSPITAL-ARIZ                    $   26.2M  49 txns
+
+=> NEW LIFE WELLNESS CENTER  [token_subset/high]  $51.3M
+     . NEW LIFE WELLNESS CENTER                    $   50.2M  180 txns
+     . NEW LIFE CENTER                             $    1.1M  8 txns
+
+=> C S CONSTRUCTION INC  [norm_exact/high]  $50.3M
+       C S CONSTRUCTION INC                        $   44.8M  145 txns
+       K A Z CONSTRUCTION INC                      $    5.5M  34 txns
 
 => SUN EAGLE CORP  [norm_exact/high]  $48.2M
        SUN EAGLE CORP                              $   42.3M  70 txns
        SUN EAGLE CORPORATION                       $    5.9M  33 txns
 
-=> HOLY CROSS HOSPITAL  [token_subset/high]  $48.2M
-     . HOLY CROSS HOSPITAL                         $   24.1M  28 txns
-     . HOLY CROSS HOSPITAL-ARIZ                    $   24.0M  45 txns
-
-=> C S CONSTRUCTION INC  [norm_exact/high]  $47.8M
-       C S CONSTRUCTION INC                        $   42.3M  136 txns
-       K A Z CONSTRUCTION INC                      $    5.5M  34 txns
-
-=> VASTCO, INC.  [norm_exact/high]  $43.6M
-       VASTCO, INC.                                $   23.3M  58 txns
-       VASTCO INC                                  $   20.4M  69 txns
-
-=> EDKEY INC  [norm_exact/high]  $38.9M
-     . EDKEY INC                                   $   34.4M  106 txns
-     . EDKEY, INC.                                 $    4.5M  31 txns
-
-=> SOLARI  [norm_exact/high]  $38.4M
-     . SOLARI                                      $   24.7M  85 txns
+=> SOLARI  [norm_exact/high]  $47.3M
+       SOLARI                                      $   33.7M  119 txns
        SOLARI INC                                  $   13.6M  91 txns
 
-=> CRISIS RESPONSE NETWORK  [norm_exact/high]  $37.5M
-       CRISIS RESPONSE NETWORK                     $   29.9M  207 txns
+=> VASTCO INC  [norm_exact/high]  $47.1M
+       VASTCO INC                                  $   23.9M  84 txns
+       VASTCO, INC.                                $   23.3M  58 txns
+
+=> EDKEY INC  [norm_exact/high]  $46.3M
+     . EDKEY INC                                   $   41.5M  137 txns
+     . EDKEY, INC.                                 $    4.8M  33 txns
+
+=> CRISIS RESPONSE NETWORK  [norm_exact/high]  $43.2M
+       CRISIS RESPONSE NETWORK                     $   35.6M  249 txns
      . CRISIS RESPONSE NETWORK, INC.               $    4.3M  27 txns
        CRISIS RESPONSE NETWORK INC                 $    3.3M  8 txns
 
-=> PAVECO INC  [norm_exact/high]  $36.6M
-       PAVECO INC                                  $   31.4M  48 txns
+=> PAVECO INC  [norm_exact/high]  $37.8M
+       PAVECO INC                                  $   32.6M  52 txns
        PAVECO INC.                                 $    5.2M  15 txns
 
-=> NEW LIFE WELLNESS CENTER  [token_subset/high]  $33.9M
-     . NEW LIFE WELLNESS CENTER                    $   32.8M  106 txns
-     . NEW LIFE CENTER                             $    1.1M  8 txns
+=> LEGACY TRADITIONAL SCHOOL - NORTH CHANDLER  [token_subset/high]  $36.0M
+     . LEGACY TRADITIONAL SCHOOL - NORTH CHANDLER  $   34.4M  81 txns
+     . LEGACY TRADITIONAL SCHOOL - CHANDLER        $    1.6M  6 txns
 
 => RED MOUNTAIN BEH HLTH  [token_subset/high]  $33.7M
      . RED MOUNTAIN BEH HLTH                       $   31.9M  224 txns
      . RED MOUNTAIN BEH HLTH SRV                   $    1.8M  5 txns
 
-=> CONDUENT STATE HEALTHCARE LLC  [norm_exact/high]  $26.6M
-       CONDUENT STATE HEALTHCARE LLC               $   19.0M  113 txns
-       CONDUENT STATE HEALTHCARE, LLC              $    7.6M  28 txns
-
-=> MAXIMUS INC  [norm_exact/high]  $26.0M
-       MAXIMUS INC                                 $   24.3M  102 txns
-       MAXIMUS, INC.                               $    1.7M  8 txns
-
-=> LEGACY TRADITIONAL SCHOOL - NORTH CHANDLER  [token_subset/high]  $24.8M
-     . LEGACY TRADITIONAL SCHOOL - NORTH CHANDLER  $   23.4M  59 txns
-     . LEGACY TRADITIONAL SCHOOL - CHANDLER        $    1.4M  5 txns
-
-=> ASR ANALYTICS LLC  [norm_exact/high]  $23.5M
-       ASR ANALYTICS LLC                           $   20.0M  75 txns
-       ASR ANALYTICS, LLC                          $    3.5M  16 txns
-
-=> THE TRANSLATIONAL GENOMICS RESEARCH INSTITUTE  [norm_exact/high]  $22.6M
-       THE TRANSLATIONAL GENOMICS RESEARCH INSTITUTE  $   20.1M  46 txns
+=> THE TRANSLATIONAL GENOMICS RESEARCH INSTITUTE  [norm_exact/high]  $29.2M
+       THE TRANSLATIONAL GENOMICS RESEARCH INSTITUTE  $   26.7M  65 txns
      . TRANSLATIONAL GENOMICS RESEARCH INSTITUTE   $    2.5M  5 txns
 
-=> TALX CORP  [norm_exact/high]  $22.2M
-       TALX CORP                                   $   15.6M  58 txns
+=> CONDUENT STATE HEALTHCARE LLC  [norm_exact/high]  $29.1M
+       CONDUENT STATE HEALTHCARE LLC               $   21.5M  133 txns
+       CONDUENT STATE HEALTHCARE, LLC              $    7.6M  28 txns
+
+=> MAXIMUS INC  [norm_exact/high]  $28.3M
+       MAXIMUS INC                                 $   26.6M  115 txns
+       MAXIMUS, INC.                               $    1.7M  8 txns
+
+=> ASR ANALYTICS LLC  [norm_exact/high]  $26.8M
+       ASR ANALYTICS LLC                           $   23.3M  88 txns
+       ASR ANALYTICS, LLC                          $    3.5M  16 txns
+
+=> SEMA CONSTRUCTION INC  [token_subset/high]  $26.5M
+     * SEMA CONSTRUCTION INC                       $   16.0M  18 txns
+       SEMA CONSTRUCTION INC & SUBSIDIARIES        $   10.5M  22 txns
+
+=> TALX CORP  [norm_exact/high]  $25.1M
+       TALX CORP                                   $   18.5M  77 txns
        TALX CORPORATION                            $    6.5M  38 txns
 
-=> GUIDESOFT INC  [norm_exact/high]  $21.0M
-       GUIDESOFT INC                               $   17.1M  106 txns
+=> GUIDESOFT INC  [norm_exact/high]  $23.1M
+       GUIDESOFT INC                               $   19.2M  120 txns
        GUIDESOFT INC.                              $    3.9M  25 txns
 
-=> ARIZONA COMMUNITY DEVELOPMENT CORPORATION  [norm_exact/high]  $20.5M
-     . ARIZONA COMMUNITY DEVELOPMENT CORPORATION   $   20.4M  44 txns
+=> ARIZONA COMMUNITY DEVELOPMENT CORPORATION  [norm_exact/high]  $22.8M
+     . ARIZONA COMMUNITY DEVELOPMENT CORPORATION   $   22.7M  51 txns
      . ARIZONA COMMUNITY DEVELOPMENT CORP          $    0.1M  1 txns
 
-=> TUCSON ELECTRIC POWER COMPANY  [norm_exact/high]  $20.4M
-       TUCSON ELECTRIC POWER COMPANY               $   13.3M  72 txns
-       TUCSON ELECTRIC POWER CO                    $    7.1M  54 txns
+=> BELL TEXTRON INC  [norm_exact+token_subset/high]  $22.1M
+     * BELL TEXTRON INC                            $   15.7M  6 txns
+     * BELL HELICOPTER TEXTRON INC.                $    6.3M  3 txns
+     . BELL HELICOPTER TEXTRON INC                 $    0.2M  1 txns
+
+=> TUCSON ELECTRIC POWER COMPANY  [norm_exact/high]  $22.1M
+       TUCSON ELECTRIC POWER COMPANY               $   14.6M  83 txns
+       TUCSON ELECTRIC POWER CO                    $    7.4M  57 txns
 
 => STATE STREET BANK & TRUST CO  [norm_exact/high]  $19.7M
        STATE STREET BANK & TRUST CO                $    9.4M  25 txns
        STATE STREET BANK AND TRUST COMPANY         $    5.4M  26 txns
        STATE STREET BANK & TRUST COMPANY           $    4.8M  21 txns
 
-=> SEMA CONSTRUCTION INC & SUBSIDIARIES  [token_subset/high]  $19.2M
-       SEMA CONSTRUCTION INC & SUBSIDIARIES        $   10.5M  22 txns
-     * SEMA CONSTRUCTION INC                       $    8.7M  10 txns
-
-=> EL RIO SANTA CRUZ NEIGHBORHOOD HEALTH CENTER  [norm_exact/high]  $17.6M
-     . EL RIO SANTA CRUZ NEIGHBORHOOD HEALTH CENTER  $   13.1M  73 txns
+=> EL RIO SANTA CRUZ NEIGHBORHOOD HEALTH CENTER  [norm_exact/high]  $19.5M
+     . EL RIO SANTA CRUZ NEIGHBORHOOD HEALTH CENTER  $   15.1M  83 txns
      . EL RIO SANTA CRUZ NEIGHBORHOOD HEALTH CENTER INC  $    4.5M  30 txns
 
-=> EARTH RESOURCES CORP  [norm_exact/high]  $16.6M
-       EARTH RESOURCES CORP                        $   11.1M  32 txns
+=> FLAGSTAFF SHELTER SERVICES INC  [norm_exact/high]  $18.8M
+     . FLAGSTAFF SHELTER SERVICES INC              $   17.7M  11 txns
+     . FLAGSTAFF SHELTER SERVICES                  $    1.1M  6 txns
+
+=> PHOENIX CHILDRENS HOSPITAL INC  [norm_exact/high]  $18.3M
+       PHOENIX CHILDRENS HOSPITAL INC              $   18.1M  42 txns
+     . PHOENIX CHILDRENS HOSPITAL                  $    0.2M  2 txns
+
+=> CUSTOM STORAGE INC  [norm_exact/high]  $18.3M
+       CUSTOM STORAGE INC                          $    9.9M  38 txns
+       CUSTOM STORAGE                              $    5.3M  18 txns
+       CUSTOM STORAGE LLC                          $    3.0M  18 txns
+
+=> EARTH RESOURCES CORP  [norm_exact/high]  $18.0M
+       EARTH RESOURCES CORP                        $   12.4M  37 txns
        EARTH RESOURCES CORPORATION                 $    5.6M  13 txns
 
-=> SALT RIVER PIMA-MARICOPA  [token_subset/high]  $16.3M
-     . SALT RIVER PIMA-MARICOPA                    $   15.8M  81 txns
-     . SALT RIVER PIMA MARICOPA INDIAN COMM        $    0.5M  3 txns
+=> JACKSON WHITE PC  [norm_exact/high]  $17.5M
+     * JACKSON WHITE PC                            $   16.2M  13 txns
+       JACKSON WHITE, P.C.                         $    1.3M  3 txns
 
-=> NEIGHBORHOOD OUTREACH ACC  [token_subset/high]  $15.8M
-     . NEIGHBORHOOD OUTREACH ACC                   $   15.3M  70 txns
+=> 3M CO  [norm_exact/high]  $17.5M
+       3M CO                                       $   10.9M  38 txns
+       3M COMPANY                                  $    6.5M  25 txns
+
+=> NEIGHBORHOOD OUTREACH ACC  [token_subset/high]  $17.2M
+     . NEIGHBORHOOD OUTREACH ACC                   $   16.7M  80 txns
      . NEIGHBORHOOD OUTREACH ACCESS TO HEALTH      $    0.4M  2 txns
      . NEIGHBORHOOD OUTREACH                       $    0.1M  1 txns
 
-=> 3M CO  [norm_exact/high]  $15.8M
-       3M CO                                       $    9.2M  30 txns
-       3M COMPANY                                  $    6.5M  25 txns
-
-=> JACKSON WHITE PC  [norm_exact/high]  $15.8M
-     * JACKSON WHITE PC                            $   14.5M  12 txns
-       JACKSON WHITE, P.C.                         $    1.3M  3 txns
-
-=> CHILD DEVELOPMENT SCHOOLS INC.  [norm_exact/high]  $15.3M
-     . CHILD DEVELOPMENT SCHOOLS INC.              $   11.3M  71 txns
+=> CHILD DEVELOPMENT SCHOOLS INC.  [norm_exact/high]  $16.8M
+     . CHILD DEVELOPMENT SCHOOLS INC.              $   12.8M  83 txns
      . CHILD DEVELOPMENT SCHOOLS                   $    4.0M  22 txns
 
-=> BELL TEXTRON INC  [norm_exact+token_subset/high]  $14.5M
-     * BELL TEXTRON INC                            $    8.0M  4 txns
-     * BELL HELICOPTER TEXTRON INC.                $    6.3M  3 txns
-     . BELL HELICOPTER TEXTRON INC                 $    0.2M  1 txns
+=> SALT RIVER PIMA-MARICOPA  [token_subset/high]  $16.4M
+     . SALT RIVER PIMA-MARICOPA                    $   15.9M  82 txns
+     . SALT RIVER PIMA MARICOPA INDIAN COMM        $    0.5M  3 txns
 
-=> IVALUA INC  [norm_exact/high]  $14.3M
-     * IVALUA INC                                  $   12.9M  17 txns
+=> IVALUA INC  [norm_exact/high]  $15.9M
+     * IVALUA INC                                  $   14.5M  19 txns
        IVALUA, INC.                                $    1.4M  2 txns
 
-=> CUSTOM STORAGE INC  [norm_exact/high]  $14.1M
-       CUSTOM STORAGE INC                          $    5.7M  21 txns
-       CUSTOM STORAGE                              $    5.3M  18 txns
-       CUSTOM STORAGE LLC                          $    3.0M  18 txns
+=> THE LAVIDGE CO  [norm_exact/high]  $14.4M
+     * THE LAVIDGE CO                              $   12.5M  32 txns
+     . THE LAVIDGE COMPANY                         $    1.8M  8 txns
+
+=> YAVAPAI TITLE AGENCY INC  [norm_exact/high]  $14.3M
+     . YAVAPAI TITLE AGENCY INC                    $   10.0M  2 txns
+     . YAVAPAI TITLE AGENCY, INC.                  $    4.3M  3 txns
+
+=> HARMONY FAMILY SERVICES I  [norm_exact/high]  $13.6M
+     . HARMONY FAMILY SERVICES I                   $    7.2M  29 txns
+     . HARMONY FAMILY SERVICES                     $    6.4M  37 txns
+
+=> BENSON HOSPITAL  [norm_exact/high]  $13.6M
+     . BENSON HOSPITAL                             $   12.4M  46 txns
+     . BENSON HOSPITAL CORPORATION                 $    0.9M  4 txns
+     . BENSON HOSPITAL CORP                        $    0.2M  2 txns
 
 => PCL CONSTRUCTION INC  [norm_exact/high]  $13.5M
      . PCL CONSTRUCTION INC                        $   11.6M  25 txns
@@ -310,17 +339,17 @@
        STAKER PARSON COMPANIES                     $   12.0M  10 txns
        STAKER PARSON COMPANIES DBA WESTERN ROCK PRODUCTS  $    1.0M  4 txns
 
-=> THE LAVIDGE CO  [norm_exact/high]  $12.5M
-     * THE LAVIDGE CO                              $   10.7M  27 txns
-     . THE LAVIDGE COMPANY                         $    1.8M  8 txns
+=> HP INC  [norm_exact/high]  $12.6M
+       HP INC                                      $    7.2M  34 txns
+       HP INC.                                     $    5.4M  29 txns
 
-=> FLAGSTAFF SHELTER SERVICES INC  [norm_exact/high]  $12.5M
-     . FLAGSTAFF SHELTER SERVICES INC              $   11.4M  9 txns
-     . FLAGSTAFF SHELTER SERVICES                  $    1.1M  6 txns
+=> ESPIRITU COMMUNITY DEVELOPMENT  [norm_exact/high]  $12.4M
+     . ESPIRITU COMMUNITY DEVELOPMENT              $   11.4M  61 txns
+     . ESPIRITU COMMUNITY DEVELOPMENT CORP         $    1.0M  6 txns
 
-=> HARMONY FAMILY SERVICES  [norm_exact/high]  $12.2M
-     . HARMONY FAMILY SERVICES                     $    6.2M  36 txns
-     . HARMONY FAMILY SERVICES I                   $    6.0M  24 txns
+=> GRADUATION ALLIANCE INC  [norm_exact/high]  $12.2M
+     . GRADUATION ALLIANCE INC                     $    9.8M  22 txns
+     . GRADUATION ALLIANCE, INC                    $    2.4M  3 txns
 
 => FIDELITY NATIONAL TITLE  [token_subset/high]  $12.1M
      * FIDELITY NATIONAL TITLE                     $   11.9M  4 txns
@@ -330,77 +359,84 @@
        BRIGHTVIEW LANDSCAPE DEVELOPMENT            $    7.5M  33 txns
        BRIGHTVIEW LANDSCAPE DEVELOPMENT INC        $    4.5M  17 txns
 
-=> BENSON HOSPITAL  [norm_exact/high]  $12.0M
-     . BENSON HOSPITAL                             $   10.9M  41 txns
-     . BENSON HOSPITAL CORPORATION                 $    0.9M  4 txns
-     . BENSON HOSPITAL CORP                        $    0.2M  2 txns
-
-=> ZACHAR LAW FIRM PC  [norm_exact/high]  $11.3M
-       ZACHAR LAW FIRM PC                          $    8.8M  6 txns
+=> ZACHAR LAW FIRM PC  [norm_exact/high]  $11.4M
+       ZACHAR LAW FIRM PC                          $    8.9M  7 txns
      . ZACHAR LAW FIRM PLLC                        $    2.5M  1 txns
+
+=> GALLAGHER & KENNEDY PA  [token_subset/high]  $11.2M
+       GALLAGHER & KENNEDY PA                      $   11.1M  12 txns
+     . GALLAGHER & KENNEDY AND AMY LUNDQUEST ON BEHALF  $    0.1M  1 txns
 
 => MAGELLAN HEALTH SERVICES OF ARIZONA INC  [token_subset/high]  $11.2M
      . MAGELLAN HEALTH SERVICES OF ARIZONA INC     $   11.0M  12 txns
      . MAGELLAN HEALTH SERVICES                    $    0.2M  2 txns
 
+=> INFOR PUBLIC SECTOR INC  [norm_exact/high]  $11.2M
+       INFOR PUBLIC SECTOR INC                     $    9.7M  17 txns
+     . INFOR PUBLIC SECTOR, INC                    $    1.5M  1 txns
+
+=> CATHOLIC CHARITIES COMMUNITY SERVICES INC  [norm_exact/high]  $10.8M
+     . CATHOLIC CHARITIES COMMUNITY SERVICES INC   $   10.4M  83 txns
+     . CATHOLIC CHARITIES COMMUNITY SERVICES       $    0.4M  2 txns
+
 => KCC CLASS ACTION SERVICES, LLC  [norm_exact/high]  $10.6M
      * KCC CLASS ACTION SERVICES, LLC              $   10.5M  1 txns
      . KCC CLASS ACTION SERVICES LLC               $    0.1M  1 txns
-
-=> HP INC.  [norm_exact/high]  $10.5M
-       HP INC.                                     $    5.4M  29 txns
-     . HP INC                                      $    5.1M  23 txns
-
-=> CATHOLIC CHARITIES COMMUNITY SERVICES INC  [norm_exact/high]  $10.5M
-     . CATHOLIC CHARITIES COMMUNITY SERVICES INC   $   10.1M  80 txns
-     . CATHOLIC CHARITIES COMMUNITY SERVICES       $    0.4M  2 txns
 
 => THE PHOENIX THEATRE COMPANY  [norm_exact/high]  $10.4M
      . THE PHOENIX THEATRE COMPANY                 $   10.2M  7 txns
      . PHOENIX THEATRE INC                         $    0.2M  1 txns
 
-=> INFOR PUBLIC SECTOR INC  [norm_exact/high]  $10.1M
-       INFOR PUBLIC SECTOR INC                     $    8.6M  15 txns
-     . INFOR PUBLIC SECTOR, INC                    $    1.5M  1 txns
+=> KE&G CONSTRUCTION, INC.  [norm_exact/high]  $10.4M
+       KE&G CONSTRUCTION, INC.                     $    9.2M  37 txns
+       KE&G CONSTRUCTION INC                       $    1.2M  4 txns
 
 => HUMAN SERVICES CAMPUS, INC.  [token_subset/high]  $10.0M
      . HUMAN SERVICES CAMPUS, INC.                 $    9.6M  21 txns
      . HUMAN SERVICES CAMPUS LLS                   $    0.4M  2 txns
 
-=> NORTHERN COCHISE HOSPITAL  [token_subset/high]  $9.1M
-     . NORTHERN COCHISE HOSPITAL                   $    8.5M  37 txns
-     . NORTHERN COCHISE COMMUNITY HOSPITAL INC     $    0.6M  4 txns
+=> INTERSTATE MECHANICAL CORP  [norm_exact/high]  $10.0M
+       INTERSTATE MECHANICAL CORP                  $    6.7M  35 txns
+       INTERSTATE MECHANICAL CORPORATION           $    1.9M  13 txns
+       INTERSTATE MECHANICAL LLC                   $    1.4M  10 txns
 
-=> ESPIRITU COMMUNITY DEVELOPMENT  [norm_exact/high]  $8.9M
-     . ESPIRITU COMMUNITY DEVELOPMENT              $    8.4M  42 txns
-     . ESPIRITU COMMUNITY DEVELOPMENT CORP         $    0.6M  4 txns
-
-=> B W C ENTERPRISES INC  [norm_exact/high]  $8.6M
-       B W C ENTERPRISES INC                       $    8.2M  48 txns
+=> B W C ENTERPRISES INC  [norm_exact/high]  $9.9M
+       B W C ENTERPRISES INC                       $    9.5M  54 txns
        B&R ENTERPRISES, INC.                       $    0.2M  2 txns
      . B AND L ENTERPRISES LLC                     $    0.2M  2 txns
 
-=> INTERSTATE MECHANICAL CORP  [norm_exact/high]  $8.5M
-       INTERSTATE MECHANICAL CORP                  $    5.2M  27 txns
-       INTERSTATE MECHANICAL CORPORATION           $    1.9M  13 txns
-       INTERSTATE MECHANICAL LLC                   $    1.4M  10 txns
+=> NORTHERN COCHISE HOSPITAL  [token_subset/high]  $9.6M
+     . NORTHERN COCHISE HOSPITAL                   $    9.0M  39 txns
+     . NORTHERN COCHISE COMMUNITY HOSPITAL INC     $    0.6M  4 txns
+
+=> COMMUNITY FOOD BANK INC  [norm_exact/high]  $9.0M
+     . COMMUNITY FOOD BANK INC                     $    8.5M  53 txns
+     . COMMUNITY FOOD BANK, INC.                   $    0.5M  3 txns
+
+=> LEGACY HEALTH  [token_subset/high]  $8.8M
+     . LEGACY HEALTH                               $    7.8M  44 txns
+     . LEGACY HEALING HEALTH COM                   $    1.0M  7 txns
 
 => STANDARD CONSTRUCTION CO INC  [norm_exact/high]  $8.5M
      . STANDARD CONSTRUCTION CO INC                $    8.2M  14 txns
        STANDARD CONSTRUCTION COMPANY INC           $    0.3M  2 txns
 
-=> COMMUNITY FOOD BANK INC  [norm_exact/high]  $8.2M
-     . COMMUNITY FOOD BANK INC                     $    7.8M  47 txns
-     . COMMUNITY FOOD BANK, INC.                   $    0.5M  3 txns
-
 => CENTERLINE ON GLENDALE LLC  [token_subset/high]  $8.1M
      . CENTERLINE ON GLENDALE LLC                  $    5.1M  7 txns
      . CENTERLINE ON GLENDALE TWO LLC              $    3.0M  2 txns
+
+=> LAW OFFICES OF JOEL B ROBBINS  [norm_exact/high]  $8.1M
+     * LAW OFFICES OF JOEL B ROBBINS               $    6.8M  12 txns
+       LAW OFFICES OF JOEL B ROBBINS PLLC          $    1.3M  5 txns
 
 => FORESIGHT GROUP HOLDINGS I LLC  [token_subset/high]  $8.0M
      * FORESIGHT GROUP HOLDINGS I LLC              $    4.9M  3 txns
      * FORESIGHT GROUP HOLDINGS VI\, LLC           $    2.6M  3 txns
        FORESIGHT GROUP HOLDINGS II LLC             $    0.5M  1 txns
+
+=> GUIDEHOUSE LLP  [norm_exact/high]  $7.7M
+       GUIDEHOUSE LLP                              $    5.3M  26 txns
+       GUIDEHOUSE INC                              $    2.4M  19 txns
 
 => ROBERT CHARLES LESSER & CO LLC  [token_subset/high]  $7.6M
        ROBERT CHARLES LESSER & CO LLC              $    5.9M  34 txns
@@ -410,55 +446,60 @@
        MCCORMICK CONSTRUCTION CO                   $    5.4M  24 txns
        MCCORMICK CONSTRUCTION COMPANY              $    2.1M  12 txns
 
+=> GREYHOUND LINES INC  [norm_exact/high]  $7.4M
+     . GREYHOUND LINES INC                         $    6.7M  21 txns
+     . GREYHOUND LINES, INC                        $    0.8M  7 txns
+
+=> AM SIGNAL INC  [norm_exact/high]  $7.1M
+       AM SIGNAL INC                               $    4.9M  26 txns
+       AM SIGNAL LLC                               $    2.3M  15 txns
+
+=> STORMWATER PLANS, LLC.  [norm_exact/high]  $7.0M
+       STORMWATER PLANS, LLC.                      $    4.2M  15 txns
+       STORMWATER PLANS, LLC                       $    2.8M  11 txns
+
+=> CREATIVE BUS SALES INC  [norm_exact/high]  $7.0M
+       CREATIVE BUS SALES INC                      $    4.2M  27 txns
+       CREATIVE BUS SALES, INC.                    $    2.8M  18 txns
+
 => ARIZONA HOUSING COALITION  [token_subset/high]  $6.8M
        ARIZONA HOUSING COALITION                   $    6.2M  23 txns
      . ARIZONA HOUSING DEVELOPMENT CORPORATION     $    0.5M  3 txns
      . ARIZONA HOUSING INC                         $    0.2M  1 txns
 
-=> AM SIGNAL INC  [norm_exact/high]  $6.6M
-       AM SIGNAL INC                               $    4.9M  26 txns
-       AM SIGNAL LLC                               $    1.7M  11 txns
-
-=> STORMWATER PLANS, LLC.  [norm_exact/high]  $6.6M
-       STORMWATER PLANS, LLC.                      $    3.7M  13 txns
-       STORMWATER PLANS, LLC                       $    2.8M  11 txns
-
-=> LAW OFFICES OF JOEL B ROBBINS  [norm_exact/high]  $6.5M
-     * LAW OFFICES OF JOEL B ROBBINS               $    5.2M  10 txns
-       LAW OFFICES OF JOEL B ROBBINS PLLC          $    1.3M  5 txns
-
-=> MOBILE CONCEPTS TECHNOLOGY LLC  [norm_exact/high]  $6.3M
-       MOBILE CONCEPTS TECHNOLOGY LLC              $    5.0M  22 txns
+=> MOBILE CONCEPTS TECHNOLOGY LLC  [norm_exact/high]  $6.5M
+       MOBILE CONCEPTS TECHNOLOGY LLC              $    5.1M  23 txns
      . MOBILE CONCEPTS TECHNOLOGY                  $    1.1M  5 txns
      . MOBILE CONCEPTS TECHNOLOGY, LLC             $    0.3M  2 txns
 
-=> CREATIVE BUS SALES INC  [norm_exact/high]  $6.1M
-       CREATIVE BUS SALES INC                      $    3.3M  21 txns
-       CREATIVE BUS SALES, INC.                    $    2.8M  18 txns
-
-=> GREYHOUND LINES INC  [norm_exact/high]  $6.1M
-     . GREYHOUND LINES INC                         $    5.3M  19 txns
-     . GREYHOUND LINES, INC                        $    0.8M  7 txns
-
-=> LEGACY HEALTH  [token_subset/high]  $6.0M
-     . LEGACY HEALTH                               $    5.0M  27 txns
-     . LEGACY HEALING HEALTH COM                   $    1.0M  7 txns
-
-=> GUIDEHOUSE LLP  [norm_exact/high]  $5.9M
-       GUIDEHOUSE LLP                              $    4.9M  24 txns
-       GUIDEHOUSE INC                              $    1.0M  8 txns
-
-=> TIBCO SOFTWARE INC  [norm_exact/high]  $5.7M
-       TIBCO SOFTWARE INC                          $    5.6M  11 txns
+=> TIBCO SOFTWARE INC  [norm_exact/high]  $6.4M
+       TIBCO SOFTWARE INC                          $    6.3M  15 txns
      . TIBCO SOFTWARE INC.                         $    0.1M  1 txns
+
+=> LEGACY TRADITIONAL SCHOOL - PHOENIX  [token_subset/high]  $6.0M
+     . LEGACY TRADITIONAL SCHOOL - PHOENIX         $    5.0M  16 txns
+     . LEGACY TRADITIONAL SCHOOL NORTH PHOENIX     $    0.9M  7 txns
 
 => SDB INC  [norm_exact/high]  $5.7M
        SDB INC                                     $    5.6M  22 txns
        SDB, INC.                                   $    0.1M  1 txns
 
-=> LEGACY TRADITIONAL SCHOOL - PHOENIX  [token_subset/high]  $5.4M
-     . LEGACY TRADITIONAL SCHOOL - PHOENIX         $    4.5M  13 txns
-     . LEGACY TRADITIONAL SCHOOL NORTH PHOENIX     $    0.9M  7 txns
+=> SOUTHWEST CONCRETE PAVING CO.  [norm_exact/high]  $5.2M
+       SOUTHWEST CONCRETE PAVING CO.               $    4.0M  16 txns
+       SOUTHWEST CONCRETE PAVING CO                $    1.2M  8 txns
+
+=> HERITAGE ACADEMY INC  [token_subset/high]  $4.9M
+     . HERITAGE ACADEMY INC                        $    2.4M  8 txns
+     . HERITAGE ACADEMY QUEEN CREEK INC            $    1.6M  9 txns
+     . HERITAGE ACADEMY LAVEEN INC                 $    0.8M  4 txns
+
+=> COLLEGE BOARD  [token_subset/high]  $4.9M
+       COLLEGE BOARD                               $    3.1M  5 txns
+       COLLEGE ENTRANCE EXAMINATION BOARD          $    1.8M  4 txns
+
+=> APACHE BEHAVIORAL HEALTH SERVICES  [token_subset/high]  $4.8M
+     . APACHE BEHAVIORAL HEALTH SERVICES           $    3.8M  23 txns
+     . APACHE HEALTH LLC                           $    1.0M  8 txns
 
 => RESERVE AT THUNDERBIRD LP  [token_subset/high]  $4.7M
      . RESERVE AT THUNDERBIRD LP                   $    2.8M  3 txns
@@ -472,50 +513,49 @@
        WESTERN MARICOPA EDUCATION CENTER 402       $    4.1M  2 txns
        WESTERN MARICOPA EDUCATION CENTER           $    0.3M  1 txns
 
-=> GALLAGHER & KENNEDY PA  [token_subset/high]  $4.3M
-       GALLAGHER & KENNEDY PA                      $    4.2M  7 txns
-     . GALLAGHER & KENNEDY AND AMY LUNDQUEST ON BEHALF  $    0.1M  1 txns
-
 => FALCONE BROS INC  [token_subset/high]  $4.3M
        FALCONE BROS INC                            $    3.4M  19 txns
        FALCONE BROS & ASSOCIATES INC               $    0.9M  5 txns
+
+=> USAA ANNUITY SERVICES CORPOTATION  [token_subset/high]  $4.1M
+       USAA ANNUITY SERVICES CORPOTATION           $    3.4M  3 txns
+     . USAA ANNUITY SERVICES CORPORATION           $    0.7M  1 txns
+
+=> THE CARIOCA CO  [norm_exact/high]  $4.1M
+     . THE CARIOCA CO                              $    2.3M  15 txns
+     . THE CARIOCA COMPANY                         $    1.8M  11 txns
 
 => SPERRY CAPITAL INC.  [norm_exact/high]  $4.1M
        SPERRY CAPITAL INC.                         $    2.8M  18 txns
      . SPERRY CAPITAL INC                          $    1.3M  7 txns
 
-=> APACHE BEHAVIORAL HEALTH SERVICES  [token_subset/high]  $4.1M
-     . APACHE BEHAVIORAL HEALTH SERVICES           $    3.5M  21 txns
-     . APACHE HEALTH LLC                           $    0.6M  5 txns
+=> PINYON ENVIRONMENTAL INC  [norm_exact/high]  $4.1M
+     . PINYON ENVIRONMENTAL INC                    $    3.7M  25 txns
+     . PINYON ENVIRONMENTAL, INC.                  $    0.4M  3 txns
 
 => EUROFINS EATON ANALYTICAL LLC  [norm_exact/high]  $4.1M
        EUROFINS EATON ANALYTICAL LLC               $    2.8M  15 txns
      . EUROFINS EATON ANALYTICAL INC               $    1.3M  9 txns
 
+=> MARANA HEALTH CENTER, INC  [norm_exact/high]  $4.1M
+     . MARANA HEALTH CENTER, INC                   $    3.3M  6 txns
+     . MARANA HEALTH CENTER INC                    $    0.7M  7 txns
+
 => UMOM HOUSING 9 LLC  [token_subset/high]  $4.0M
      . UMOM HOUSING 9 LLC                          $    3.6M  1 txns
      . UMOM HOUSING VI LLC                         $    0.5M  1 txns
-
-=> THE CARIOCA CO  [norm_exact/high]  $4.0M
-     . THE CARIOCA CO                              $    2.2M  14 txns
-     . THE CARIOCA COMPANY                         $    1.8M  11 txns
-
-=> COLLEGE BOARD  [token_subset/high]  $4.0M
-     * COLLEGE BOARD                               $    2.2M  3 txns
-       COLLEGE ENTRANCE EXAMINATION BOARD          $    1.8M  4 txns
-
-=> MARANA HEALTH CENTER, INC  [norm_exact/high]  $4.0M
-     . MARANA HEALTH CENTER, INC                   $    3.3M  6 txns
-     . MARANA HEALTH CENTER INC                    $    0.6M  6 txns
 
 => KAPP-CON INC  [norm_exact/high]  $4.0M
        KAPP-CON INC                                $    3.8M  12 txns
      . KAPP-CON INCORPORATED                       $    0.1M  1 txns
 
-=> HERITAGE ACADEMY INC  [token_subset/high]  $3.8M
-     . HERITAGE ACADEMY INC                        $    2.0M  6 txns
-     . HERITAGE ACADEMY QUEEN CREEK INC            $    1.2M  7 txns
-     . HERITAGE ACADEMY LAVEEN INC                 $    0.6M  3 txns
+=> LIVE THE SOLUTION  [token_subset/high]  $4.0M
+     . LIVE THE SOLUTION                           $    2.0M  6 txns
+     . LIVE THE SOLUTION DBA EARN TO LEARN         $    1.9M  3 txns
+
+=> MARRIOTT HOTEL SERVICES INC  [norm_exact/high]  $3.9M
+       MARRIOTT HOTEL SERVICES INC                 $    3.6M  18 txns
+     . MARRIOTT HOTEL SERVICES LLC                 $    0.2M  1 txns
 
 => PATHFINDER CHARTER SCHOOL FOUNDATION INC  [norm_exact/high]  $3.7M
      . PATHFINDER CHARTER SCHOOL FOUNDATION INC    $    3.5M  13 txns
@@ -525,13 +565,17 @@
      * CHICAGO TITLE INSURANCE COMPANY             $    3.6M  6 txns
        CHICAGO TITLE INSURANCE CO                  $    0.1M  1 txns
 
+=> LEGACY TRADITIONAL SCHOOL - SURPRISE  [token_subset/high]  $3.6M
+     . LEGACY TRADITIONAL SCHOOL - SURPRISE        $    2.6M  12 txns
+     . LEGACY TRADITIONAL SCHOOL WEST SURPRISE     $    1.1M  4 txns
+
 => SCIENTIFIC TECHNOLOGIES CORP  [norm_exact/high]  $3.5M
        SCIENTIFIC TECHNOLOGIES CORP                $    3.3M  11 txns
        SCIENTIFIC TECHNOLOGIES CORPORATION         $    0.3M  2 txns
 
-=> MARRIOTT HOTEL SERVICES INC  [norm_exact/high]  $3.5M
-     . MARRIOTT HOTEL SERVICES INC                 $    3.3M  15 txns
-     . MARRIOTT HOTEL SERVICES LLC                 $    0.2M  1 txns
+=> FAST ENTERPRISES LLC  [norm_exact/high]  $3.5M
+       FAST ENTERPRISES LLC                        $    2.0M  12 txns
+       FAST ENTERPRISES, LLC                       $    1.5M  7 txns
 
 => GLENDALE LEASED HOUSING ASSOCIATES II LLLP  [token_subset/high]  $3.4M
      . GLENDALE LEASED HOUSING ASSOCIATES II LLLP  $    1.8M  3 txns
@@ -561,26 +605,42 @@
        COHEN KENNEDY DOWD & QUIGLEY PC             $    3.1M  20 txns
      . COHEN DOWD QUIGLEY PC                       $    0.1M  1 txns
 
-=> FAST ENTERPRISES LLC  [norm_exact/high]  $3.2M
-       FAST ENTERPRISES LLC                        $    1.6M  10 txns
-       FAST ENTERPRISES, LLC                       $    1.5M  7 txns
+=> GRANICUS LLC  [norm_exact/high]  $3.2M
+       GRANICUS LLC                                $    2.1M  8 txns
+       GRANICUS, INC.                              $    0.8M  3 txns
+       GRANICUS INC                                $    0.3M  1 txns
+
+=> BALL CHARTER SCHOOLS (HEARN)  [token_subset/high]  $3.2M
+     . BALL CHARTER SCHOOLS (HEARN)                $    3.0M  20 txns
+     . BALL CHARTER SCHOOLS                        $    0.1M  1 txns
 
 => GANNETT FLEMING PROJECT DEVELOPMENT CORPORATION  [token_subset/high]  $3.1M
        GANNETT FLEMING PROJECT DEVELOPMENT CORPORATION  $    2.2M  8 txns
        GANNETT FLEMING INC                         $    0.9M  7 txns
 
-=> LEGACY TRADITIONAL SCHOOL - SURPRISE  [token_subset/high]  $3.1M
-     . LEGACY TRADITIONAL SCHOOL - SURPRISE        $    2.2M  11 txns
-     . LEGACY TRADITIONAL SCHOOL WEST SURPRISE     $    0.9M  3 txns
-
 => EL PASO NATURAL GAS COMPANY L.L.C.  [norm_exact/high]  $3.0M
      . EL PASO NATURAL GAS COMPANY L.L.C.          $    2.2M  3 txns
        EL PASO NATURAL GAS CO LLC                  $    0.8M  1 txns
 
-=> GRANICUS LLC  [norm_exact/high]  $2.9M
-       GRANICUS LLC                                $    1.8M  7 txns
-       GRANICUS, INC.                              $    0.8M  3 txns
-       GRANICUS INC                                $    0.3M  1 txns
+=> TUCSON BUSINESS INTERIORS INC  [norm_exact/high]  $3.0M
+     . TUCSON BUSINESS INTERIORS INC               $    2.3M  12 txns
+     . TUCSON BUSINESS INTERIORS, INC              $    0.7M  5 txns
+
+=> NEPC LLC  [norm_exact/high]  $2.8M
+       NEPC LLC                                    $    2.6M  26 txns
+       NEPC, LLC                                   $    0.1M  1 txns
+
+=> LEGACY TRADITIONAL SCHOOL - TUCSON  [token_subset/high]  $2.7M
+     . LEGACY TRADITIONAL SCHOOL - TUCSON          $    1.8M  8 txns
+     . LEGACY TRADITIONAL SCHOOL EAST TUCSON       $    0.9M  5 txns
+
+=> COGNIZANT TRIZETTO SOFWARE GROUP INC.  [norm_exact/high]  $2.6M
+     . COGNIZANT TRIZETTO SOFWARE GROUP INC.       $    1.9M  8 txns
+       COGNIZANT TRIZETTO SOFWARE GROUP INC        $    0.7M  4 txns
+
+=> LIFE TECHNOLOGIES CORP  [norm_exact/high]  $2.6M
+       LIFE TECHNOLOGIES CORP                      $    1.7M  9 txns
+     . LIFE TECHNOLOGIES CORPORATION               $    0.9M  6 txns
 
 => LEGATUS SOLUTIONS CORPORATION  [norm_exact/high]  $2.5M
        LEGATUS SOLUTIONS CORPORATION               $    1.5M  13 txns
@@ -589,10 +649,6 @@
 => THE CORPORATION FOR TRAVEL PROMOTION  [norm_exact/high]  $2.5M
        THE CORPORATION FOR TRAVEL PROMOTION        $    1.7M  3 txns
        THE CORP FOR TRAVEL PROMOTION               $    0.9M  1 txns
-
-=> COGNIZANT TRIZETTO SOFWARE GROUP INC.  [norm_exact/high]  $2.5M
-     . COGNIZANT TRIZETTO SOFWARE GROUP INC.       $    1.9M  8 txns
-     . COGNIZANT TRIZETTO SOFWARE GROUP INC        $    0.6M  3 txns
 
 => ADVANCED DAIRY SYSTEMS LLC  [token_subset/high]  $2.5M
        ADVANCED DAIRY SYSTEMS LLC                  $    2.0M  3 txns
@@ -608,33 +664,33 @@
        PCC TECHNOLOGY INC                          $    0.9M  4 txns
        PCC TECHNOLOGY GROUP, LLC                   $    0.5M  2 txns
 
-=> PINYON ENVIRONMENTAL INC  [norm_exact/high]  $2.3M
-     . PINYON ENVIRONMENTAL INC                    $    1.9M  14 txns
-     . PINYON ENVIRONMENTAL, INC.                  $    0.4M  3 txns
+=> LEGACY TRADITIONAL SCHOOL - EAST MESA  [token_subset/high]  $2.4M
+     . LEGACY TRADITIONAL SCHOOL - EAST MESA       $    1.3M  7 txns
+     . LEGACY TRADITIONAL SCHOOL MESA              $    1.1M  7 txns
+
+=> EAGLE SOUTH MOUNTAIN CHARTER INC  [token_subset/high]  $2.3M
+     . EAGLE SOUTH MOUNTAIN CHARTER INC            $    2.1M  13 txns
+     . EAGLE SOUTH MOUNTAIN                        $    0.2M  1 txns
+
+=> CHILD & FAMILY SUPPORT  [token_subset/high]  $2.3M
+       CHILD & FAMILY SUPPORT                      $    1.5M  3 txns
+     . CHILD & FAMILY SUPPORT SERVICE              $    0.9M  6 txns
 
 => CLEAR TITLE AGENCY LLC  [token_subset/high]  $2.3M
      * CLEAR TITLE AGENCY LLC                      $    2.1M  2 txns
      . CLEAR TITLE AGENCY OF ARIZONA               $    0.2M  1 txns
 
-=> NEPC LLC  [norm_exact/high]  $2.3M
-       NEPC LLC                                    $    2.1M  21 txns
-       NEPC, LLC                                   $    0.1M  1 txns
-
 => ECOINTERACTIVE INC  [norm_exact/high]  $2.2M
        ECOINTERACTIVE INC                          $    1.9M  10 txns
        ECOINTERACTIVE, INC.                        $    0.3M  2 txns
 
-=> LIVE THE SOLUTION DBA EARN TO LEARN  [token_subset/high]  $2.1M
-     . LIVE THE SOLUTION DBA EARN TO LEARN         $    1.9M  3 txns
-     . LIVE THE SOLUTION                           $    0.2M  1 txns
+=> CHRYSALIS SHELTER FOR VICTIMS OF DOMESTIC VIOLENCE INC  [norm_exact/high]  $2.1M
+     . CHRYSALIS SHELTER FOR VICTIMS OF DOMESTIC VIOLENCE INC  $    1.1M  8 txns
+     . CHRYSALIS SHELTER FOR VICTIMS OF DOMESTIC VIOLENCE, INC.  $    1.0M  8 txns
 
-=> USAA ANNUITY SERVICES CORPOTATION  [token_subset/high]  $2.1M
-       USAA ANNUITY SERVICES CORPOTATION           $    1.4M  2 txns
-     . USAA ANNUITY SERVICES CORPORATION           $    0.7M  1 txns
-
-=> LIFE TECHNOLOGIES CORP  [norm_exact/high]  $2.1M
-       LIFE TECHNOLOGIES CORP                      $    1.2M  6 txns
-     . LIFE TECHNOLOGIES CORPORATION               $    0.9M  6 txns
+=> STACS DNA INC  [norm_exact/high]  $2.1M
+       STACS DNA INC                               $    1.8M  8 txns
+       STACS DNA INCORPORATED                      $    0.3M  1 txns
 
 => JQH - GLENDALE AZ DEVELOPMENT LLC  [norm_exact/high]  $2.1M
        JQH - GLENDALE AZ DEVELOPMENT LLC           $    1.5M  7 txns
@@ -644,53 +700,49 @@
        SOUTHWEST GAS CORPORATION                   $    1.5M  5 txns
        SOUTHWEST GAS CORP                          $    0.6M  5 txns
 
-=> LEGACY TRADITIONAL SCHOOL - TUCSON  [token_subset/high]  $2.1M
-     . LEGACY TRADITIONAL SCHOOL - TUCSON          $    1.4M  6 txns
-     . LEGACY TRADITIONAL SCHOOL EAST TUCSON       $    0.7M  4 txns
+=> BURLINGTON ENGLISH INC  [norm_exact/high]  $2.0M
+       BURLINGTON ENGLISH INC                      $    1.8M  6 txns
+       BURLINGTON ENGLISH INC.                     $    0.3M  2 txns
+
+=> STURGEON ELECTRIC COMPANY INC  [norm_exact/high]  $2.0M
+       STURGEON ELECTRIC COMPANY INC               $    1.6M  8 txns
+       STURGEON ELECTRIC CO INC                    $    0.4M  3 txns
 
 => DEVEREUX FOUNDATION  [norm_exact/high]  $2.0M
      . DEVEREUX FOUNDATION                         $    1.8M  16 txns
        THE DEVEREUX FOUNDATION                     $    0.2M  1 txns
 
-=> CHRYSALIS SHELTER FOR VICTIMS OF DOMESTIC VIOLENCE, INC.  [norm_exact/high]  $2.0M
-     . CHRYSALIS SHELTER FOR VICTIMS OF DOMESTIC VIOLENCE, INC.  $    1.0M  8 txns
-     . CHRYSALIS SHELTER FOR VICTIMS OF DOMESTIC VIOLENCE INC  $    0.9M  7 txns
-
-=> TUCSON BUSINESS INTERIORS INC  [norm_exact/high]  $1.9M
-     . TUCSON BUSINESS INTERIORS INC               $    1.2M  7 txns
-     . TUCSON BUSINESS INTERIORS, INC              $    0.7M  5 txns
-
-=> LEGACY TRADITIONAL SCHOOL - EAST MESA  [token_subset/high]  $1.8M
-     . LEGACY TRADITIONAL SCHOOL - EAST MESA       $    1.0M  5 txns
-     . LEGACY TRADITIONAL SCHOOL MESA              $    0.8M  6 txns
-
-=> EAGLE SOUTH MOUNTAIN CHARTER INC  [token_subset/high]  $1.8M
-     . EAGLE SOUTH MOUNTAIN CHARTER INC            $    1.6M  10 txns
-     . EAGLE SOUTH MOUNTAIN                        $    0.2M  1 txns
-
-=> STACS DNA INC  [norm_exact/high]  $1.8M
-       STACS DNA INC                               $    1.5M  6 txns
-       STACS DNA INCORPORATED                      $    0.3M  1 txns
-
-=> MENTIS TECHNOLOGY SOLUTIONS LLC  [token_subset/high]  $1.7M
-     . MENTIS TECHNOLOGY SOLUTIONS LLC             $    1.5M  8 txns
+=> MENTIS TECHNOLOGY SOLUTIONS LLC  [token_subset/high]  $2.0M
+     . MENTIS TECHNOLOGY SOLUTIONS LLC             $    1.7M  9 txns
        MENTIS TECHNOLOGY, INC                      $    0.2M  1 txns
 
-=> STURGEON ELECTRIC COMPANY INC  [norm_exact/high]  $1.7M
-       STURGEON ELECTRIC COMPANY INC               $    1.6M  8 txns
-       STURGEON ELECTRIC CO INC                    $    0.2M  1 txns
+=> EMS LINQ INC  [norm_exact/high]  $1.9M
+       EMS LINQ INC                                $    1.6M  10 txns
+     . EMS LINQ LLC                                $    0.3M  2 txns
 
-=> BURLINGTON ENGLISH INC  [norm_exact/high]  $1.7M
-       BURLINGTON ENGLISH INC                      $    1.5M  5 txns
-       BURLINGTON ENGLISH INC.                     $    0.3M  2 txns
+=> DEVEREUX ARIZONA  [token_subset/high]  $1.9M
+       DEVEREUX ARIZONA                            $    1.2M  8 txns
+     . DEVEREUX ARIZONA SCOTTSDA                   $    0.6M  5 txns
 
 => BNSF RAILWAY COMP  [token_subset/high]  $1.7M
        BNSF RAILWAY COMP                           $    1.0M  6 txns
        BNSF RAILWAY CO                             $    0.8M  5 txns
 
+=> WESTERN REFINING RETAIL LLC  [norm_exact/high]  $1.7M
+     . WESTERN REFINING RETAIL LLC                 $    1.4M  5 txns
+     . WESTERN REFINING RETAIL, LLC                $    0.3M  1 txns
+
 => SUPERMESA FUEL & MERC LLC  [norm_exact/high]  $1.7M
      . SUPERMESA FUEL & MERC LLC                   $    1.2M  7 txns
      . SUPERMESA FUEL AND MERC LLC                 $    0.5M  3 txns
+
+=> BINGHAM EQUIPMENT COMPANY  [norm_exact/high]  $1.7M
+       BINGHAM EQUIPMENT COMPANY                   $    0.9M  5 txns
+       BINGHAM EQUIPMENT CO                        $    0.8M  5 txns
+
+=> GROUND LEVEL CO  [norm_exact/high]  $1.6M
+       GROUND LEVEL CO                             $    0.8M  3 txns
+     . GROUND LEVEL COMPANY                        $    0.8M  3 txns
 
 => PRATT AND WHITNEY ENGINE SERVICES INC  [norm_exact/high]  $1.6M
        PRATT AND WHITNEY ENGINE SERVICES INC       $    1.3M  2 txns
@@ -704,21 +756,37 @@
        GTECH CORPORATION                           $    1.3M  7 txns
      . GTECH CORP                                  $    0.3M  1 txns
 
-=> DEVEREUX ARIZONA  [token_subset/high]  $1.5M
-       DEVEREUX ARIZONA                            $    0.8M  6 txns
-     . DEVEREUX ARIZONA SCOTTSDA                   $    0.6M  5 txns
+=> ARIZONA EASTERN RAILWAY  [norm_exact/high]  $1.6M
+       ARIZONA EASTERN RAILWAY                     $    1.3M  5 txns
+       ARIZONA EASTERN RAILWAY COMPANY             $    0.2M  1 txns
+
+=> ARIZONA AUTISM CHARTER SCHOOLS  [norm_exact/high]  $1.4M
+     . ARIZONA AUTISM CHARTER SCHOOLS              $    1.2M  9 txns
+     . ARIZONA AUTISM CHARTER SCHOOLS INC          $    0.2M  2 txns
 
 => WORLDWIDE INTERACTIVE NETWORK INC  [norm_exact/high]  $1.4M
        WORLDWIDE INTERACTIVE NETWORK INC           $    0.9M  3 txns
        WORLDWIDE INTERACTIVE NETWORK, INC.         $    0.5M  1 txns
 
+=> SELECT SPECIALTY HOSP-PHX  [token_subset/high]  $1.4M
+     . SELECT SPECIALTY HOSP-PHX                   $    1.3M  6 txns
+     . SELECT SPECIALTY-PHX D T                    $    0.1M  1 txns
+
 => GRAFFITI PROTECTIVE COATINGS INC.  [norm_exact/high]  $1.4M
        GRAFFITI PROTECTIVE COATINGS INC.           $    1.3M  7 txns
      . GRAFFITI PROTECTIVE COATINGS INC            $    0.1M  1 txns
 
-=> EMS LINQ INC  [norm_exact/high]  $1.3M
-       EMS LINQ INC                                $    1.0M  6 txns
-     . EMS LINQ LLC                                $    0.3M  2 txns
+=> MILLIMAN SOLUTIONS LLC  [norm_exact/high]  $1.4M
+     . MILLIMAN SOLUTIONS LLC                      $    1.0M  6 txns
+     . MILLIMAN SOLUTIONS, LLC                     $    0.3M  2 txns
+
+=> RECREATION CENTERS OF SUN CITY, INC.  [token_subset/high]  $1.4M
+     . RECREATION CENTERS OF SUN CITY, INC.        $    0.9M  2 txns
+     . RECREATION CENTERS OF SUN CITY WEST INC     $    0.4M  1 txns
+
+=> SMITHGROUPJJR INC  [norm_exact/high]  $1.3M
+       SMITHGROUPJJR INC                           $    1.0M  7 txns
+       SMITHGROUPJJR, INC.                         $    0.3M  2 txns
 
 => COMMUNITY BRIDGES, INC  [norm_exact/high]  $1.3M
      . COMMUNITY BRIDGES, INC                      $    0.6M  4 txns
@@ -733,17 +801,9 @@
        DIONA (US) INC.                             $    0.6M  3 txns
        DIONA US INC                                $    0.6M  3 txns
 
-=> BINGHAM EQUIPMENT COMPANY  [norm_exact/high]  $1.2M
-       BINGHAM EQUIPMENT COMPANY                   $    0.9M  5 txns
-       BINGHAM EQUIPMENT CO                        $    0.3M  2 txns
-
-=> MILLIMAN SOLUTIONS LLC  [norm_exact/high]  $1.2M
-     . MILLIMAN SOLUTIONS LLC                      $    0.8M  5 txns
-     . MILLIMAN SOLUTIONS, LLC                     $    0.3M  2 txns
-
-=> WESTERN REFINING RETAIL LLC  [norm_exact/high]  $1.2M
-     . WESTERN REFINING RETAIL LLC                 $    0.9M  3 txns
-     . WESTERN REFINING RETAIL, LLC                $    0.3M  1 txns
+=> NORTHWEST MEDIA INC  [norm_exact/high]  $1.2M
+       NORTHWEST MEDIA INC                         $    1.0M  6 txns
+       NORTHWEST MEDIA, INC.                       $    0.2M  1 txns
 
 => QUIKTRIP CORPORATION  [norm_exact/high]  $1.2M
      . QUIKTRIP CORPORATION                        $    0.6M  5 txns
@@ -753,29 +813,37 @@
      . PATHWAYS IN EDUCATION - ARIZONA INC         $    0.7M  4 txns
        PATHWAYS OF ARIZONA INC                     $    0.5M  2 txns
 
-=> SELECT SPECIALTY HOSP-PHX  [token_subset/high]  $1.1M
-     . SELECT SPECIALTY HOSP-PHX                   $    1.0M  4 txns
-     . SELECT SPECIALTY-PHX D T                    $    0.1M  1 txns
+=> GILLETTE BLACKHURST & ALDOUS PLC IN TRUST FOR PLAINTIFFS  [token_subset/high]  $1.1M
+       GILLETTE BLACKHURST & ALDOUS PLC IN TRUST FOR PLAINTIFFS  $    0.9M  1 txns
+       GILLETTE BLACKHURST PLC                     $    0.2M  1 txns
 
 => TAYLOR CORPORATION  [norm_exact/high]  $1.1M
      . TAYLOR CORPORATION                          $    0.8M  5 txns
      . TAYLOR CORP                                 $    0.3M  2 txns
 
-=> SMITHGROUPJJR INC  [norm_exact/high]  $1.0M
-       SMITHGROUPJJR INC                           $    0.7M  5 txns
-       SMITHGROUPJJR, INC.                         $    0.3M  2 txns
+=> BELL CANYON CHARTER SCHOOL INC  [norm_exact/high]  $1.1M
+     . BELL CANYON CHARTER SCHOOL INC              $    1.0M  4 txns
+     . BELL CANYON CHARTER SCHOOL, INC.            $    0.1M  1 txns
+
+=> STARKWEATHER ROOFING INC  [norm_exact/high]  $1.1M
+       STARKWEATHER ROOFING INC                    $    0.7M  5 txns
+     . STARKWEATHER ROOFING, INC.                  $    0.4M  1 txns
+
+=> ASSETWORKS LLC  [norm_exact/high]  $1.1M
+       ASSETWORKS LLC                              $    0.7M  5 txns
+     . ASSETWORKS INC                              $    0.4M  3 txns
 
 => CUSTOM DATA PROCESSING INC  [norm_exact/high]  $1.0M
        CUSTOM DATA PROCESSING INC                  $    0.5M  3 txns
        CUSTOM DATA PROCESSING,. INC                $    0.5M  3 txns
 
-=> NORTHWEST MEDIA INC  [norm_exact/high]  $1.0M
-       NORTHWEST MEDIA INC                         $    0.9M  5 txns
-       NORTHWEST MEDIA, INC.                       $    0.2M  1 txns
-
 => MADISON HEIGHTS PHASE I LLC  [token_subset/high]  $1.0M
      . MADISON HEIGHTS PHASE I LLC                 $    0.6M  1 txns
      . MADISON HEIGHTS PHASE II LLC                $    0.4M  1 txns
+
+=> SCHLESINGER CONSULTING ENGINEERING, PLLC  [norm_exact/high]  $1.0M
+       SCHLESINGER CONSULTING ENGINEERING, PLLC    $    0.6M  2 txns
+       SCHLESINGER CONSULTING ENGINEERING PLLC     $    0.4M  1 txns
 
 => MCKESSON MEDICAL SURGICAL MINNESOTA SUPPLY INC  [token_subset/high]  $1.0M
      . MCKESSON MEDICAL SURGICAL MINNESOTA SUPPLY INC  $    0.8M  3 txns
@@ -789,17 +857,21 @@
      . HYGEIA II MEDICAL GROUP INC                 $    0.5M  4 txns
        HYGEIA II MEDICAL GROUP INC.                $    0.5M  3 txns
 
-=> STARKWEATHER ROOFING INC  [norm_exact/high]  $0.9M
-       STARKWEATHER ROOFING INC                    $    0.5M  4 txns
-     . STARKWEATHER ROOFING, INC.                  $    0.4M  1 txns
+=> NATIVE ENVIRONMENTAL LLC  [norm_exact/high]  $0.9M
+       NATIVE ENVIRONMENTAL LLC                    $    0.8M  3 txns
+       NATIVE ENVIRONMENTAL                        $    0.1M  1 txns
 
-=> ASSETWORKS LLC  [norm_exact/high]  $0.9M
-       ASSETWORKS LLC                              $    0.6M  4 txns
-     . ASSETWORKS INC                              $    0.4M  3 txns
+=> PREDICTIVE INDEX LLC  [token_subset/high]  $0.9M
+       PREDICTIVE INDEX LLC                        $    0.7M  4 txns
+       PREDICTIVE INDEX ARIZONA INC                $    0.3M  2 txns
 
 => QIAGEN INC  [norm_exact/high]  $0.9M
      . QIAGEN INC                                  $    0.7M  4 txns
      . QIAGEN INC.                                 $    0.2M  1 txns
+
+=> PARTNERS IN RECOVERY OUTP  [token_subset/high]  $0.9M
+     . PARTNERS IN RECOVERY OUTP                   $    0.7M  4 txns
+     . PARTNERS IN RECOVERY LLC                    $    0.2M  1 txns
 
 => SHAY OIL COMPANY  [norm_exact/high]  $0.9M
      . SHAY OIL COMPANY                            $    0.7M  3 txns
@@ -809,17 +881,17 @@
        MICROPACT GLOBAL, INC.                      $    0.5M  2 txns
        MICROPACT GLOBAL INC                        $    0.4M  1 txns
 
-=> RECREATION CENTERS OF SUN CITY WEST INC  [token_subset/high]  $0.8M
-     . RECREATION CENTERS OF SUN CITY WEST INC     $    0.4M  1 txns
-     . RECREATION CENTERS OF SUN CITY, INC.        $    0.4M  1 txns
-
 => URETEK USA INC  [norm_exact/high]  $0.8M
      . URETEK USA INC                              $    0.4M  3 txns
        URETEK USA, INC.                            $    0.4M  3 txns
 
-=> PREDICTIVE INDEX LLC  [token_subset/high]  $0.8M
-       PREDICTIVE INDEX LLC                        $    0.5M  3 txns
-       PREDICTIVE INDEX ARIZONA INC                $    0.3M  2 txns
+=> BLUEPRINT EDUCATION INC  [norm_exact/high]  $0.8M
+     . BLUEPRINT EDUCATION INC                     $    0.7M  5 txns
+     . BLUEPRINT EDUCATION                         $    0.1M  1 txns
+
+=> KATHERINE CHRISTENSEN & ASSOCIATES INC  [norm_exact/high]  $0.7M
+       KATHERINE CHRISTENSEN & ASSOCIATES INC      $    0.5M  4 txns
+       KATHERINE CHRISTENSEN & ASSOCIATES, INC     $    0.2M  2 txns
 
 => PHOENIX COLLEGIATE ACADEMY ELEMENTARY LLC  [token_subset/high]  $0.7M
      . PHOENIX COLLEGIATE ACADEMY ELEMENTARY LLC   $    0.3M  2 txns
@@ -838,25 +910,9 @@
        APPRAISAL TECHNOLOGY LLC                    $    0.6M  3 txns
        APPRAISAL TECHNOLOGY INC                    $    0.1M  1 txns
 
-=> BELL CANYON CHARTER SCHOOL INC  [norm_exact/high]  $0.7M
-     . BELL CANYON CHARTER SCHOOL INC              $    0.6M  2 txns
-     . BELL CANYON CHARTER SCHOOL, INC.            $    0.1M  1 txns
-
 => INTERNATIONAL ROAD DYNAMICS CORP  [norm_exact/high]  $0.7M
        INTERNATIONAL ROAD DYNAMICS CORP            $    0.5M  3 txns
      . INTERNATIONAL ROAD DYNAMICS CORPORATION     $    0.1M  1 txns
-
-=> BLUEPRINT EDUCATION INC  [norm_exact/high]  $0.6M
-     . BLUEPRINT EDUCATION INC                     $    0.5M  4 txns
-     . BLUEPRINT EDUCATION                         $    0.1M  1 txns
-
-=> NATIVE ENVIRONMENTAL LLC  [norm_exact/high]  $0.6M
-     . NATIVE ENVIRONMENTAL LLC                    $    0.5M  1 txns
-       NATIVE ENVIRONMENTAL                        $    0.1M  1 txns
-
-=> KATHERINE CHRISTENSEN & ASSOCIATES INC  [norm_exact/high]  $0.6M
-       KATHERINE CHRISTENSEN & ASSOCIATES INC      $    0.5M  4 txns
-       KATHERINE CHRISTENSEN & ASSOCIATES, INC     $    0.1M  1 txns
 
 => MAX MINI MART LTD  [norm_exact/high]  $0.6M
      . MAX MINI MART LTD                           $    0.4M  2 txns
@@ -866,13 +922,26 @@
      . DLA-6 PROPERTIES LLC                        $    0.4M  2 txns
      . DLA-6 PROPERTIES, LLC                       $    0.2M  1 txns
 
-=> DAVID J DON  [token_subset/high]  $0.6M
-     . DAVID J DON                                 $    0.3M  1 txns
+=> DAVID J DON ATTORNEY ON BEHALF OF CLIENTS NERIDA ROSARIO  [token_subset/high]  $0.6M
      . DAVID J DON ATTORNEY ON BEHALF OF CLIENTS NERIDA ROSARIO  $    0.3M  1 txns
+     . DAVID J DON                                 $    0.3M  1 txns
 
 => DAVES FAST STOP III LLC  [token_subset/high]  $0.6M
      . DAVES FAST STOP III LLC                     $    0.3M  2 txns
      . DAVES FAST STOP LLC                         $    0.3M  2 txns
+
+=> GAS-N-GRUB V LLC  [norm_exact+token_subset/high]  $0.6M
+     . GAS-N-GRUB LLC                              $    0.2M  1 txns
+     . GAS-N-GRUB V LLC                            $    0.2M  2 txns
+     . GAS-N-GRUB VI LLC                           $    0.2M  1 txns
+
+=> RIDGELINE ACADEMY A CHALLENGE FOUNDATION ACADEMY  [token_subset/high]  $0.6M
+     . RIDGELINE ACADEMY A CHALLENGE FOUNDATION ACADEMY  $    0.3M  2 txns
+     . RIDGELINE ACADEMY INC                       $    0.3M  2 txns
+
+=> GAP MINISTRIES  [norm_exact/high]  $0.5M
+     . GAP MINISTRIES                              $    0.4M  2 txns
+     . GAP MINISTRIES INC                          $    0.1M  1 txns
 
 => CHEVRON USA INC  [norm_exact/high]  $0.5M
      . CHEVRON USA INC                             $    0.2M  1 txns
@@ -882,9 +951,9 @@
      . SUMMIT TRAFFIC SOLUTIONS, LLC               $    0.3M  2 txns
      . SUMMIT TRAFFIC SOLUTIONS LLC                $    0.1M  1 txns
 
-=> GAS-N-GRUB V LLC  [norm_exact/high]  $0.4M
-     . GAS-N-GRUB V LLC                            $    0.2M  2 txns
-     . GAS-N-GRUB LLC                              $    0.2M  1 txns
+=> VALLEY HOSPITAL  [token_subset/high]  $0.4M
+     . VALLEY HOSPITAL                             $    0.3M  2 txns
+     . VALLEY HOSPITAL-NV                          $    0.1M  1 txns
 
 => SALT N PEPPER DELI N GROCERY#1 INC.  [token_subset/high]  $0.4M
      . SALT N PEPPER DELI N GROCERY#1 INC.         $    0.2M  1 txns
@@ -893,6 +962,14 @@
 => HEWLETT-PACKARD ENTERPRISE COMPANY  [norm_exact/high]  $0.4M
      . HEWLETT-PACKARD ENTERPRISE COMPANY          $    0.3M  2 txns
      . HEWLETT-PACKARD ENTERPRISE CO               $    0.1M  1 txns
+
+=> FREEDOM PREP ACADEMY MESA  [token_subset/high]  $0.4M
+     . FREEDOM PREP ACADEMY MESA                   $    0.3M  2 txns
+     . FREEDOM ACADEMY INC                         $    0.1M  1 txns
+
+=> INFO-TECH RESEARCH GROUP INC  [norm_exact/high]  $0.4M
+       INFO-TECH RESEARCH GROUP INC                $    0.3M  2 txns
+       INFO-TECH RESEARCH GROUP, INC.              $    0.1M  1 txns
 
 => ARNOLD MACHINERY CO  [norm_exact/high]  $0.4M
        ARNOLD MACHINERY CO                         $    0.2M  2 txns
@@ -909,10 +986,6 @@
 => RUNBECK ELECTION SERVICES INC  [norm_exact/high]  $0.4M
        RUNBECK ELECTION SERVICES INC               $    0.2M  2 txns
        RUNBECK ELECTION SERVICES, INC.             $    0.1M  1 txns
-
-=> PARTNERS IN RECOVERY LLC  [token_subset/high]  $0.4M
-     . PARTNERS IN RECOVERY LLC                    $    0.2M  1 txns
-     . PARTNERS IN RECOVERY OUTP                   $    0.2M  1 txns
 
 => SKYLINE GILA RIVER SCHOOLS LLC  [token_subset/high]  $0.4M
      . SKYLINE GILA RIVER SCHOOLS LLC              $    0.2M  2 txns
@@ -941,10 +1014,6 @@
 => CLARK BOAT CO INC  [norm_exact/high]  $0.2M
      . CLARK BOAT CO INC                           $    0.1M  1 txns
        CLARK BOAT COMPANY INC                      $    0.1M  1 txns
-
-=> INFO-TECH RESEARCH GROUP INC  [norm_exact/high]  $0.2M
-     . INFO-TECH RESEARCH GROUP INC                $    0.1M  1 txns
-       INFO-TECH RESEARCH GROUP, INC.              $    0.1M  1 txns
 
 => FRANKLIN PHONETIC PRIMARY SCHOOL INC  [norm_exact/high]  $0.2M
      . FRANKLIN PHONETIC PRIMARY SCHOOL INC        $    0.1M  1 txns

@@ -1,7 +1,7 @@
 # Arizona OpenBooks — First-Pass Forensic Findings
 
 **Prepared:** 2026-05-26 (overnight autonomous run)
-**Scope:** 9 fiscal years — FY2016–FY2021, FY2023–FY2025 (FY2022 excluded as incomplete)
+**Scope:** 10 fiscal years — FY2016–FY2025 (FY2022 recovered 2026-06-16; both shards downloaded from the Arizona Open Data Portal)
 **Corpus:** 115,699,297 transaction rows across ~74 GB of source CSV, converted to ~2.0 GB of typed Parquet
 **Engine:** DuckDB 1.5.3 over `~/Documents/Openbooks/parquet/`, summary tables in `warehouse.duckdb`
 
@@ -76,7 +76,7 @@ These affect the **accuracy of any published total** and are the highest-priorit
 
 5. **`vendor_id_code` only exists FY2017+**; `invoice_number` only FY2016–2018 & FY2021. Duplicate-payment and vendor-ID analysis is therefore **not uniform across years**.
 
-6. **FY2016 had a truncated 38-column header over 59-column data** (recovered by positional mapping). **FY2022 is incomplete** (only one of two parts, ~3.3M of ~13M rows) and is excluded entirely.
+6. **FY2016 had a truncated 38-column header over 59-column data** (recovered by positional mapping). **FY2022** was initially missing its first shard (FY22_000); both shards were recovered on 2026-06-16 from the Arizona Open Data Portal and are now included (13.1M rows total).
 
 ---
 

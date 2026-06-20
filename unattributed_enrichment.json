@@ -1,10 +1,10 @@
 {
   "_meta": {
-    "generated_at": "2026-06-19T00:30:54.919146+00:00",
-    "model": "grok-4.3",
-    "provider": "xai",
-    "auth_source": "hermes:xai-oauth",
-    "top_n": 10,
+    "generated_at": "2026-06-19T03:16:19.072568+00:00",
+    "model": "z-ai/glm-5.2",
+    "provider": "nous",
+    "auth_source": "hermes:nous",
+    "top_n": 30,
     "method": "Grok adjudication grounded in per-agency category/fund evidence from the checkbook warehouse; statutory basis is model-asserted and should be spot-checked against A.R.S. before publication."
   },
   "agencies": {
@@ -37,10 +37,10 @@
           "usd": 12582863.0
         }
       ],
-      "classification": "mixed",
-      "confidence": "high",
-      "reason": "Dominant spend is AID TO ORGANIZATIONS AND INDIVIDUALS (DES client benefits redacted by confidentiality statute) plus PERSONAL SERVICES/EMPLOYEE RELATED (standard payroll reporting) and TRANSFERS OUT (vendor often omitted).",
-      "statutory_basis": "A.R.S. confidentiality statutes for DES/AHCCCS benefits recipients",
+      "classification": "error",
+      "confidence": "low",
+      "reason": "adjudication failed: Unterminated string starting at: line 6 column 12 (char 672)",
+      "statutory_basis": null,
       "notes": null
     },
     "DEPT OF CHILD SAFETY": {
@@ -74,9 +74,9 @@
       ],
       "classification": "mixed",
       "confidence": "high",
-      "reason": "Dominant categories are AID TO ORGANIZATIONS AND INDIVIDUALS (confidential DCS client benefits) plus PERSONAL SERVICES/EMPLOYEE RELATED (payroll) and TRANSFERS OUT, all standard reasons for redacted payees.",
-      "statutory_basis": "A.R.S. \u00a7 8-807 (DCS records confidentiality)",
-      "notes": "null"
+      "reason": "The vast majority of unattributed spending is 'AID TO ORGANIZATIONS AND INDIVIDUALS' (child-welfare benefits/payments to families and providers), which DCS redacts to protect client confidentiality; the remainder is payroll (PERSONAL SERVICES, EMPLOYEE RELATED) and intergovernmental TRANSFERS OUT, which also typically lack named payees.",
+      "statutory_basis": "A.R.S. \u00a7 8-807 (confidentiality of DCS records and client information); A.R.S. \u00a7 41-741(B) (state checkbook exemption for confidential or privacy-protected information)",
+      "notes": "The ~$107M in uncategorized spend and ~$135M in OTHER OPERATING EXPENDITURES are small relative to the total and could include vendor payments that may be attributable; without line-level detail these cannot be fully verified, but the overall pattern is consistent with statutory and operational norms for a child-safety agency."
     },
     "DEPT OF TRANSPORTATION": {
       "unattributed_usd": 7749015851.0,
@@ -109,9 +109,9 @@
       ],
       "classification": "mixed",
       "confidence": "high",
-      "reason": "Dominant categories are TRANSFERS OUT plus payroll (PERSONAL SERVICES + EMPLOYEE RELATED EXPENDITURES), both of which routinely appear without named payees in state checkbooks.",
-      "statutory_basis": null,
-      "notes": null
+      "reason": "The unattributed spend is dominated by TRANSFERS OUT (intergovernmental/highway fund distributions that typically lack a vendor), PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll reported without individual employee names), with a smaller portion of AID TO ORGANIZATIONS AND INDIVIDUALS that may be statutorily redacted; together these account for the vast majority of the unattributed dollars.",
+      "statutory_basis": "A.R.S. \u00a7 41-710 (state payroll confidentiality); A.R.S. \u00a7 35-142 et seq. (warrant/payment reporting); A.R.S. \u00a7 28-2351 et seq. (State Highway Fund distributions); A.R.S. \u00a7 28-6301 et seq. (Regional Area Road Fund)",
+      "notes": "The $63M in PROFESSIONAL AND OUTSIDE SERVICES and $500M in OTHER OPERATING EXPENDITURES are not fully explained by the common statutory/operational reasons and may reflect vendor-level reporting gaps or aggregation; this slice is relatively small (~7% of unattributed) and does not by itself make the overall pattern anomalous."
     },
     "DEPT OF CORRECTIONS": {
       "unattributed_usd": 7221003071.0,
@@ -144,9 +144,9 @@
       ],
       "classification": "operational",
       "confidence": "high",
-      "reason": "Dominant categories are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll), which are standardly reported without individual payee names; TRANSFERS OUT also commonly lack named vendors.",
+      "reason": "The vast majority of unattributed dollars are in PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, which represent payroll and benefits for correctional officers and staff; these are reported without individual employee payee names. The remaining unattributed amounts in TRANSFERS OUT and smaller operating/capital categories are consistent with intergovernmental transfers and aggregate operational spending that often lack a single named vendor.",
       "statutory_basis": null,
-      "notes": "Mix aligns with routine corrections agency operations; no client-benefit confidentiality statutes apply."
+      "notes": "Arizona state checkbook reporting typically omits individual employee names for payroll (PERSONAL SERVICES, EMPLOYEE RELATED EXPENDITURES); this is an operational reporting convention rather than a specific statutory redaction. The small CAPITAL OUTLAY/EQUIPMENT amounts are not enough to change the overall classification."
     },
     "DEPT OF PUBLIC SAFETY": {
       "unattributed_usd": 5596429283.0,
@@ -177,11 +177,11 @@
           "usd": 7435129.0
         }
       ],
-      "classification": "mixed",
-      "confidence": "high",
-      "reason": "Unattributed total is driven by TRANSFERS OUT plus PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, both of which routinely appear without named payees under standard state reporting.",
+      "classification": "error",
+      "confidence": "low",
+      "reason": "adjudication failed: Unterminated string starting at: line 6 column 12 (char 385)",
       "statutory_basis": null,
-      "notes": "DPS is not a benefits agency; no confidentiality statute applies."
+      "notes": null
     },
     "DEPT OF EDUCATION": {
       "unattributed_usd": 4540538858.0,
@@ -214,9 +214,9 @@
       ],
       "classification": "mixed",
       "confidence": "high",
-      "reason": "Dominant categories are AID TO ORGANIZATIONS AND INDIVIDUALS plus TRANSFERS OUT (common for education aid and intergovernmental flows) alongside PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (standard payroll reporting without named payees).",
-      "statutory_basis": null,
-      "notes": null
+      "reason": "The Arizona Department of Education's unattributed spending is driven by three legitimate factors: large-scale aid distributions to school districts, charter schools, and individuals (which may be redacted for beneficiary confidentiality), intergovernmental transfers out to LEAs and other entities, and payroll/personal services reported without individual employee names.",
+      "statutory_basis": "A.R.S. Title 15 (Education) governs school funding distributions; FERPA (20 U.S.C. \u00a7 1232g) and corresponding state privacy provisions protect student-level records; payroll payee redaction is standard operational practice under Arizona checkbook reporting.",
+      "notes": "The overwhelming majority (~88%) of unattributed dollars fall in AID TO ORGANIZATIONS AND INDIVIDUALS and TRANSFERS OUT, which is consistent with ADE's core function of distributing state and federal education funding to school districts and charter schools. The presence of small amounts of TRAVEL and OTHER OPERATING EXPENDITURES without payees is not unusual but represents a minor share."
     },
     "GOVERNOR'S OFFICE": {
       "unattributed_usd": 3859653070.0,
@@ -249,9 +249,9 @@
       ],
       "classification": "mixed",
       "confidence": "high",
-      "reason": "Dominant TRANSFERS OUT from COVID relief funds align with intergovernmental pass-throughs that routinely lack named vendors; PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES match standard payroll reporting without individual names.",
-      "statutory_basis": "A.R.S. \u00a7 41-741 et seq. (payroll confidentiality); intergovernmental transfer practices under A.R.S. \u00a7 35-142",
-      "notes": "COVID fund transfers constitute ~92% of unattributed total; no client-benefit programs involved."
+      "reason": "The vast majority of unattributed dollars ($3.72B) are TRANSFERS OUT of federal COVID-relief funds (CSLFRF, CRF, GEER) to other entities, which typically lack a named vendor. The remainder is dominated by PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, i.e., payroll, which is reported without individual employee names.",
+      "statutory_basis": null,
+      "notes": "The Governor's Office served as a pass-through for federal pandemic funds; transfer recipients may include other state agencies, local governments, or subgrantees. A small portion ($12.6M in OTHER OPERATING EXPENDITURES) is not clearly explained by these two categories but is immaterial relative to the total."
     },
     "DEPT OF HEALTH SERVICES": {
       "unattributed_usd": 3507242374.0,
@@ -284,9 +284,9 @@
       ],
       "classification": "mixed",
       "confidence": "high",
-      "reason": "Dominant categories are AID TO ORGANIZATIONS AND INDIVIDUALS (confidential benefits), PERSONAL SERVICES/EMPLOYEE RELATED EXPENDITURES (payroll), and TRANSFERS OUT (intergovernmental), all standard reasons for unattributed payees.",
-      "statutory_basis": null,
-      "notes": null
+      "reason": "The unattributed spending is driven by three legitimate factors: (1) Aid to Organizations and Individuals ($1.14B) reflects benefit/assistance payments to individuals that are statutorily confidential under Arizona health and public-assistance privacy laws; (2) Personal Services ($940M) and Employee Related Expenditures ($363M) are payroll, which is reported without individual employee payee names; and (3) Transfers Out ($926M) are intergovernmental/inter-agency fund transfers that typically lack a vendor payee.",
+      "statutory_basis": "A.R.S. \u00a7 36-661 (public health records confidentiality); A.R.S. \u00a7 36-507 (behavioral health records); A.R.S. \u00a7 41-725 (state employee payroll reporting conventions); federal grant confidentiality requirements applicable to DHS-administered health and social-service programs.",
+      "notes": "The large Federal Grant Fund and Federal Grant balances are consistent with Medicaid/behavioral-health pass-through payments to individuals and providers, which are commonly redacted. The presence of $17M in Professional and Outside Services is small relative to the total and does not materially change the classification, though a small portion of that sub-category could warrant vendor-level transparency review."
     },
     "LOTTERY COMMISSION": {
       "unattributed_usd": 3409264475.0,
@@ -317,11 +317,11 @@
           "usd": 1177699.0
         }
       ],
-      "classification": "operational",
-      "confidence": "high",
-      "reason": "Dominant TRANSFERS OUT and payroll categories (PERSONAL SERVICES, EMPLOYEE RELATED) routinely lack named payees under standard state accounting practices; remaining categories are minor.",
+      "classification": "error",
+      "confidence": "low",
+      "reason": "adjudication failed: The read operation timed out",
       "statutory_basis": null,
-      "notes": "Lottery transfers to state funds are operational outflows without individual vendors."
+      "notes": null
     },
     "DEPT OF ADMINISTRATION": {
       "unattributed_usd": 2463720858.0,
@@ -352,11 +352,711 @@
           "usd": 6432274.0
         }
       ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The unattributed spend is dominated by TRANSFERS OUT (intergovernmental fund transfers with no vendor) and PERSONAL SERVICES/EMPLOYEE RELATED EXPENDITURES (state payroll reported without individual employee names), both standard operational practices for Arizona's central administrative agency.",
+      "statutory_basis": null,
+      "notes": "DOA is Arizona's central services agency, so large payroll and inter-agency transfer volumes are expected. The small AID TO ORGANIZATIONS AND INDIVIDUALS slice may include confidential benefit payments but is only ~3% of the unattributed total. No category mix suggests an anomaly."
+    },
+    "SCHOOL FACILITIES BOARD": {
+      "unattributed_usd": 1858444289.0,
+      "unattributed_pct": 46.5,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 1877284087.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 6381602.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 2136872.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 1079611.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 794814.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 83364.0
+        }
+      ],
       "classification": "operational",
       "confidence": "high",
-      "reason": "Dominant categories are TRANSFERS OUT plus PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, both of which routinely appear without named payees in state checkbooks.",
+      "reason": "The overwhelming majority of unattributed spending is TRANSFERS OUT\u2014distributions to school districts for school facilities funding\u2014which typically lack a named vendor because they are intergovernmental transfers rather than vendor payments. The remaining unattributed amounts are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, which are payroll and routinely reported without individual employee names.",
+      "statutory_basis": "ARS \u00a7 41-5701 et seq. (School Facilities Board); ARS \u00a7 15-2041 et seq. (school district distributions)",
+      "notes": "Small unattributed amounts in PROFESSIONAL AND OUTSIDE SERVICES ($795K) and TRAVEL ($83K) are minor relative to the total and may reflect data-entry or aggregation practices rather than a systemic issue."
+    },
+    "STATEWIDE SYSTEMS PROCESSING": {
+      "unattributed_usd": 1489013047.0,
+      "unattributed_pct": 45.1,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 1488106127.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 589095.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 237649.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 113385.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 9875.0
+        },
+        {
+          "category": "TRAVEL - OUT-OF-STATE",
+          "usd": 6555.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "The overwhelming majority of unattributed spend ($1.49B) is TRANSFERS OUT from the General Fund, which are interfund or intergovernmental transfers that typically have no vendor payee. The remaining amounts are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES in payroll funds, which are reported without individual employee names.",
       "statutory_basis": null,
-      "notes": "No indication of client-benefit confidentiality statutes; pattern matches standard payroll and inter-fund transfer reporting."
+      "notes": "Statewide Systems Processing appears to be a central administrative/processing entity; the combination of mass transfers-out and payroll is consistent with normal operational accounting rather than a redaction statute."
+    },
+    "ATTORNEY GENERAL (DEPT OF LAW)": {
+      "unattributed_usd": 1307935304.0,
+      "unattributed_pct": 81.4,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 653509460.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 344253271.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 245162962.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 59905466.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 4968898.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 3214086.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "The vast majority of unattributed spending is PERSONAL SERVICES (payroll), EMPLOYEE RELATED EXPENDITURES (benefits), and TRANSFERS OUT (intergovernmental), all of which are routinely reported without individual payee names in Arizona's checkbook.",
+      "statutory_basis": null,
+      "notes": "A smaller portion sits in the Consumer Restitution and Remediation Revolving Fund and Consumer Protection Fraud Revolving Fund, which may involve statutorily redacted consumer-restitution payments to individuals, but the dominant category mix is payroll and transfers, which are operational in nature."
+    },
+    "DEPT OF HOUSING": {
+      "unattributed_usd": 1235231983.0,
+      "unattributed_pct": 62.8,
+      "top_categories": [
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 834178793.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 324652241.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 50166795.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 19155288.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 5165835.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 1295188.0
+        }
+      ],
+      "classification": "error",
+      "confidence": "low",
+      "reason": "adjudication failed: Unterminated string starting at: line 6 column 12 (char 760)",
+      "statutory_basis": null,
+      "notes": null
+    },
+    "SUPREME COURT": {
+      "unattributed_usd": 1116440570.0,
+      "unattributed_pct": 52.3,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 419403458.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 374858573.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 193714802.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 75756512.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 58920028.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 10048156.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The largest unattributed categories are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll/benefits, routinely reported without individual employee names) and TRANSFERS OUT (intergovernmental distributions to counties or other jurisdictions, which typically lack a vendor payee), together accounting for roughly 89% of the unattributed total. A smaller portion under AID TO ORGANIZATIONS AND INDIVIDUALS may involve statutorily confidential distributions.",
+      "statutory_basis": "A.R.S. \u00a7 41-725 (state accounting; open-books vendor-level reporting generally excludes payroll detail); A.R.S. \u00a7 12-116 (juvenile probation fund distributions to counties); see also confidentiality provisions applicable to juvenile court records, A.R.S. \u00a7 8-307",
+      "notes": "The Supreme Court administers pass-through funding to county probation departments and courts, which explains the large TRANSFERS OUT without a named vendor. The AID TO ORGANIZATIONS AND INDIVIDUALS line is a minor share (~7%) and may include confidential juvenile services or treatment referrals; without line-level detail, a precise statutory citation for that portion cannot be confirmed."
+    },
+    "DEPT OF GAMING": {
+      "unattributed_usd": 865510932.0,
+      "unattributed_pct": 87.5,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 754745904.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 69020552.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 26485255.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 9530975.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 2960511.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 1672436.0
+        }
+      ],
+      "classification": "error",
+      "confidence": "low",
+      "reason": "adjudication failed: 'NoneType' object has no attribute 'strip'",
+      "statutory_basis": null,
+      "notes": null
+    },
+    "GAME AND FISH DEPARTMENT": {
+      "unattributed_usd": 827302789.0,
+      "unattributed_pct": 64.9,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 358674947.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 194634914.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 192301606.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 45294672.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 26430716.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 5531000.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "The unattributed spend is dominated by PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll, which is reported without individual employee payee names) plus TRANSFERS OUT (intergovernmental/fund transfers that typically have no vendor), which together account for the large majority of the unattributed dollars.",
+      "statutory_basis": null,
+      "notes": "A small portion (AID TO ORGANIZATIONS AND INDIVIDUALS, ~$26M) may reflect confidentiality or grant-style payments, but it is minor relative to payroll and transfers; no anomaly indicated."
+    },
+    "DEPT OF EMERGENCY AND MILITARY AFFAIRS": {
+      "unattributed_usd": 702880511.0,
+      "unattributed_pct": 33.8,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 317582932.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 259960430.0
+        },
+        {
+          "category": "CAPITAL EQUIPMENT",
+          "usd": 99169398.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 90987990.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 16366297.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 10140746.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The unattributed spending is dominated by TRANSFERS OUT (intergovernmental transfers without a vendor), PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll reported without individual employee names), and a smaller amount of AID TO ORGANIZATIONS AND INDIVIDUALS which may involve statutory confidentiality protections for benefit recipients.",
+      "statutory_basis": "A.R.S. \u00a7 41-710 (state accounting system reporting); A.R.S. \u00a7 46-134 (confidentiality of public assistance records, applicable to aid-to-individuals categories); standard payroll privacy practices under Arizona personnel records law.",
+      "notes": "CAPITAL EQUIPMENT at ~$99M is somewhat large but is consistent with a military/emergency-management agency procuring equipment through federal grants and special funds; it does not by itself indicate an anomaly. The Border Security Fund and Coronavirus Relief Fund amounts align with DEMA's known operational roles."
+    },
+    "DEPT OF ENVIRONMENTAL QUALITY": {
+      "unattributed_usd": 668735282.0,
+      "unattributed_pct": 45.7,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 318830008.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 166255254.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 116761441.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 37276815.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 18207461.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 6247698.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The largest unattributed categories are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll, which is reported without individual employee names) and TRANSFERS OUT (intergovernmental or inter-fund transfers that typically lack a vendor payee), together accounting for over 90% of the unattributed total.",
+      "statutory_basis": null,
+      "notes": "The smaller unattributed amounts in PROFESSIONAL AND OUTSIDE SERVICES and OTHER OPERATING EXPENDITURES may warrant further review, but they represent a small fraction of the total and could reflect operational reporting practices rather than anomalies."
+    },
+    "ARIZONA STATE RETIREMENT SYSTEM (ASRS)": {
+      "unattributed_usd": 646606648.0,
+      "unattributed_pct": 72.9,
+      "top_categories": [
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 421668542.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 161555884.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 59189438.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 3781508.0
+        },
+        {
+          "category": "TRAVEL - OUT-OF-STATE",
+          "usd": 211621.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 149324.0
+        }
+      ],
+      "classification": "error",
+      "confidence": "low",
+      "reason": "adjudication failed: 'NoneType' object has no attribute 'strip'",
+      "statutory_basis": null,
+      "notes": null
+    },
+    "DEPT OF REVENUE": {
+      "unattributed_usd": 582932238.0,
+      "unattributed_pct": 65.2,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 329612504.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 133234975.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 59228757.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 44968040.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 9320773.0
+        },
+        {
+          "category": "CAPITAL EQUIPMENT",
+          "usd": 4845101.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "Approximately 90% of the unattributed dollars fall in PERSONAL SERVICES, EMPLOYEE RELATED EXPENDITURES, and TRANSFERS OUT\u2014categories that are operationally reported without individual payee names because they represent payroll, employee benefits, and inter-fund/intergovernmental transfers.",
+      "statutory_basis": null,
+      "notes": "The DOR UNCLAIMED PROPERTY fund ($24.5M) could involve claimant payments with privacy considerations, but it is a small share of the total. The remaining OTHER OPERATING, PROFESSIONAL SERVICES, and CAPITAL EQUIPMENT amounts are not individually explained by the evidence but are minor relative to the payroll and transfer totals."
+    },
+    "CORPORATION COMMISSION": {
+      "unattributed_usd": 477173624.0,
+      "unattributed_pct": 91.6,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 215393430.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 173781790.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 66148908.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 19465396.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 3240061.0
+        },
+        {
+          "category": "TRAVEL - OUT-OF-STATE",
+          "usd": 206018.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The unattributed spend is dominated by TRANSFERS OUT (intergovernmental/fund transfers without a vendor) and PERSONAL SERVICES plus EMPLOYEE RELATED EXPENDITURES (payroll reported without individual employee payee names), both well-established operational/statutory reasons for missing payee names.",
+      "statutory_basis": "A.R.S. \u00a7 35-142 (state accounting); payroll confidentiality and transfer-out reporting conventions under Arizona state checkbook practices",
+      "notes": "The Corporation Commission's regulatory funds (securities, utility regulation, public access) are consistent with normal operations; no category mix suggests an anomaly."
+    },
+    "SCHOOLS FOR THE DEAF AND THE BLIND": {
+      "unattributed_usd": 468260047.0,
+      "unattributed_pct": 80.3,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 312994873.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 132671053.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 12671630.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 4956270.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 2357924.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 1528214.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "Approximately 95% of the unattributed spending consists of PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, which are payroll categories routinely reported without individual employee payee names; the remaining smaller categories (TRANSFERS OUT, travel, etc.) are consistent with typical operational reporting gaps.",
+      "statutory_basis": null,
+      "notes": "A small portion (~$5M in PROFESSIONAL AND OUTSIDE SERVICES) might ordinarily be expected to carry a vendor name, but it represents roughly 1% of the unattributed total and does not materially change the overall classification."
+    },
+    "STATE TREASURER": {
+      "unattributed_usd": 419142327.0,
+      "unattributed_pct": 43.7,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 452969072.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 45160754.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 23785423.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 8412866.0
+        },
+        {
+          "category": "TRAVEL - OUT-OF-STATE",
+          "usd": 94166.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 28863.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "The vast majority of unattributed dollars are TRANSFERS OUT between state funds (e.g., Budget Stabilization Fund, General Fund), which are inter-fund/intergovernmental movements that do not involve an external vendor payee. The remaining unattributed amounts are PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, which are payroll items reported without individual employee names.",
+      "statutory_basis": null,
+      "notes": "The State Treasurer acts as the state's banker and routinely executes fund transfers; the absence of a named payee for these transactions is expected. Minor categories like travel are small relative to the total and may simply be aggregated in the checkbook without vendor-level detail."
+    },
+    "DEPT OF FORESTRY AND FIRE MANAGEMENT": {
+      "unattributed_usd": 416307181.0,
+      "unattributed_pct": 42.6,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 203974493.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 101001116.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 36427639.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 31132773.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 29739440.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 12263346.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The largest unattributed amounts are TRANSFERS OUT (intergovernmental transfers with no vendor), PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES (payroll reported without individual names), and AID TO ORGANIZATIONS AND INDIVIDUALS (which may include statutorily redacted beneficiary payments), collectively explaining roughly 85% of the unattributed total.",
+      "statutory_basis": "A.R.S. \u00a7 41-741 et seq. (state accounting); payroll confidentiality and intergovernmental transfer reporting conventions under Arizona financial reporting standards.",
+      "notes": "TRAVEL - IN-STATE at $31M is somewhat atypical for unattributed spend but may reflect aggregated employee travel reimbursements. Without transaction-level detail, the exact breakdown within 'OTHER OPERATING EXPENDITURES' and 'AID TO ORGANIZATIONS AND INDIVIDUALS' cannot be fully verified."
+    },
+    "DEPT OF WATER RESOURCES": {
+      "unattributed_usd": 401141808.0,
+      "unattributed_pct": 62.9,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 223262971.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 117845382.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 43432477.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 12959774.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 2119275.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 724374.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The unattributed spending is dominated by TRANSFERS OUT ($223M, ~56%) and payroll-related categories\u2014PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES ($161M combined, ~40%)\u2014both of which are routinely reported without named payees: intergovernmental/fund transfers lack a vendor, and payroll is reported without individual employee names.",
+      "statutory_basis": "A.R.S. \u00a7 35-131 (state accounting and reporting); payroll confidentiality and standard open-checkbook reporting conventions for transfers out and employee compensation.",
+      "notes": "The Drought Mitigation Revolving Fund and Arizona Water Banking Fund transfers are consistent with inter-agency or inter-fund water resource programs. The small remaining categories (OTHER OPERATING, TRAVEL, PROFESSIONAL AND OUTSIDE SERVICES) are minor relative to the total and may reflect operational reporting practices; no anomaly is apparent from the category mix alone."
+    },
+    "WATER INFRASTRUCTURE FINANCE AUTHORITY OF ARIZONA": {
+      "unattributed_usd": 390681478.0,
+      "unattributed_pct": 54.7,
+      "top_categories": [
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 385429933.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 5896351.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 1878627.0
+        },
+        {
+          "category": "CAPITAL EQUIPMENT",
+          "usd": 51657.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 48760.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 34487.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "The overwhelming majority of unattributed spending ($385.4M of $390.7M) is 'TRANSFERS OUT,' which are inter-fund or intergovernmental transfers that inherently lack a vendor payee. The remaining unattributed amounts are predominantly PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, which are payroll categories reported without individual employee names.",
+      "statutory_basis": null,
+      "notes": "WIFA administers multiple revolving funds (Water Supply Development Revolving Fund, Long Term Water Augmentation Fund, etc.), so large transfers out between these funds and to sub-recipients are operationally expected. The small unattributed amounts in CAPITAL EQUIPMENT, TRAVEL, and OTHER OPERATING EXPENDITURES are immaterial in context but could not be independently verified as to specific payee-redaction rationale."
+    },
+    "DEPT OF JUVENILE CORRECTIONS": {
+      "unattributed_usd": 375916513.0,
+      "unattributed_pct": 86.4,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 224763968.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 122561123.0
+        },
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 17458169.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 7398277.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 3461602.0
+        },
+        {
+          "category": "NON-CAPITAL EQUIPMENT",
+          "usd": 158376.0
+        }
+      ],
+      "classification": "operational",
+      "confidence": "high",
+      "reason": "The overwhelming majority of unattributed spending (over $347M of $376M) is in PERSONAL SERVICES and EMPLOYEE RELATED EXPENDITURES, which are payroll categories routinely reported without individual employee payee names in the state checkbook. The remaining unattributed amounts in TRANSFERS OUT and other operating categories are consistent with normal operational reporting where intergovernmental transfers and aggregated expenditures lack a single named vendor.",
+      "statutory_basis": null,
+      "notes": "No specific statutory redaction appears to drive this pattern; it is primarily a function of how payroll and transfer expenditures are recorded in the state's open-books/checkbook system. The small unattributed portions in OTHER OPERATING EXPENDITURES and TRAVEL categories were not large enough to flag as anomalous."
+    },
+    "INDUSTRIAL COMMISSION": {
+      "unattributed_usd": 328115551.0,
+      "unattributed_pct": 74.0,
+      "top_categories": [
+        {
+          "category": "OTHER OPERATING EXPENDITURES",
+          "usd": 144529172.0
+        },
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 111650384.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 42801983.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 14514163.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 13135617.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 1619193.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "medium",
+      "reason": "The unattributed spend is mostly payroll (PERSONAL SERVICES + EMPLOYEE RELATED EXPENDITURES) and TRANSFERS OUT, which are routinely reported without named payees; the large OTHER OPERATING EXPENDITURES share is plausible for an agency administering workers' compensation and labor programs but cannot be fully confirmed from the evidence alone.",
+      "statutory_basis": null,
+      "notes": "Industrial Commission administers workers' compensation and labor programs; some OTHER OPERATING EXPENDITURES may reflect benefit/claim-related payments that could be statutorily redacted, but the category label is too generic to confirm. No anomaly indicated."
+    },
+    "DEPT OF VETERANS SERVICES": {
+      "unattributed_usd": 287316063.0,
+      "unattributed_pct": 48.3,
+      "top_categories": [
+        {
+          "category": "PERSONAL SERVICES",
+          "usd": 193276854.0
+        },
+        {
+          "category": "EMPLOYEE RELATED EXPENDITURES",
+          "usd": 75953652.0
+        },
+        {
+          "category": "AID TO ORGANIZATIONS AND INDIVIDUALS",
+          "usd": 10548375.0
+        },
+        {
+          "category": "TRANSFERS OUT",
+          "usd": 3425362.0
+        },
+        {
+          "category": "PROFESSIONAL AND OUTSIDE SERVICES",
+          "usd": 1617180.0
+        },
+        {
+          "category": "TRAVEL - IN-STATE",
+          "usd": 1370728.0
+        }
+      ],
+      "classification": "mixed",
+      "confidence": "high",
+      "reason": "The overwhelming majority of unattributed spending is payroll (Personal Services and Employee Related Expenditures), which is operationally reported without individual employee names; the remaining amounts include Aid to Organizations and Individuals (likely veteran benefits subject to confidentiality) and Transfers Out, both of which commonly lack named payees.",
+      "statutory_basis": "A.R.S. \u00a7 41-710 (state payroll reporting); A.R.S. \u00a7 41-151 et seq. (veterans services confidentiality); A.R.S. \u00a7 35-142 (transfers between funds)",
+      "notes": "The small amounts in Professional and Outside Services and Travel are slightly less typical for unattributed spending but are immaterial relative to the total; no anomaly indicated."
     }
   }
 }

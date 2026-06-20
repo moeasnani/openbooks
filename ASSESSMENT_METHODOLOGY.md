@@ -9,7 +9,7 @@
 
 ## 1. Data provenance & limitations (disclosed up front)
 - **Corpus:** 115.7M transactions, FY2016–FY2025 (9 years). Source: Arizona OpenBooks checkbook CSVs (~74 GB) → typed Parquet → DuckDB warehouse.
-- **FY2022 is excluded** — source data shipped only a partial file (~3.3M of ~13M rows). Year-over-year trends skip FY2022.
+- **FY2022 is included** — both shards (FY22_000 + FY22_001, 13.1M rows total) were downloaded from the Arizona Open Data Portal and converted to parquet. The earlier exclusion was due to only the second shard being on disk; the missing first shard (~9.8M rows) was retrieved on 2026-06-16.
 - **FY2021 lost 69,917 rows (0.57%)** and FY2018 10,350 rows (0.08%) to malformed source CSV (unescaped quotes). FY2021 totals are therefore marginally understated and should be recovered before relied upon.
 - **`hourly_rate` is 100% empty** in source — no payroll pay-rate analysis is possible.
 - **`99999999.xx` placeholder amounts** (~$19.7B across the corpus) are sentinels, excluded from every total here. Their per-year count is itself tracked as a data-hygiene indicator.

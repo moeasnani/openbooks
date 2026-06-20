@@ -41,3 +41,8 @@ venv/
 .mypy_cache/
 .ruff_cache/
 .env
+.hermes/
+budget_pdfs/extract*.py
+budget_pdfs/fy202*.pdf
+budget/
+downloads/

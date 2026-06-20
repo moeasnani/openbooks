@@ -1,6 +1,6 @@
 # Overtaker handoff — Arizona fiscal governance assessment
 
-Scope: **State of Arizona + agencies/funds**, FY2016–FY2025 (FY2022 excluded — incomplete source).
+Scope: **State of Arizona + agencies/funds**, FY2016–FY2025 (10 years; FY2022 recovered 2026-06-16).
 All metrics derive from the state checkbook; see methodology for limitations.
 
 ## /feed — structured metrics (ingest these)
