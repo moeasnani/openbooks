@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: openbooks
+      POSTGRES_USER: openbooks
+      POSTGRES_PASSWORD: change_me_in_production
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openbooks"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  openbooks:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8765:8765"
+    environment:
+      OPENBOOKS_PG_DSN: postgresql://openbooks:change_me_in_production@db:5432/openbooks
+      OPENBOOKS_HOST: 0.0.0.0
+      OPENBOOKS_CORS: "*"
+      # Add your Grok/Anthropic keys here or use .env
+      # ANTHROPIC_API_KEY: ...
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./mart:/app/mart:ro
+
+volumes:
+  postgres_data:

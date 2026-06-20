@@ -48,8 +48,38 @@ boot it logs a warning and **falls back to the DuckDB warehouse**, so the
 dashboard never goes dark. Force DuckDB explicitly with `--db warehouse.duckdb`
 (or by unsetting `OPENBOOKS_PG_DSN`).
 
-> Note: the per-payee `transactions` grain (115M rows) lives only in DuckDB.
-> On Postgres, `spend()` uses the `spend_summary` rollup and
+## Deployment
+
+The full codebase (Python API server + interactive `index.html` dashboard + Postgres) is now **container-first**.
+
+### One-command deploy (recommended)
+
+```bash
+# 1. Clone (or use this repo)
+git clone https://github.com/moeasnani/openbooks.git
+cd openbooks
+
+# 2. Start Postgres + OpenBooks server + dashboard
+docker compose up --build -d
+
+# 3. (First time only) Load initial data
+docker compose exec openbooks openbooks-bootstrap
+docker compose exec openbooks python scripts/load_entity_enrichment.py
+# Then run your data ingestion / push_to_postgres.py steps
+```
+
+The dashboard will be available at **http://localhost:8765**.
+
+### Production notes
+- Change the Postgres password in `docker-compose.yml`
+- Mount your `mart/` directory and run your full build pipeline (DuckDB → Postgres)
+- For cloud deployment: push this repo to Railway, Render, or Fly.io (they support `docker-compose.yml` or Dockerfile directly)
+- The server is stdlib-only and scales reasonably for internal/regulatory use
+
+See `docker-compose.yml` and `Dockerfile` for configuration options.
+
+CLI queries:
+
 > `unattributed_spend()` serves the `unattributed_context` snapshot
 > (flagged `snapshot: true`). Everything else is identical across backends.
 
